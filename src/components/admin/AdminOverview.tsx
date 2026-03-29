@@ -53,7 +53,8 @@ export default function AdminOverview({ stats, statsLoading, onTabChange }: Prop
             </p>
             <Button
               size="sm"
-              className="self-start bg-tekton-yellow/10 hover:bg-tekton-yellow/20 text-tekton-yellow border border-tekton-yellow/30"
+              disabled={!stats?.pendingMentors}
+              className="self-start bg-tekton-yellow/10 hover:bg-tekton-yellow/20 text-tekton-yellow border border-tekton-yellow/30 disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => onTabChange('pending-mentors')}
             >
               Review Now
@@ -82,7 +83,8 @@ export default function AdminOverview({ stats, statsLoading, onTabChange }: Prop
             </p>
             <Button
               size="sm"
-              className="self-start bg-tekton-blue/10 hover:bg-tekton-blue/20 text-tekton-blue border border-tekton-blue/30"
+              disabled={!stats?.unassignedMentees}
+              className="self-start bg-tekton-blue/10 hover:bg-tekton-blue/20 text-tekton-blue border border-tekton-blue/30 disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => onTabChange('assignments')}
             >
               Assign Now
