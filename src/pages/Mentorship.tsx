@@ -19,7 +19,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { TECH_TRACKS } from '@/types'
 import type { LucideIcon } from 'lucide-react'
-import type { ExperienceLevel } from '@/types'
 
 // ─── Track data ───────────────────────────────────────────────────────────────
 
@@ -36,7 +35,6 @@ const TRACK_ICONS: LucideIcon[] = [
 interface TrackDetail {
   description: string
   learnings: [string, string, string]
-  level: ExperienceLevel
   accentColor: string
   borderColor: string
   iconBg: string
@@ -51,7 +49,6 @@ const TRACK_DETAILS: Record<string, TrackDetail> = {
       'Database design (SQL & NoSQL) and RESTful API development',
       'Deployment, CI/CD pipelines, and web performance optimization',
     ],
-    level: 'Beginner',
     accentColor: 'text-tekton-purple-bright',
     borderColor: 'border-l-tekton-purple-bright',
     iconBg: 'bg-tekton-purple-bright/15',
@@ -64,7 +61,6 @@ const TRACK_DETAILS: Record<string, TrackDetail> = {
       'Figma prototyping, design systems, and component libraries',
       'Usability testing, accessibility standards, and design handoff',
     ],
-    level: 'Beginner',
     accentColor: 'text-tekton-teal',
     borderColor: 'border-l-tekton-teal',
     iconBg: 'bg-tekton-teal/15',
@@ -77,7 +73,6 @@ const TRACK_DETAILS: Record<string, TrackDetail> = {
       'State management, native APIs, and offline-first architecture',
       'App Store deployment, performance profiling, and monetization',
     ],
-    level: 'Intermediate',
     accentColor: 'text-tekton-blue',
     borderColor: 'border-l-tekton-blue',
     iconBg: 'bg-tekton-blue/15',
@@ -90,7 +85,6 @@ const TRACK_DETAILS: Record<string, TrackDetail> = {
       'Product roadmapping, stakeholder management, and OKRs',
       'Data-driven decision making and user story writing',
     ],
-    level: 'Intermediate',
     accentColor: 'text-tekton-yellow',
     borderColor: 'border-l-tekton-yellow',
     iconBg: 'bg-tekton-yellow/15',
@@ -103,7 +97,6 @@ const TRACK_DETAILS: Record<string, TrackDetail> = {
       'Test automation with Selenium, Playwright, or Cypress',
       'CI/CD integration, bug reporting, and quality metrics',
     ],
-    level: 'Beginner',
     accentColor: 'text-tekton-green',
     borderColor: 'border-l-tekton-green',
     iconBg: 'bg-tekton-green/15',
@@ -116,7 +109,6 @@ const TRACK_DETAILS: Record<string, TrackDetail> = {
       'Statistical analysis, hypothesis testing, and exploratory data analysis',
       'Machine learning fundamentals with scikit-learn and model deployment',
     ],
-    level: 'Intermediate',
     accentColor: 'text-tekton-purple-bright',
     borderColor: 'border-l-tekton-purple-bright',
     iconBg: 'bg-tekton-purple-bright/15',
@@ -129,7 +121,6 @@ const TRACK_DETAILS: Record<string, TrackDetail> = {
       'Ethical hacking, penetration testing, and OWASP Top 10',
       'Incident response, security auditing, and compliance frameworks',
     ],
-    level: 'Advanced',
     accentColor: 'text-red-400',
     borderColor: 'border-l-red-500',
     iconBg: 'bg-red-500/15',
@@ -137,11 +128,6 @@ const TRACK_DETAILS: Record<string, TrackDetail> = {
   },
 }
 
-const LEVEL_COLORS: Record<ExperienceLevel, string> = {
-  Beginner: 'bg-tekton-green/15 text-tekton-green border-tekton-green/30',
-  Intermediate: 'bg-tekton-yellow/15 text-tekton-yellow border-tekton-yellow/30',
-  Advanced: 'bg-red-500/15 text-red-400 border-red-500/30',
-}
 
 // ─── Milestones ───────────────────────────────────────────────────────────────
 
@@ -326,11 +312,6 @@ export default function Mentorship() {
                     <div className="flex flex-col gap-1 flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <h3 className={`font-heading text-xl leading-tight ${detail.accentColor}`}>{track}</h3>
-                        <span
-                          className={`inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-semibold ${LEVEL_COLORS[detail.level]}`}
-                        >
-                          {detail.level}
-                        </span>
                       </div>
                       <p className="text-sm text-white/55 leading-relaxed">{detail.description}</p>
                     </div>
