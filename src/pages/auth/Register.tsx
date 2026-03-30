@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Camera } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import api from '@/lib/api'
 import authService from '@/services/authService'
 import { TECH_TRACKS, type ExperienceLevel } from '@/types'
 
@@ -30,6 +31,33 @@ export default function Register() {
   const [title, setTitle] = useState('')
   const [experienceYears, setExperienceYears] = useState('')
   const [linkedinUrl, setLinkedinUrl] = useState('')
+  const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [photoPreview, setPhotoPreview] = useState<string>('')
+  const [photoUrl, setPhotoUrl] = useState('')
+  const [photoUploading, setPhotoUploading] = useState(false)
+
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setPhotoFile(file)
+    setPhotoPreview(URL.createObjectURL(file))
+    setPhotoUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const { data } = await api.post<{ url: string }>('/uploads/profile-photo', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      setPhotoUrl(data.url)
+    } catch {
+      toast.error('Photo upload failed')
+      setPhotoFile(null)
+      setPhotoPreview('')
+      setPhotoUrl('')
+    } finally {
+      setPhotoUploading(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,6 +71,7 @@ export default function Register() {
         ...(role === 'mentor' && { bio, title }),
         ...(role === 'mentor' && experienceYears && { experienceYears: parseInt(experienceYears) }),
         ...(role === 'mentor' && linkedinUrl && { linkedinUrl }),
+        ...(role === 'mentor' && photoUrl && { profilePhotoUrl: photoUrl }),
       }
       const { message } = await authService.register(payload)
       toast.success(message)
@@ -154,6 +183,38 @@ export default function Register() {
             {/* Mentor-specific */}
             {role === 'mentor' && (
               <>
+                {/* Profile photo */}
+                <div className="flex flex-col gap-1.5">
+                  <Label className="text-sm text-white/60">Profile photo <span className="text-white/30">(optional)</span></Label>
+                  <div className="flex items-center gap-4">
+                    <div className="relative size-[60px] shrink-0 rounded-full bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center">
+                      {photoPreview ? (
+                        <img src={photoPreview} alt="Profile preview" className="size-full object-cover" />
+                      ) : (
+                        <Camera className="size-5 text-white/30" />
+                      )}
+                      {photoUploading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full">
+                          <span className="size-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                    <label className="cursor-pointer">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-white/60 bg-white/5 border border-white/10 hover:bg-white/10 hover:text-white/80 transition-colors">
+                        <Camera className="size-3.5" />
+                        {photoFile ? 'Change photo' : 'Upload photo'}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="sr-only"
+                        onChange={handlePhotoChange}
+                        disabled={photoUploading}
+                      />
+                    </label>
+                  </div>
+                </div>
+
                 <div className="flex flex-col gap-1.5">
                   <Label className="text-sm text-white/60">Professional title</Label>
                   <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Senior Engineer at Google"
@@ -180,7 +241,7 @@ export default function Register() {
 
             {error && <p className="text-red-400 text-sm">{error}</p>}
 
-            <Button type="submit" disabled={loading || !track}
+            <Button type="submit" disabled={loading || photoUploading || !track}
               className="w-full bg-tekton-purple-bright hover:bg-tekton-purple-bright/90 mt-1">
               {loading ? (
                 <span className="flex items-center gap-2">

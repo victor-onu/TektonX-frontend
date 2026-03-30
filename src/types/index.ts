@@ -78,6 +78,7 @@ export interface RegisterRequest {
   title?: string
   experienceYears?: number
   linkedinUrl?: string
+  profilePhotoUrl?: string
 }
 
 export interface AuthResponse {
