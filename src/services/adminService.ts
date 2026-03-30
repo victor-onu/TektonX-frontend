@@ -1,5 +1,5 @@
 import api from '@/lib/api'
-import type { User, UserRole, UserStatus, MentorAssignment, PlatformStats, Task, AuditLogEntry, PaginatedResponse } from '@/types'
+import type { User, UserRole, UserStatus, ApplicationStatus, MentorAssignment, PlatformStats, Task, AuditLogEntry, PaginatedResponse } from '@/types'
 
 interface UserFilters {
   role?: UserRole
@@ -86,6 +86,32 @@ const adminService = {
   getAuditLog: async (filters?: AuditFilters): Promise<PaginatedResponse<AuditLogEntry>> => {
     const { data } = await api.get('/admin/audit-log', { params: filters })
     return data
+  },
+
+  // Applicants & invites
+  getApplicants: async (): Promise<User[]> => {
+    const { data } = await api.get('/admin/applicants')
+    return data
+  },
+  updateMenteeStatus: async (menteeId: string, status: ApplicationStatus): Promise<User> => {
+    const { data } = await api.patch(`/admin/mentees/${menteeId}/status`, { status })
+    return data
+  },
+  inviteMentee: async (payload: { name: string; email: string; track: string }): Promise<User> => {
+    const { data } = await api.post('/admin/invite', payload)
+    return data
+  },
+  inviteBulk: async (file: File): Promise<{ sent: number; failed: number; errors: string[] }> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const { data } = await api.post('/admin/invite/bulk', formData, { headers: { 'Content-Type': undefined } })
+    return data
+  },
+  downloadSampleCsv: (): void => {
+    const a = document.createElement('a')
+    a.href = `${import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1'}/admin/invite/sample-csv`
+    a.download = 'tektonx-invite-sample.csv'
+    a.click()
   },
 }
 

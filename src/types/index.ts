@@ -2,7 +2,9 @@
 
 export type UserRole = 'admin' | 'mentor' | 'mentee'
 
-export type UserStatus = 'active' | 'pending_approval' | 'rejected'
+export type UserStatus = 'active' | 'inactive' | 'suspended'
+
+export type ApplicationStatus = 'applied' | 'screened' | 'approved' | 'enrolled' | 'pending_approval' | 'rejected'
 
 export type AnnouncementType = 'important' | 'event' | 'update'
 
@@ -45,6 +47,7 @@ export interface User {
   email: string
   role: UserRole
   status: UserStatus
+  applicationStatus: ApplicationStatus | null
   track: string
   cohortId?: string | null
   whatsapp?: string
