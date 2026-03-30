@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import adminService from '@/services/adminService'
 import { formatDate } from '@/lib/utils'
 import type { ApplicationStatus, User } from '@/types'
@@ -26,17 +28,21 @@ function statusBadgeClass(status: ApplicationStatus): string {
   }
 }
 
+const STATUS_ORDER: ApplicationStatus[] = ['applied', 'screened', 'approved']
+
 function getStatusOptions(current: ApplicationStatus): ApplicationStatus[] {
-  switch (current) {
-    case 'applied': return ['screened', 'approved']
-    case 'screened': return ['approved']
-    default: return []
-  }
+  // All statuses except current and 'enrolled' (can't manually move to enrolled)
+  return STATUS_ORDER.filter((s) => s !== current)
+}
+
+function isBackwards(from: ApplicationStatus, to: ApplicationStatus): boolean {
+  return STATUS_ORDER.indexOf(to) < STATUS_ORDER.indexOf(from)
 }
 
 function StatusCell({ applicant }: { applicant: User }) {
   const qc = useQueryClient()
   const [updating, setUpdating] = useState(false)
+  const [pending, setPending] = useState<ApplicationStatus | null>(null)
   const appStatus = applicant.applicationStatus ?? 'applied'
   const options = getStatusOptions(appStatus)
 
@@ -44,41 +50,77 @@ function StatusCell({ applicant }: { applicant: User }) {
     return <span className="text-xs text-tekton-purple-bright font-medium">Enrolled</span>
   }
 
-  if (options.length === 0) {
-    return (
-      <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize ${statusBadgeClass(appStatus)}`}>
-        {appStatus}
-      </span>
-    )
+  async function applyUpdate(newStatus: ApplicationStatus) {
+    setUpdating(true)
+    setPending(null)
+    try {
+      await adminService.updateMenteeStatus(applicant.id, newStatus)
+      toast.success(`Status updated to "${newStatus}"`)
+      qc.invalidateQueries({ queryKey: ['admin-applicants'] })
+    } catch {
+      toast.error('Failed to update status.')
+    } finally {
+      setUpdating(false)
+    }
   }
 
   return (
-    <Select
-      disabled={updating}
-      onValueChange={async (val) => {
-        setUpdating(true)
-        try {
-          await adminService.updateMenteeStatus(applicant.id, val as ApplicationStatus)
-          toast.success(`Status updated to ${val}`)
-          qc.invalidateQueries({ queryKey: ['admin-applicants'] })
-        } catch {
-          toast.error('Failed to update status.')
-        } finally {
-          setUpdating(false)
-        }
-      }}
-    >
-      <SelectTrigger className="h-7 w-32 text-xs bg-white/5 border-white/10 text-white">
-        <SelectValue placeholder={appStatus} />
-      </SelectTrigger>
-      <SelectContent className="bg-zinc-900 border-white/10">
-        {options.map((opt) => (
-          <SelectItem key={opt} value={opt} className="text-xs text-white capitalize hover:bg-white/10">
-            {opt}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <>
+      <Select
+        disabled={updating}
+        onValueChange={(val) => {
+          const newStatus = val as ApplicationStatus
+          if (isBackwards(appStatus, newStatus)) {
+            setPending(newStatus)
+          } else {
+            applyUpdate(newStatus)
+          }
+        }}
+      >
+        <SelectTrigger className="h-7 w-32 text-xs bg-white/5 border-white/10 text-white">
+          <SelectValue placeholder={appStatus} />
+        </SelectTrigger>
+        <SelectContent className="bg-zinc-900 border-white/10">
+          {options.map((opt) => (
+            <SelectItem
+              key={opt}
+              value={opt}
+              className={`text-xs capitalize ${isBackwards(appStatus, opt) ? 'text-yellow-400' : 'text-white'}`}
+            >
+              {opt} {isBackwards(appStatus, opt) ? '↩' : '→'}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* Confirmation dialog for backwards moves */}
+      <Dialog open={!!pending} onOpenChange={(open) => !open && setPending(null)}>
+        <DialogContent className="bg-black/95 border border-white/10 text-white max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="font-heading text-lg">Move Status Back?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-white/60 leading-relaxed">
+            You are moving <span className="text-white font-medium">{applicant.name}</span> from{' '}
+            <span className="capitalize text-tekton-yellow font-medium">{appStatus}</span> back to{' '}
+            <span className="capitalize text-tekton-yellow font-medium">{pending}</span>.
+            {appStatus === 'approved' && (
+              <span className="block mt-2 text-yellow-400/80">Note: if an approval email was already sent, this will not recall it.</span>
+            )}
+          </p>
+          <DialogFooter className="mt-2 gap-2">
+            <Button variant="ghost" onClick={() => setPending(null)} className="text-white/60 hover:text-white">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => pending && applyUpdate(pending)}
+              className="bg-tekton-yellow/20 text-tekton-yellow border border-tekton-yellow/30 hover:bg-tekton-yellow/30"
+            >
+              Yes, Move Back
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
