@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, Eye, EyeOff, KeyRound, LogOut, Trash2 } from 'lucide-react'
+import { ArrowLeft, Camera, Eye, EyeOff, KeyRound, LogOut, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 
@@ -65,6 +65,29 @@ export default function Profile() {
     queryKey: ['me'],
     queryFn: userService.getMe,
   })
+
+  // ── Photo upload ──
+  const photoInputRef = useRef<HTMLInputElement>(null)
+  const [photoUploading, setPhotoUploading] = useState(false)
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setPhotoUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const { data } = await api.post<{ url: string }>('/uploads/profile-photo', formData)
+      await userService.updateMe({ profilePhotoUrl: data.url })
+      queryClient.invalidateQueries({ queryKey: ['me'] })
+      toast.success('Profile photo updated.')
+    } catch {
+      toast.error('Failed to update photo.')
+    } finally {
+      setPhotoUploading(false)
+      e.target.value = ''
+    }
+  }
 
   // ── Form state ──
   const [name, setName] = useState('')
@@ -215,9 +238,37 @@ export default function Profile() {
 
         {/* ── Section 1: Header ── */}
         <div className="glass-card rounded-xl p-6 flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-5">
-          {/* Avatar */}
-          <div className="size-20 rounded-full bg-gradient-to-br from-tekton-purple-bright to-tekton-purple-deep flex items-center justify-center text-white text-2xl font-semibold shrink-0">
-            {getInitials(user.name)}
+          {/* Avatar with edit overlay */}
+          <div className="relative shrink-0 group">
+            {user.profilePhotoUrl ? (
+              <img
+                src={user.profilePhotoUrl}
+                alt={user.name}
+                className="size-20 rounded-full object-cover ring-2 ring-white/10"
+              />
+            ) : (
+              <div className="size-20 rounded-full bg-gradient-to-br from-tekton-purple-bright to-tekton-purple-deep flex items-center justify-center text-white text-2xl font-semibold">
+                {getInitials(user.name)}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => photoInputRef.current?.click()}
+              disabled={photoUploading}
+              title="Change photo"
+              className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity disabled:cursor-wait"
+            >
+              {photoUploading
+                ? <span className="size-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                : <Camera className="size-5 text-white" />}
+            </button>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={handlePhotoChange}
+            />
           </div>
 
           {/* Info */}

@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { differenceInDays } from 'date-fns'
-import { ChevronDown, ExternalLink, Lightbulb, Mail, Map, MessageSquare, Plus, Trash2, Users } from 'lucide-react'
+import { Camera, ChevronDown, ExternalLink, Lightbulb, Mail, Map, MessageSquare, Plus, Trash2, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
@@ -34,6 +34,8 @@ export default function MentorDashboard() {
   const [sortBy, setSortBy] = useState<'name' | 'progress'>('name')
   const [tipsOpen, setTipsOpen] = useState(false)
   const [addResourceOpen, setAddResourceOpen] = useState(false)
+  const [photoUploading, setPhotoUploading] = useState(false)
+  const photoInputRef = useRef<HTMLInputElement>(null)
   const [resourceLinkType, setResourceLinkType] = useState<'task' | 'track'>('track')
   const [resourceForm, setResourceForm] = useState({ title: '', url: '', taskId: '' })
   const [resourceErrors, setResourceErrors] = useState<Record<string, string>>({})
@@ -132,6 +134,25 @@ export default function MentorDashboard() {
     }
   }
 
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setPhotoUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const { data } = await api.post<{ url: string }>('/uploads/profile-photo', formData)
+      await userService.updateMe({ profilePhotoUrl: data.url })
+      queryClient.invalidateQueries({ queryKey: ['me'] })
+      toast.success('Profile photo updated.')
+    } catch {
+      toast.error('Failed to update photo.')
+    } finally {
+      setPhotoUploading(false)
+      e.target.value = ''
+    }
+  }
+
   const programStartDate = mentorUser?.createdAt ? new Date(mentorUser.createdAt) : null
   const currentWeek = programStartDate
     ? Math.min(Math.max(Math.ceil(differenceInDays(new Date(), programStartDate) / 7), 1), 12)
@@ -142,20 +163,55 @@ export default function MentorDashboard() {
       <div className="mx-auto max-w-5xl flex flex-col gap-10">
 
         {/* Section 1 — Welcome Header */}
-        <div className="flex flex-col gap-2">
-          <h1 className="font-heading text-4xl text-white sm:text-5xl">
-            WELCOME,{' '}
-            <span className="gradient-text">
-              {mentorUser?.name.split(' ')[0].toUpperCase() ?? 'MENTOR'}!
-            </span>
-          </h1>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-tekton-teal/15 border border-tekton-teal/30 px-3 py-1 text-xs font-medium text-tekton-teal">
-              {mentorUser?.track ?? '...'}
-            </span>
-            <span className="text-sm text-white/50">{mentorUser?.title ?? 'Mentor'}</span>
+        <div className="flex items-center gap-5">
+          {/* Profile photo */}
+          <div className="relative shrink-0 group">
+            {mentorUser?.profilePhotoUrl ? (
+              <img
+                src={mentorUser.profilePhotoUrl}
+                alt={mentorUser.name}
+                className="size-20 rounded-full object-cover ring-2 ring-white/10"
+              />
+            ) : (
+              <div className="size-20 rounded-full bg-gradient-to-br from-tekton-purple-bright to-tekton-teal flex items-center justify-center text-white text-2xl font-heading ring-2 ring-white/10">
+                {mentorUser ? getInitials(mentorUser.name) : '…'}
+              </div>
+            )}
+            {/* Edit overlay */}
+            <button
+              onClick={() => photoInputRef.current?.click()}
+              disabled={photoUploading}
+              className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity disabled:cursor-wait"
+              title="Change photo"
+            >
+              {photoUploading
+                ? <span className="size-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                : <Camera className="size-5 text-white" />}
+            </button>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={handlePhotoChange}
+            />
           </div>
-          <p className="text-sm text-white/50">Here's how your mentees are progressing.</p>
+
+          <div className="flex flex-col gap-2">
+            <h1 className="font-heading text-4xl text-white sm:text-5xl">
+              WELCOME,{' '}
+              <span className="gradient-text">
+                {mentorUser?.name.split(' ')[0].toUpperCase() ?? 'MENTOR'}!
+              </span>
+            </h1>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center rounded-full bg-tekton-teal/15 border border-tekton-teal/30 px-3 py-1 text-xs font-medium text-tekton-teal">
+                {mentorUser?.track ?? '...'}
+              </span>
+              <span className="text-sm text-white/50">{mentorUser?.title ?? 'Mentor'}</span>
+            </div>
+            <p className="text-sm text-white/50">Here's how your mentees are progressing.</p>
+          </div>
         </div>
 
         {/* Section 2 — Stats Row */}
