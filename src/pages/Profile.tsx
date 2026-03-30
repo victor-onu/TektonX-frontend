@@ -77,7 +77,7 @@ export default function Profile() {
     try {
       const formData = new FormData()
       formData.append('file', file)
-      const { data } = await api.post<{ url: string }>('/uploads/profile-photo', formData)
+      const { data } = await api.post<{ url: string }>('/uploads/profile-photo', formData, { headers: { 'Content-Type': undefined } })
       await userService.updateMe({ profilePhotoUrl: data.url })
       queryClient.invalidateQueries({ queryKey: ['me'] })
       toast.success('Profile photo updated.')

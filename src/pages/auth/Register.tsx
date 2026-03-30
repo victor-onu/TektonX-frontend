@@ -46,7 +46,7 @@ export default function Register() {
       const formData = new FormData()
       formData.append('file', file)
       const { data } = await api.post<{ url: string }>('/uploads/profile-photo', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': undefined },
       })
       setPhotoUrl(data.url)
     } catch {
