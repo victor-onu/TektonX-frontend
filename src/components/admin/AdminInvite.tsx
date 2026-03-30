@@ -144,7 +144,7 @@ function BulkInvite() {
         <h3 className="font-heading text-lg text-white">BULK INVITE</h3>
         <button
           type="button"
-          onClick={() => adminService.downloadSampleCsv()}
+          onClick={() => adminService.downloadSampleCsv().catch(() => toast.error('Failed to download sample CSV.'))}
           className="text-xs text-tekton-blue hover:text-tekton-blue/80 transition-colors"
         >
           Download Sample CSV

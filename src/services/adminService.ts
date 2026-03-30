@@ -107,11 +107,14 @@ const adminService = {
     const { data } = await api.post('/admin/invite/bulk', formData, { headers: { 'Content-Type': undefined } })
     return data
   },
-  downloadSampleCsv: (): void => {
+  downloadSampleCsv: async (): Promise<void> => {
+    const { data } = await api.get('/admin/invite/sample-csv', { responseType: 'blob' })
+    const url = URL.createObjectURL(new Blob([data], { type: 'text/csv' }))
     const a = document.createElement('a')
-    a.href = `${import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1'}/admin/invite/sample-csv`
+    a.href = url
     a.download = 'tektonx-invite-sample.csv'
     a.click()
+    URL.revokeObjectURL(url)
   },
 }
 
