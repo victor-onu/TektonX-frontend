@@ -22,6 +22,7 @@ import Login from '@/pages/auth/Login'
 import Register from '@/pages/auth/Register'
 import ForgotPassword from '@/pages/auth/ForgotPassword'
 import ResetPassword from '@/pages/auth/ResetPassword'
+import Activate from '@/pages/auth/Activate'
 
 // Protected pages
 import MenteeDashboard from '@/pages/dashboard/MenteeDashboard'
@@ -45,6 +46,7 @@ export default function App() {
               <Route path="/auth/register" element={<Register />} />
               <Route path="/auth/forgot-password" element={<ForgotPassword />} />
               <Route path="/auth/reset-password" element={<ResetPassword />} />
+              <Route path="/auth/activate" element={<Activate />} />
             </Route>
 
             {/* ── Public layout (Nav + Footer) ── */}

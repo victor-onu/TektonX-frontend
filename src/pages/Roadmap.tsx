@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, CheckCircle2, Circle, ExternalLink, Info } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, Circle, ExternalLink, Info, Lock } from 'lucide-react'
 
 import { Progress } from '@/components/ui/progress'
 import { useAuth } from '@/hooks/useAuth'
@@ -104,6 +104,21 @@ export default function Roadmap() {
   // Map personal task copies by their taskId for quick lookup
   const myTaskMap = new Map(myTasks.map((t) => [t.taskId, t]))
 
+  // Per-milestone completion counts (used for locking)
+  const milestone1Completed = isReadOnly ? 16 : myTasks.filter((t) => t.milestone === 1 && t.completed).length
+  const milestone2Completed = isReadOnly ? 16 : myTasks.filter((t) => t.milestone === 2 && t.completed).length
+  const m2Locked = milestone1Completed < 16
+  const m3Locked = milestone2Completed < 16
+
+  // Redirect to M1 if a locked milestone is accessed directly
+  useEffect(() => {
+    if (!isReadOnly && !myTasksLoading) {
+      if ((activeMilestone === 2 && m2Locked) || (activeMilestone === 3 && (m2Locked || m3Locked))) {
+        navigate('/roadmap/1', { replace: true })
+      }
+    }
+  }, [activeMilestone, m2Locked, m3Locked, isReadOnly, myTasksLoading, navigate])
+
   // Completed count for current milestone
   const completedCount = isReadOnly
     ? 0
@@ -181,21 +196,31 @@ export default function Roadmap() {
         {/* Milestone tabs */}
         <div>
           <div className="flex border-b border-white/10">
-            {MILESTONE_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => navigate(`/roadmap/${tab.id}`)}
-                className={cn(
-                  'flex flex-col items-start px-5 py-3 text-sm transition-colors border-b-2 -mb-px',
-                  activeMilestone === tab.id
-                    ? 'border-tekton-purple-bright text-white'
-                    : 'border-transparent text-white/40 hover:text-white',
-                )}
-              >
-                <span className="font-semibold">{tab.label}</span>
-                <span className="text-xs opacity-70">{tab.sublabel}</span>
-              </button>
-            ))}
+            {MILESTONE_TABS.map((tab) => {
+              const isLocked = (tab.id === 2 && m2Locked) || (tab.id === 3 && m3Locked)
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => !isLocked && navigate(`/roadmap/${tab.id}`)}
+                  disabled={isLocked}
+                  title={isLocked ? `Complete Milestone ${tab.id - 1} first` : undefined}
+                  className={cn(
+                    'flex flex-col items-start px-5 py-3 text-sm transition-colors border-b-2 -mb-px',
+                    isLocked
+                      ? 'border-transparent text-white/20 cursor-not-allowed'
+                      : activeMilestone === tab.id
+                        ? 'border-tekton-purple-bright text-white'
+                        : 'border-transparent text-white/40 hover:text-white',
+                  )}
+                >
+                  <span className="flex items-center gap-1.5 font-semibold">
+                    {tab.label}
+                    {isLocked && <Lock className="size-3 opacity-60" />}
+                  </span>
+                  <span className="text-xs opacity-70">{tab.sublabel}</span>
+                </button>
+              )
+            })}
           </div>
 
           {/* Progress bar row */}

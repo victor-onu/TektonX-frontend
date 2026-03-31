@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { differenceInDays } from 'date-fns'
+import { differenceInDays, format } from 'date-fns'
 import {
   Award,
   CheckCircle2,
   Circle,
+  Clock,
   Copy,
   Download,
   ExternalLink,
@@ -24,6 +25,187 @@ import taskService from '@/services/taskService'
 import userService from '@/services/userService'
 import certificateService from '@/services/certificateService'
 import resourceService from '@/services/resourceService'
+import cohortService from '@/services/cohortService'
+import type { User, ApplicationStatus } from '@/types'
+
+// ─── Status step data ────────────────────────────────────────────────────────
+
+const APPLICATION_STEPS: { key: ApplicationStatus | 'assigned'; label: string }[] = [
+  { key: 'applied', label: 'Applied' },
+  { key: 'screened', label: 'Screened' },
+  { key: 'approved', label: 'Approved' },
+  { key: 'assigned', label: 'Assigned' },
+]
+
+function isStepComplete(stepKey: string, applicationStatus: ApplicationStatus): boolean {
+  const order = ['applied', 'screened', 'approved', 'enrolled']
+  const statusIndex = order.indexOf(applicationStatus)
+  const stepIndex = order.indexOf(stepKey === 'assigned' ? 'enrolled' : stepKey)
+  return stepIndex !== -1 && statusIndex >= stepIndex
+}
+
+function isStepCurrent(stepKey: string, applicationStatus: ApplicationStatus): boolean {
+  const map: Record<ApplicationStatus, string> = {
+    applied: 'applied',
+    screened: 'screened',
+    approved: 'approved',
+    enrolled: 'assigned',
+    pending_approval: 'applied',
+    rejected: 'applied',
+  }
+  return map[applicationStatus] === stepKey
+}
+
+const STATUS_MESSAGES: Partial<Record<ApplicationStatus, string>> = {
+  applied: "Your application is under review. We'll be in touch with next steps including a screening quiz.",
+  screened: "You've passed the screening stage. Your application is now being reviewed for approval.",
+  approved: "Congratulations! You've been approved. You'll be assigned to a cohort and mentor when the next cohort opens.",
+}
+
+// ─── MenteeStatusPage ─────────────────────────────────────────────────────────
+
+function MenteeStatusPage({ user }: { user: User }) {
+  const appStatus = user.applicationStatus ?? 'applied'
+
+  const { data: cohorts = [] } = useQuery({
+    queryKey: ['cohorts'],
+    queryFn: cohortService.getAll,
+  })
+
+  const now = new Date()
+  const nextCohort = cohorts
+    .filter((c) => new Date(c.startDate) > now)
+    .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())[0]
+
+  const firstName = user.name.split(' ')[0]
+
+  return (
+    <div className="min-h-screen bg-black pt-24 pb-16 px-4">
+      <div className="mx-auto max-w-2xl flex flex-col gap-10">
+
+        {/* Header */}
+        <div className="flex flex-col gap-2">
+          <h1 className="font-heading text-4xl text-white sm:text-5xl">
+            WELCOME,{' '}
+            <span className="gradient-text">{firstName.toUpperCase()}!</span>
+          </h1>
+          <p className="text-sm text-white/50">Your journey is underway. Here's where you stand.</p>
+        </div>
+
+        {/* Progress stepper */}
+        <div className="glass-card rounded-2xl p-6 flex flex-col gap-6">
+          <h2 className="font-heading text-xl text-white">APPLICATION STATUS</h2>
+
+          <div className="flex items-start gap-0">
+            {APPLICATION_STEPS.map((step, idx) => {
+              const complete = isStepComplete(step.key, appStatus as ApplicationStatus)
+              const current = isStepCurrent(step.key, appStatus as ApplicationStatus)
+              const isLast = idx === APPLICATION_STEPS.length - 1
+
+              return (
+                <div key={step.key} className="flex-1 flex flex-col items-center gap-2">
+                  {/* Icon + connector row */}
+                  <div className="flex items-center w-full">
+                    {/* Left connector */}
+                    {idx > 0 && (
+                      <div
+                        className={`flex-1 h-0.5 ${complete ? 'bg-tekton-green' : 'bg-white/10'}`}
+                      />
+                    )}
+
+                    {/* Circle/icon */}
+                    <div
+                      className={`size-9 rounded-full flex items-center justify-center border-2 shrink-0 transition-colors ${
+                        complete
+                          ? 'bg-tekton-green/20 border-tekton-green'
+                          : current
+                            ? 'bg-tekton-purple-bright/20 border-tekton-purple-bright'
+                            : 'bg-white/5 border-white/20'
+                      }`}
+                    >
+                      {complete ? (
+                        <CheckCircle2 className="size-4 text-tekton-green" />
+                      ) : current ? (
+                        <Clock className="size-4 text-tekton-purple-bright" />
+                      ) : (
+                        <Circle className="size-4 text-white/20" />
+                      )}
+                    </div>
+
+                    {/* Right connector */}
+                    {!isLast && (
+                      <div
+                        className={`flex-1 h-0.5 ${
+                          isStepComplete(APPLICATION_STEPS[idx + 1].key, appStatus as ApplicationStatus)
+                            ? 'bg-tekton-green'
+                            : 'bg-white/10'
+                        }`}
+                      />
+                    )}
+                  </div>
+
+                  {/* Label */}
+                  <span
+                    className={`text-xs text-center leading-tight ${
+                      complete
+                        ? 'text-tekton-green'
+                        : current
+                          ? 'text-tekton-purple-bright font-medium'
+                          : 'text-white/30'
+                    }`}
+                  >
+                    {step.label}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Status message */}
+        <div className="glass-card rounded-2xl p-6 flex flex-col gap-4">
+          <h2 className="font-heading text-xl text-white">WHAT'S NEXT</h2>
+
+          {STATUS_MESSAGES[appStatus as ApplicationStatus] && (
+            <p className="text-sm text-white/70 leading-relaxed">
+              {STATUS_MESSAGES[appStatus as ApplicationStatus]}
+            </p>
+          )}
+
+          <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-3">
+            {nextCohort ? (
+              <p className="text-sm text-white/60">
+                Next cohort starts{' '}
+                <span className="text-tekton-purple-bright font-medium">
+                  {format(new Date(nextCohort.startDate), 'MMMM d, yyyy')}
+                </span>
+                .
+              </p>
+            ) : (
+              <p className="text-sm text-white/60">
+                You'll be notified when your cohort assignment is confirmed.
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="flex flex-col gap-3">
+          <Link
+            to="/profile"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-tekton-purple-bright px-6 py-3 text-sm font-medium text-white smooth-hover hover:bg-tekton-purple-bright/80 transition-colors w-fit"
+          >
+            <UserIcon className="size-4" />
+            Complete Your Profile
+          </Link>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
+// ─── MenteeDashboard ──────────────────────────────────────────────────────────
 
 export default function MenteeDashboard() {
   const { data: user, isLoading: userLoading } = useQuery({
@@ -116,6 +298,10 @@ export default function MenteeDashboard() {
     { label: 'Complete Milestone 2', done: (user?.milestone2Completed ?? 0) >= 16 },
     { label: 'Complete All Milestones', done: (user?.milestone3Completed ?? 0) >= 16 },
   ]
+
+  if (user && user.role === 'mentee' && user.applicationStatus !== 'enrolled') {
+    return <MenteeStatusPage user={user} />
+  }
 
   return (
     <div className="min-h-screen bg-black pt-24 pb-16 px-4">

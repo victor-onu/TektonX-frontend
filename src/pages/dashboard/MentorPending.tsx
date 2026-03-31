@@ -8,7 +8,7 @@ export default function MentorPending() {
   const { user: rawUser, logout } = useAuth()
   const user = rawUser as User | null
 
-  const isRejected = user?.status === 'rejected'
+  const isRejected = user?.applicationStatus === 'rejected'
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black px-4 pt-24 pb-16">
