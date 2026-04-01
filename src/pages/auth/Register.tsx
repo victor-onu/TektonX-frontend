@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Eye, EyeOff, Camera } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -15,12 +15,15 @@ const EXPERIENCE_LEVELS: ExperienceLevel[] = ['Beginner', 'Intermediate', 'Advan
 
 export default function Register() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
   // Form state
-  const [role, setRole] = useState<'mentee' | 'mentor'>('mentee')
+  const [role, setRole] = useState<'mentee' | 'mentor'>(
+    searchParams.get('role') === 'mentor' ? 'mentor' : 'mentee'
+  )
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
