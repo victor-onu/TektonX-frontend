@@ -15,6 +15,7 @@ import Programs from '@/pages/Programs'
 import Mentorship from '@/pages/Mentorship'
 import Mentors from '@/pages/Mentors'
 import VerifyCertificate from '@/pages/VerifyCertificate'
+import Partnerships from '@/pages/Partnerships'
 import NotFound from '@/pages/NotFound'
 
 // Auth pages
@@ -58,6 +59,7 @@ export default function App() {
               <Route path="/mentorship" element={<Mentorship />} />
               <Route path="/mentors" element={<Mentors />} />
               <Route path="/verify/:code" element={<VerifyCertificate />} />
+              <Route path="/partnerships" element={<Partnerships />} />
 
               {/* Protected — mentee only */}
               <Route

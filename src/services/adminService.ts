@@ -107,12 +107,12 @@ const adminService = {
     const { data } = await api.post('/admin/invite/bulk', formData, { headers: { 'Content-Type': undefined } })
     return data
   },
-  downloadSampleCsv: async (): Promise<void> => {
-    const { data } = await api.get('/admin/invite/sample-csv', { responseType: 'blob' })
-    const url = URL.createObjectURL(new Blob([data], { type: 'text/csv' }))
+  downloadSampleXlsx: async (): Promise<void> => {
+    const { data } = await api.get('/admin/invite/sample-xlsx', { responseType: 'blob' })
+    const url = URL.createObjectURL(new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }))
     const a = document.createElement('a')
     a.href = url
-    a.download = 'tektonx-invite-sample.csv'
+    a.download = 'tektonx-invite-template.xlsx'
     a.click()
     URL.revokeObjectURL(url)
   },

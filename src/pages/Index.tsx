@@ -265,7 +265,31 @@ export default function Index() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          Section 4 — CTA Banner
+          Section 4 — Partner Teaser
+      ════════════════════════════════════════════════════════ */}
+      <section className="py-16 px-4 bg-white/[0.03] border-y border-white/[0.06]">
+        <div className="mx-auto max-w-3xl flex flex-col items-center gap-5 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tekton-teal/70">
+            Partner With Us
+          </p>
+          <h2 className="font-heading text-4xl text-white sm:text-5xl">
+            PARTNER WITH <span className="gradient-text">US</span>
+          </h2>
+          <p className="text-white/50 max-w-md">
+            Join companies investing in Africa's next generation of tech talent.
+          </p>
+          <Button
+            asChild
+            size="lg"
+            className="bg-tekton-purple-bright text-white hover:bg-tekton-purple-bright/90 glow-purple font-semibold gap-2 mt-1"
+          >
+            <Link to="/partnerships">Become a Partner &rarr;</Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+          Section 5 — CTA Banner
       ════════════════════════════════════════════════════════ */}
       <section className="py-28 px-4">
         <div className="mx-auto max-w-5xl">

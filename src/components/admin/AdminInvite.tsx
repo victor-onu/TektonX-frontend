@@ -105,7 +105,7 @@ function BulkInvite() {
   const [dragging, setDragging] = useState(false)
 
   const handleFileSelect = (file: File) => {
-    if (!file.name.endsWith('.csv')) { toast.error('Please upload a CSV file.'); return }
+    if (!file.name.endsWith('.xlsx')) { toast.error('Please upload an Excel (.xlsx) file.'); return }
     setSelectedFile(file)
     setResult(null)
   }
@@ -144,10 +144,10 @@ function BulkInvite() {
         <h3 className="font-heading text-lg text-white">BULK INVITE</h3>
         <button
           type="button"
-          onClick={() => adminService.downloadSampleCsv().catch(() => toast.error('Failed to download sample CSV.'))}
+          onClick={() => adminService.downloadSampleXlsx().catch(() => toast.error('Failed to download template.'))}
           className="text-xs text-tekton-blue hover:text-tekton-blue/80 transition-colors"
         >
-          Download Sample CSV
+          Download Template
         </button>
       </div>
 
@@ -166,7 +166,7 @@ function BulkInvite() {
         <input
           ref={fileInputRef}
           type="file"
-          accept=".csv"
+          accept=".xlsx"
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0]
@@ -185,10 +185,10 @@ function BulkInvite() {
           <p className="text-sm text-white font-medium">{selectedFile.name}</p>
         ) : (
           <p className="text-sm text-white/50 text-center">
-            Click to upload CSV or drag and drop
+            Click to upload Excel file or drag and drop
           </p>
         )}
-        <p className="text-xs text-white/30">.csv files only</p>
+        <p className="text-xs text-white/30">.xlsx files only</p>
       </div>
 
       {/* Upload button */}

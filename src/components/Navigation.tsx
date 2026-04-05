@@ -28,6 +28,7 @@ const NAV_LINKS = [
   { label: 'Programs', href: '/programs' },
   { label: 'Mentorship', href: '/mentorship' },
   { label: 'Our Mentors', href: '/mentors' },
+  { label: 'Partners', href: '/partnerships' },
 ] as const
 
 function getDashboardPath(role: UserRole): string {
