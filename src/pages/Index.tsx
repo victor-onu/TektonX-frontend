@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button'
 const STATS = [
   { value: '1000+', label: 'Young People Reached' },
   { value: '100%', label: 'Expert Mentors' },
-  { value: '7', label: 'Tech Tracks' },
+  { value: '8', label: 'Tech Tracks' },
   { value: '3', label: 'Months Program' },
 ]
 

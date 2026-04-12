@@ -126,6 +126,18 @@ const TRACK_DETAILS: Record<string, TrackDetail> = {
     iconBg: 'bg-red-500/15',
     iconColor: 'text-red-400',
   },
+  'Web3': {
+    description: 'Explore the decentralised web — from smart contracts and blockchain fundamentals to DeFi, NFTs, and building dApps on modern networks.',
+    learnings: [
+      'Blockchain fundamentals, consensus mechanisms, and wallet architecture',
+      'Solidity smart contract development and security auditing',
+      'Building and deploying dApps with Ethers.js and Hardhat',
+    ],
+    accentColor: 'text-orange-400',
+    borderColor: 'border-l-orange-500',
+    iconBg: 'bg-orange-500/15',
+    iconColor: 'text-orange-400',
+  },
 }
 
 

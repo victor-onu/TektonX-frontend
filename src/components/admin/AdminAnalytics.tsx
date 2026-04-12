@@ -18,6 +18,7 @@ function trackShortName(track: string): string {
     'Quality Assurance (QA)': 'QA',
     'Data (Analysis/Science)': 'Data',
     Cybersecurity: 'Cybersecurity',
+    Web3: 'Web3',
   }
   return map[track] ?? track
 }

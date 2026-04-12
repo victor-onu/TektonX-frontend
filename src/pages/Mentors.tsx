@@ -18,6 +18,7 @@ const TRACK_BADGE_COLORS: Partial<Record<TechTrack, string>> = {
   'Quality Assurance (QA)': 'bg-tekton-green/15 text-tekton-green border-tekton-green/30',
   'Data (Analysis/Science)': 'bg-tekton-purple-bright/15 text-tekton-purple-bright border-tekton-purple-bright/30',
   'Cybersecurity': 'bg-red-500/15 text-red-400 border-red-500/30',
+  'Web3': 'bg-orange-500/15 text-orange-400 border-orange-500/30',
 }
 
 const TRACK_BANNER_COLORS: Partial<Record<TechTrack, string>> = {
@@ -28,6 +29,7 @@ const TRACK_BANNER_COLORS: Partial<Record<TechTrack, string>> = {
   'Quality Assurance (QA)': 'from-tekton-green/20 to-tekton-teal/10',
   'Data (Analysis/Science)': 'from-tekton-purple-bright/20 to-tekton-blue/10',
   'Cybersecurity': 'from-red-500/20 to-tekton-purple-deep/10',
+  'Web3': 'from-orange-500/20 to-tekton-yellow/10',
 }
 
 // ─── Skeleton card ────────────────────────────────────────────────────────────
@@ -96,7 +98,7 @@ export default function Mentors() {
           <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 text-sm text-white/60 backdrop-blur-sm">
             <span className="font-heading text-2xl gradient-text">50+</span>
             <span>Expert Mentors across</span>
-            <span className="font-semibold text-white">7 Tech Tracks</span>
+            <span className="font-semibold text-white">8 Tech Tracks</span>
           </div>
 
           <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-xl">

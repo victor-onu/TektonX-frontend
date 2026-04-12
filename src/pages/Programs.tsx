@@ -61,9 +61,9 @@ const PROGRAMS: Program[] = [
     Icon: Users,
     name: 'Mentorship',
     description:
-      'Our flagship 12-week mentorship program matching aspiring tech professionals with experienced industry mentors across 7 specialized tracks.',
+      'Our flagship 12-week mentorship program matching aspiring tech professionals with experienced industry mentors across 8 specialized tracks.',
     href: '/mentorship',
-    features: ['12-week program', '7 tech tracks', '1-on-1 mentorship', 'Verified certificate'],
+    features: ['12-week program', '8 tech tracks', '1-on-1 mentorship', 'Verified certificate'],
   },
   {
     Icon: Map,
