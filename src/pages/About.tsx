@@ -90,7 +90,7 @@ const ROADMAP_PHASES = [
     title: 'Foundation',
     period: '2024 – Q1 2025',
     description:
-      'Launch the mentorship program, onboard the first cohort of mentors and mentees, and validate the 12-week curriculum across 7 tech tracks.',
+      'Launch the mentorship program, onboard the first cohort of mentors and mentees, and validate the 12-week curriculum across 8 tech tracks.',
     color: 'border-tekton-purple-bright',
     dot: 'bg-tekton-purple-bright',
     label: 'text-tekton-purple-bright',

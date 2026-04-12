@@ -25,7 +25,7 @@ const PARTNERSHIP_TYPES = [
     Icon: Briefcase,
     title: 'Hiring Partner',
     description:
-      'Get early access to TektonX graduates across 7 tech tracks. Hire talent that has been trained, mentored, and verified.',
+      'Get early access to TektonX graduates across 8 tech tracks. Hire talent that has been trained, mentored, and verified.',
     accent: 'text-tekton-blue',
     iconBg: 'bg-tekton-blue/15',
     borderColor: 'border-l-tekton-blue',

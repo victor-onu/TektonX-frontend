@@ -28,6 +28,7 @@ export const TECH_TRACKS = [
   'Quality Assurance (QA)',
   'Data (Analysis/Science)',
   'Cybersecurity',
+  'Web3',
 ] as const
 
 export type TechTrack = (typeof TECH_TRACKS)[number]
