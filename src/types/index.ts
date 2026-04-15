@@ -51,6 +51,8 @@ export interface User {
   applicationStatus: ApplicationStatus | null
   track: string
   cohortId?: string | null
+  inviteToken?: string | null
+  invitedAt?: string | null
   whatsapp?: string
   bio?: string
   title?: string

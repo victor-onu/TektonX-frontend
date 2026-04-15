@@ -185,20 +185,44 @@ export default function AdminApplicants() {
                   <th className="px-4 py-3 text-left text-xs text-white/50 font-medium uppercase tracking-wider">Name</th>
                   <th className="px-4 py-3 text-left text-xs text-white/50 font-medium uppercase tracking-wider">Email</th>
                   <th className="px-4 py-3 text-left text-xs text-white/50 font-medium uppercase tracking-wider">Track</th>
+                  <th className="px-4 py-3 text-left text-xs text-white/50 font-medium uppercase tracking-wider">Origin</th>
                   <th className="px-4 py-3 text-left text-xs text-white/50 font-medium uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3 text-left text-xs text-white/50 font-medium uppercase tracking-wider">Applied</th>
+                  <th className="px-4 py-3 text-left text-xs text-white/50 font-medium uppercase tracking-wider">Date</th>
                   <th className="px-4 py-3 text-left text-xs text-white/50 font-medium uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {filtered.map((applicant) => (
+                {filtered.map((applicant) => {
+                  const isPendingActivation = !!applicant.inviteToken
+                  const isInvited = !!applicant.invitedAt
+                  return (
                   <tr key={applicant.id} className="hover:bg-white/3 transition-colors">
-                    <td className="px-4 py-3 text-white font-medium">{applicant.name}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-white font-medium">{applicant.name}</span>
+                        {isPendingActivation && (
+                          <span className="inline-flex w-fit items-center rounded-full bg-orange-500/15 border border-orange-500/30 px-1.5 py-0 text-[10px] font-medium text-orange-400">
+                            Pending Activation
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-4 py-3 text-white/60">{applicant.email}</td>
                     <td className="px-4 py-3">
                       <span className="inline-flex items-center rounded-full bg-tekton-purple-bright/10 border border-tekton-purple-bright/20 px-2 py-0.5 text-xs text-tekton-purple-bright">
                         {applicant.track}
                       </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      {isInvited ? (
+                        <span className="inline-flex items-center rounded-full bg-tekton-blue/15 border border-tekton-blue/30 px-2 py-0.5 text-xs font-medium text-tekton-blue">
+                          Invited
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full bg-white/5 border border-white/15 px-2 py-0.5 text-xs font-medium text-white/40">
+                          Organic
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize ${statusBadgeClass(applicant.applicationStatus ?? 'applied')}`}>
@@ -210,7 +234,8 @@ export default function AdminApplicants() {
                       <StatusCell applicant={applicant} />
                     </td>
                   </tr>
-                ))}
+                  )
+                })}
               </tbody>
             </table>
           </div>
