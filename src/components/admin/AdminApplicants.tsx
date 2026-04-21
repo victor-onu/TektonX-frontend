@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { Search } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
@@ -126,15 +127,17 @@ function StatusCell({ applicant }: { applicant: User }) {
 
 export default function AdminApplicants() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all')
+  const [search, setSearch] = useState('')
 
   const { data: applicants = [], isLoading } = useQuery({
     queryKey: ['admin-applicants'],
     queryFn: adminService.getApplicants,
   })
 
-  const filtered = activeFilter === 'all'
-    ? applicants
-    : applicants.filter((a) => a.applicationStatus === activeFilter)
+  const q = search.trim().toLowerCase()
+  const filtered = applicants
+    .filter((a) => activeFilter === 'all' || a.applicationStatus === activeFilter)
+    .filter((a) => !q || a.name.toLowerCase().includes(q) || a.email.toLowerCase().includes(q))
 
   if (isLoading) {
     return (
@@ -148,6 +151,18 @@ export default function AdminApplicants() {
 
   return (
     <div className="flex flex-col gap-6">
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-white/30 pointer-events-none" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by name or email…"
+          className="w-full rounded-lg border border-white/10 bg-white/5 pl-9 pr-4 py-2 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/25"
+        />
+      </div>
 
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-2">
