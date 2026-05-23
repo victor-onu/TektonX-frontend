@@ -17,6 +17,7 @@ const FILTER_TABS: { value: FilterTab; label: string }[] = [
   { value: 'screened', label: 'Screened' },
   { value: 'approved', label: 'Approved' },
   { value: 'enrolled', label: 'Enrolled' },
+  { value: 'graduated', label: 'Graduated' },
 ]
 
 function statusBadgeClass(status: ApplicationStatus): string {
@@ -25,6 +26,7 @@ function statusBadgeClass(status: ApplicationStatus): string {
     case 'screened': return 'bg-tekton-blue/15 border-tekton-blue/30 text-tekton-blue'
     case 'approved': return 'bg-tekton-green/15 border-tekton-green/30 text-tekton-green'
     case 'enrolled': return 'bg-tekton-purple-bright/15 border-tekton-purple-bright/30 text-tekton-purple-bright'
+    case 'graduated': return 'bg-tekton-teal/15 border-tekton-teal/30 text-tekton-teal'
     default: return 'bg-white/10 border-white/20 text-white/60'
   }
 }
@@ -44,11 +46,63 @@ function StatusCell({ applicant }: { applicant: User }) {
   const qc = useQueryClient()
   const [updating, setUpdating] = useState(false)
   const [pending, setPending] = useState<ApplicationStatus | null>(null)
+  const [confirmGraduate, setConfirmGraduate] = useState(false)
   const appStatus = applicant.applicationStatus ?? 'applied'
   const options = getStatusOptions(appStatus)
 
+  if (appStatus === 'graduated') {
+    return <span className="text-xs text-tekton-teal font-medium">Graduated</span>
+  }
+
+  async function graduate() {
+    setUpdating(true)
+    setConfirmGraduate(false)
+    try {
+      await adminService.graduateMentee(applicant.id)
+      toast.success(`${applicant.name} marked as graduated`)
+      qc.invalidateQueries({ queryKey: ['admin-applicants'] })
+    } catch {
+      toast.error('Failed to graduate mentee.')
+    } finally {
+      setUpdating(false)
+    }
+  }
+
   if (appStatus === 'enrolled') {
-    return <span className="text-xs text-tekton-purple-bright font-medium">Enrolled</span>
+    return (
+      <>
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={updating}
+          onClick={() => setConfirmGraduate(true)}
+          className="h-7 px-2 text-xs text-tekton-teal hover:bg-tekton-teal/15 hover:text-tekton-teal border border-tekton-teal/30"
+        >
+          Mark Graduated
+        </Button>
+        <Dialog open={confirmGraduate} onOpenChange={(open) => !open && setConfirmGraduate(false)}>
+          <DialogContent className="bg-black/95 border border-white/10 text-white max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="font-heading text-lg">Mark as Graduated?</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-white/60 leading-relaxed">
+              <span className="text-white font-medium">{applicant.name}</span> will be moved to graduated status. They will no longer appear in active mentee lists, but their cohort record is preserved.
+            </p>
+            <DialogFooter className="mt-2 gap-2">
+              <Button variant="ghost" onClick={() => setConfirmGraduate(false)} className="text-white/60 hover:text-white">
+                Cancel
+              </Button>
+              <Button
+                onClick={graduate}
+                className="bg-tekton-teal/20 text-tekton-teal border border-tekton-teal/30 hover:bg-tekton-teal/30"
+              >
+                Confirm Graduation
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
+    )
   }
 
   async function applyUpdate(newStatus: ApplicationStatus) {

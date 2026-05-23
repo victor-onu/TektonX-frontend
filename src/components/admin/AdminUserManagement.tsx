@@ -51,6 +51,9 @@ const statusBadgeClass: Record<string, string> = {
   active: 'bg-tekton-green/15 text-tekton-green border border-tekton-green/30',
   pending_approval: 'bg-tekton-yellow/15 text-tekton-yellow border border-tekton-yellow/30',
   rejected: 'bg-red-500/15 text-red-400 border border-red-500/30',
+  alumni: 'bg-tekton-teal/15 text-tekton-teal border border-tekton-teal/30',
+  inactive: 'bg-white/10 text-white/50 border border-white/20',
+  suspended: 'bg-orange-500/15 text-orange-400 border border-orange-500/30',
 }
 
 export default function AdminUserManagement({ currentUserId }: Props) {
@@ -63,6 +66,8 @@ export default function AdminUserManagement({ currentUserId }: Props) {
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [changeRoleTarget, setChangeRoleTarget] = useState<User | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null)
+  const [alumniTarget, setAlumniTarget] = useState<User | null>(null)
+  const [markingAlumni, setMarkingAlumni] = useState(false)
   const [newRole, setNewRole] = useState<UserRole>('mentee')
 
   useEffect(() => {
@@ -115,6 +120,21 @@ export default function AdminUserManagement({ currentUserId }: Props) {
       await refetch()
     } catch {
       toast.error('Failed to delete user.')
+    }
+  }
+
+  async function handleMarkAlumni() {
+    if (!alumniTarget) return
+    setMarkingAlumni(true)
+    try {
+      await adminService.markMentorAlumni(alumniTarget.id)
+      toast.success(`${alumniTarget.name} marked as alumni.`)
+      setAlumniTarget(null)
+      await refetch()
+    } catch {
+      toast.error('Failed to mark mentor as alumni.')
+    } finally {
+      setMarkingAlumni(false)
     }
   }
 
@@ -228,6 +248,14 @@ export default function AdminUserManagement({ currentUserId }: Props) {
                         >
                           Change Role
                         </DropdownMenuItem>
+                        {user.role === 'mentor' && user.status === 'active' && (
+                          <DropdownMenuItem
+                            className="cursor-pointer text-tekton-teal hover:bg-tekton-teal/10 hover:text-tekton-teal"
+                            onClick={() => setAlumniTarget(user)}
+                          >
+                            Mark as Alumni
+                          </DropdownMenuItem>
+                        )}
                         {user.id !== currentUserId && (
                           <DropdownMenuItem
                             className="cursor-pointer text-red-400 hover:bg-red-500/10 hover:text-red-400"
@@ -298,6 +326,30 @@ export default function AdminUserManagement({ currentUserId }: Props) {
             </Button>
             <Button onClick={handleChangeRole} className="bg-tekton-purple-bright text-white hover:bg-tekton-purple-bright/90">
               Confirm
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Mark Alumni Dialog */}
+      <Dialog open={!!alumniTarget} onOpenChange={(o) => !o && !markingAlumni && setAlumniTarget(null)}>
+        <DialogContent className="bg-black/95 border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle>Mark as Alumni</DialogTitle>
+            <DialogDescription className="text-white/50">
+              <span className="text-white font-medium">{alumniTarget?.name}</span> will be moved to alumni status. They will no longer appear on the public mentors page or be available for new assignments. Their existing assignment history is preserved.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2 justify-end mt-2">
+            <Button variant="outline" disabled={markingAlumni} className="border-white/20 text-white/70" onClick={() => setAlumniTarget(null)}>
+              Cancel
+            </Button>
+            <Button
+              disabled={markingAlumni}
+              onClick={handleMarkAlumni}
+              className="bg-tekton-teal/20 text-tekton-teal border border-tekton-teal/30 hover:bg-tekton-teal/30"
+            >
+              {markingAlumni ? 'Marking…' : 'Confirm'}
             </Button>
           </div>
         </DialogContent>

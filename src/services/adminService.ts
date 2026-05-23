@@ -97,6 +97,18 @@ const adminService = {
     const { data } = await api.patch(`/admin/mentees/${menteeId}/status`, { status })
     return data
   },
+  graduateMentee: async (menteeId: string): Promise<User> => {
+    const { data } = await api.patch(`/admin/mentees/${menteeId}/graduate`)
+    return data
+  },
+  graduateCohort: async (cohortId: string): Promise<{ graduated: number }> => {
+    const { data } = await api.post(`/admin/cohorts/${cohortId}/graduate-all`)
+    return data
+  },
+  markMentorAlumni: async (mentorId: string): Promise<User> => {
+    const { data } = await api.patch(`/admin/mentors/${mentorId}/alumni`)
+    return data
+  },
   inviteMentee: async (payload: { name: string; email: string; track: string }): Promise<User> => {
     const { data } = await api.post('/admin/invite', payload)
     return data
