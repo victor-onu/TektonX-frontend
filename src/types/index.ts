@@ -2,9 +2,9 @@
 
 export type UserRole = 'admin' | 'mentor' | 'mentee'
 
-export type UserStatus = 'active' | 'inactive' | 'suspended'
+export type UserStatus = 'active' | 'inactive' | 'suspended' | 'alumni'
 
-export type ApplicationStatus = 'applied' | 'screened' | 'approved' | 'enrolled' | 'pending_approval' | 'rejected'
+export type ApplicationStatus = 'applied' | 'screened' | 'approved' | 'enrolled' | 'graduated' | 'pending_approval' | 'rejected'
 
 export type AnnouncementType = 'important' | 'event' | 'update'
 

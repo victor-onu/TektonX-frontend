@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Plus, Pencil, Trash2, Users } from 'lucide-react'
+import { Plus, Pencil, Trash2, Users, GraduationCap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -19,6 +19,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog'
 import cohortService from '@/services/cohortService'
+import adminService from '@/services/adminService'
 import { useToast } from '@/hooks/useToast'
 import { formatDate } from '@/lib/utils'
 import type { Cohort } from '@/types'
@@ -39,6 +40,8 @@ export default function AdminCohortManagement() {
   const [addOpen, setAddOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Cohort | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Cohort | null>(null)
+  const [graduateTarget, setGraduateTarget] = useState<Cohort | null>(null)
+  const [graduatingCohort, setGraduatingCohort] = useState(false)
   const [membersTarget, setMembersTarget] = useState<Cohort | null>(null)
   const [form, setForm] = useState<CohortForm>(emptyCohortForm)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -116,6 +119,26 @@ export default function AdminCohortManagement() {
     }
   }
 
+  async function handleGraduateCohort() {
+    if (!graduateTarget) return
+    setGraduatingCohort(true)
+    try {
+      const result = await adminService.graduateCohort(graduateTarget.id)
+      if (result.graduated === 0) {
+        toast.success('No enrolled mentees in this cohort.')
+      } else {
+        toast.success(`Graduated ${result.graduated} mentee${result.graduated === 1 ? '' : 's'} from ${graduateTarget.name}.`)
+      }
+      setGraduateTarget(null)
+      queryClient.invalidateQueries({ queryKey: ['cohort-members', graduateTarget.id] })
+      queryClient.invalidateQueries({ queryKey: ['admin-applicants'] })
+    } catch {
+      toast.error('Failed to graduate cohort.')
+    } finally {
+      setGraduatingCohort(false)
+    }
+  }
+
   const isFormOpen = addOpen || !!editTarget
 
   return (
@@ -168,6 +191,15 @@ export default function AdminCohortManagement() {
                         title="View Members"
                       >
                         <Users className="size-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-7 text-tekton-green/60 hover:text-tekton-green hover:bg-tekton-green/10"
+                        onClick={() => setGraduateTarget(c)}
+                        title="Graduate Cohort"
+                      >
+                        <GraduationCap className="size-3.5" />
                       </Button>
                       <Button variant="ghost" size="icon" className="size-7 text-white/40 hover:text-white hover:bg-white/10" onClick={() => openEdit(c)}>
                         <Pencil className="size-3.5" />
@@ -243,6 +275,30 @@ export default function AdminCohortManagement() {
             <Button variant="outline" className="border-white/20 text-white/70" onClick={closeForm}>Cancel</Button>
             <Button className="bg-tekton-purple-bright text-white hover:bg-tekton-purple-bright/90" onClick={handleSubmit}>
               {editTarget ? 'Save Changes' : 'Create Cohort'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Graduate Cohort Dialog */}
+      <Dialog open={!!graduateTarget} onOpenChange={(o) => { if (!o && !graduatingCohort) setGraduateTarget(null) }}>
+        <DialogContent className="bg-black/95 border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle>Graduate Cohort</DialogTitle>
+            <DialogDescription className="text-white/50">
+              This will mark every <span className="text-white font-medium">enrolled</span> mentee in <span className="text-white font-medium">{graduateTarget?.name}</span> as graduated. Mentees in other statuses (applied, screened, approved) are not affected. Cohort assignments are preserved for history.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2 justify-end mt-2">
+            <Button variant="outline" disabled={graduatingCohort} className="border-white/20 text-white/70" onClick={() => setGraduateTarget(null)}>
+              Cancel
+            </Button>
+            <Button
+              disabled={graduatingCohort}
+              className="bg-tekton-green/20 text-tekton-green border border-tekton-green/30 hover:bg-tekton-green/30"
+              onClick={handleGraduateCohort}
+            >
+              {graduatingCohort ? 'Graduating…' : 'Graduate Cohort'}
             </Button>
           </div>
         </DialogContent>
