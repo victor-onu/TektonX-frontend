@@ -9,6 +9,15 @@ interface UserFilters {
   limit?: number
 }
 
+export type BroadcastRole = 'mentee' | 'mentor' | 'admin'
+export interface BroadcastPayload {
+  subject: string
+  body: string
+  roles: BroadcastRole[]
+  tracks?: string[]
+  cohortIds?: string[]
+}
+
 interface AuditFilters {
   action?: string
   page?: number
@@ -107,6 +116,15 @@ const adminService = {
   },
   markMentorAlumni: async (mentorId: string): Promise<User> => {
     const { data } = await api.patch(`/admin/mentors/${mentorId}/alumni`)
+    return data
+  },
+
+  previewBroadcast: async (payload: BroadcastPayload): Promise<{ count: number }> => {
+    const { data } = await api.post('/admin/broadcast/preview', payload)
+    return data
+  },
+  sendBroadcast: async (payload: BroadcastPayload): Promise<{ sent: number; failed: number }> => {
+    const { data } = await api.post('/admin/broadcast', payload)
     return data
   },
   inviteMentee: async (payload: { name: string; email: string; track: string }): Promise<User> => {

@@ -17,6 +17,7 @@ import AdminAuditLog from '@/components/admin/AdminAuditLog'
 import AdminApplicants from '@/components/admin/AdminApplicants'
 import AdminInvite from '@/components/admin/AdminInvite'
 import AdminPartnerships from '@/components/admin/AdminPartnerships'
+import AdminBroadcast from '@/components/admin/AdminBroadcast'
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -129,6 +130,9 @@ export default function AdminDashboard() {
             <TabsTrigger value="partnerships" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
               Partnerships
             </TabsTrigger>
+            <TabsTrigger value="broadcast" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
+              Broadcast
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="mt-6">
@@ -163,6 +167,9 @@ export default function AdminDashboard() {
           </TabsContent>
           <TabsContent value="partnerships" className="mt-6">
             <AdminPartnerships />
+          </TabsContent>
+          <TabsContent value="broadcast" className="mt-6">
+            <AdminBroadcast />
           </TabsContent>
         </Tabs>
 
