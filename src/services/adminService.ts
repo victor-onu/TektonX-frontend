@@ -18,6 +18,15 @@ export interface BroadcastPayload {
   cohortIds?: string[]
 }
 
+export interface DigestRunResult {
+  week: number | null
+  menteesSent: number
+  menteesFailed: number
+  mentorsSent: number
+  mentorsFailed: number
+  skipped: string[]
+}
+
 interface AuditFilters {
   action?: string
   page?: number
@@ -125,6 +134,19 @@ const adminService = {
   },
   sendBroadcast: async (payload: BroadcastPayload): Promise<{ sent: number; failed: number }> => {
     const { data } = await api.post('/admin/broadcast', payload)
+    return data
+  },
+
+  runWeeklyDigest: async (week?: number): Promise<DigestRunResult> => {
+    const { data } = await api.post('/admin/weekly-digest/run', week ? { week } : {})
+    return data
+  },
+  previewDigestMentee: async (track: string, week: number): Promise<any> => {
+    const { data } = await api.get('/admin/weekly-digest/preview/mentee', { params: { track, week } })
+    return data
+  },
+  previewDigestMentor: async (week: number, tracks: string[]): Promise<any> => {
+    const { data } = await api.get('/admin/weekly-digest/preview/mentor', { params: { week, tracks: tracks.join(',') } })
     return data
   },
   inviteMentee: async (payload: { name: string; email: string; track: string }): Promise<User> => {
