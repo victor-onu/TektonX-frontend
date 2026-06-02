@@ -18,6 +18,7 @@ import AdminApplicants from '@/components/admin/AdminApplicants'
 import AdminInvite from '@/components/admin/AdminInvite'
 import AdminPartnerships from '@/components/admin/AdminPartnerships'
 import AdminBroadcast from '@/components/admin/AdminBroadcast'
+import AdminWeeklyDigest from '@/components/admin/AdminWeeklyDigest'
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -133,6 +134,9 @@ export default function AdminDashboard() {
             <TabsTrigger value="broadcast" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
               Broadcast
             </TabsTrigger>
+            <TabsTrigger value="weekly-digest" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
+              Weekly Digest
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="mt-6">
@@ -170,6 +174,9 @@ export default function AdminDashboard() {
           </TabsContent>
           <TabsContent value="broadcast" className="mt-6">
             <AdminBroadcast />
+          </TabsContent>
+          <TabsContent value="weekly-digest" className="mt-6">
+            <AdminWeeklyDigest />
           </TabsContent>
         </Tabs>
 
