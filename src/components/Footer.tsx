@@ -34,7 +34,7 @@ export default function Footer() {
       <div className="h-px w-full bg-gradient-to-r from-transparent via-tekton-teal/30 to-transparent mt-px" />
 
       <div className="mx-auto max-w-7xl px-4 pt-16 pb-10 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* ── Column 1: Brand ── */}
           <div className="flex flex-col gap-5">
             <Link to="/" className="flex items-baseline gap-1.5 w-fit group">

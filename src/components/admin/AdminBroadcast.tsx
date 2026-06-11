@@ -169,9 +169,9 @@ export default function AdminBroadcast() {
             <Textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              rows={12}
+              rows={8}
               placeholder={`Hi everyone,\n\nWe wanted to share an important update...\n\n- Point one\n- Point two\n\nThanks,\nTektonX Team`}
-              className="bg-white/5 border-white/20 text-white placeholder:text-white/30 font-mono text-sm"
+              className="bg-white/5 border-white/20 text-white placeholder:text-white/30 font-mono text-sm min-h-32 sm:min-h-64"
             />
           </div>
 

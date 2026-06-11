@@ -169,7 +169,7 @@ export default function Navigation() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72 bg-black/98 border-l border-white/[0.08] p-0 backdrop-blur-xl">
+            <SheetContent side="right" className="w-[85vw] max-w-xs bg-black/98 border-l border-white/[0.08] p-0 backdrop-blur-xl">
               <div className="flex flex-col h-full">
                 {/* Sheet brand */}
                 <div className="flex items-center px-6 py-5 border-b border-white/[0.08]">

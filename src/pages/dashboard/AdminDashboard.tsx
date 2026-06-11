@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Users, GraduationCap, UserCheck, Shield, Link as LinkIcon, CheckCircle } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import adminService from '@/services/adminService'
 import { calculateProgress } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
@@ -19,6 +20,22 @@ import AdminInvite from '@/components/admin/AdminInvite'
 import AdminPartnerships from '@/components/admin/AdminPartnerships'
 import AdminBroadcast from '@/components/admin/AdminBroadcast'
 import AdminWeeklyDigest from '@/components/admin/AdminWeeklyDigest'
+
+const ADMIN_TABS = [
+  { value: 'overview', label: 'Overview' },
+  { value: 'users', label: 'User Management' },
+  { value: 'pending-mentors', label: 'Pending Mentors' },
+  { value: 'assignments', label: 'Mentee Assignment' },
+  { value: 'content', label: 'Content Management' },
+  { value: 'cohorts', label: 'Cohorts' },
+  { value: 'analytics', label: 'Analytics' },
+  { value: 'audit', label: 'Audit Log' },
+  { value: 'applicants', label: 'Applicants' },
+  { value: 'invite', label: 'Invite' },
+  { value: 'partnerships', label: 'Partnerships' },
+  { value: 'broadcast', label: 'Broadcast' },
+  { value: 'weekly-digest', label: 'Weekly Digest' },
+] as const
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -92,51 +109,46 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="h-auto flex-wrap bg-white/5 border border-white/10 p-1 gap-1 rounded-lg">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="users" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              User Management
-            </TabsTrigger>
-            <TabsTrigger value="pending-mentors" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Pending Mentors
-              {pendingMentors.length > 0 && (
-                <span className="ml-1.5 inline-flex items-center justify-center rounded-full bg-tekton-yellow text-black text-[10px] font-bold size-4">
-                  {pendingMentors.length}
-                </span>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="assignments" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Mentee Assignment
-            </TabsTrigger>
-            <TabsTrigger value="content" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Content Management
-            </TabsTrigger>
-            <TabsTrigger value="cohorts" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Cohorts
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="audit" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Audit Log
-            </TabsTrigger>
-            <TabsTrigger value="applicants" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Applicants
-            </TabsTrigger>
-            <TabsTrigger value="invite" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Invite
-            </TabsTrigger>
-            <TabsTrigger value="partnerships" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Partnerships
-            </TabsTrigger>
-            <TabsTrigger value="broadcast" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Broadcast
-            </TabsTrigger>
-            <TabsTrigger value="weekly-digest" className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm">
-              Weekly Digest
-            </TabsTrigger>
+
+          {/* Mobile: dropdown selector */}
+          <div className="md:hidden">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="w-full bg-white/5 border-white/10 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-950 border-white/10 text-white">
+                {ADMIN_TABS.map((t) => (
+                  <SelectItem key={t.value} value={t.value}>
+                    <span className="flex items-center gap-2">
+                      {t.label}
+                      {t.value === 'pending-mentors' && pendingMentors.length > 0 && (
+                        <span className="inline-flex items-center justify-center rounded-full bg-tekton-yellow text-black text-[10px] font-bold size-4">
+                          {pendingMentors.length}
+                        </span>
+                      )}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Desktop: tab strip */}
+          <TabsList className="hidden md:flex h-auto flex-wrap bg-white/5 border border-white/10 p-1 gap-1 rounded-lg">
+            {ADMIN_TABS.map((t) => (
+              <TabsTrigger
+                key={t.value}
+                value={t.value}
+                className="data-[state=active]:bg-tekton-purple-bright data-[state=active]:text-white text-white/60 rounded-md text-xs sm:text-sm"
+              >
+                {t.label}
+                {t.value === 'pending-mentors' && pendingMentors.length > 0 && (
+                  <span className="ml-1.5 inline-flex items-center justify-center rounded-full bg-tekton-yellow text-black text-[10px] font-bold size-4">
+                    {pendingMentors.length}
+                  </span>
+                )}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
           <TabsContent value="overview" className="mt-6">

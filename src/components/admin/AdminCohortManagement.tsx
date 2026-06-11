@@ -150,8 +150,8 @@ export default function AdminCohortManagement() {
         </Button>
       </div>
 
-      <div className="glass-card rounded-xl overflow-hidden">
-        <Table>
+      <div className="glass-card rounded-xl overflow-x-auto">
+        <Table className="min-w-[480px]">
           <TableHeader>
             <TableRow className="border-white/10 hover:bg-transparent">
               <TableHead className="text-white/40 text-xs uppercase">#</TableHead>
