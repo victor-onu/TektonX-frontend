@@ -14,6 +14,7 @@ import adminService from '@/services/adminService'
 import { useToast } from '@/hooks/useToast'
 import { formatDate, getInitials } from '@/lib/utils'
 import type { User } from '@/types'
+import UserProfileDrawer from './UserProfileDrawer'
 
 export default function AdminPendingMentors() {
   const { toast } = useToast()
@@ -22,6 +23,7 @@ export default function AdminPendingMentors() {
   const [rejectReason, setRejectReason] = useState('')
   const [approvingId, setApprovingId] = useState<string | null>(null)
   const [rejectingId, setRejectingId] = useState<string | null>(null)
+  const [profileTarget, setProfileTarget] = useState<User | null>(null)
 
   const { data: pendingMentors = [], isLoading, refetch } = useQuery({
     queryKey: ['admin-pending-mentors'],
@@ -86,7 +88,11 @@ export default function AdminPendingMentors() {
       </div>
 
       {pendingMentors.map((mentor) => (
-        <div key={mentor.id} className="glass-card rounded-xl p-5 flex flex-col gap-4 md:flex-row md:items-start">
+        <div
+          key={mentor.id}
+          className="glass-card rounded-xl p-5 flex flex-col gap-4 md:flex-row md:items-start cursor-pointer hover:bg-white/5 transition-colors"
+          onClick={() => setProfileTarget(mentor)}
+        >
 
           {/* Left: Avatar + name + email */}
           <div className="flex items-start gap-3 md:w-48 shrink-0">
@@ -125,6 +131,7 @@ export default function AdminPendingMentors() {
                   href={mentor.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
                   className="inline-flex items-center gap-1 text-xs text-tekton-blue hover:text-tekton-blue/80 transition-colors"
                 >
                   <ExternalLink className="size-3" />
@@ -138,7 +145,7 @@ export default function AdminPendingMentors() {
           </div>
 
           {/* Right: Actions */}
-          <div className="flex items-center gap-2 shrink-0 md:flex-col md:items-stretch">
+          <div className="flex items-center gap-2 shrink-0 md:flex-col md:items-stretch" onClick={(e) => e.stopPropagation()}>
             <Button
               size="sm"
               className="bg-tekton-green/15 hover:bg-tekton-green/25 text-tekton-green border border-tekton-green/30 flex items-center gap-1.5"
@@ -199,6 +206,8 @@ export default function AdminPendingMentors() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <UserProfileDrawer user={profileTarget} onClose={() => setProfileTarget(null)} />
 
     </div>
   )

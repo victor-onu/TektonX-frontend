@@ -36,6 +36,7 @@ import { useToast } from '@/hooks/useToast'
 import { formatDate, getInitials } from '@/lib/utils'
 import { TECH_TRACKS } from '@/types'
 import type { User, UserRole } from '@/types'
+import UserProfileDrawer from './UserProfileDrawer'
 
 interface Props {
   currentUserId?: string
@@ -69,6 +70,7 @@ export default function AdminUserManagement({ currentUserId }: Props) {
   const [alumniTarget, setAlumniTarget] = useState<User | null>(null)
   const [markingAlumni, setMarkingAlumni] = useState(false)
   const [newRole, setNewRole] = useState<UserRole>('mentee')
+  const [profileTarget, setProfileTarget] = useState<User | null>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 300)
@@ -203,7 +205,11 @@ export default function AdminUserManagement({ currentUserId }: Props) {
               </TableRow>
             ) : (
               filteredUsers.map((user) => (
-                <TableRow key={user.id} className="border-white/10 hover:bg-white/5">
+                <TableRow
+                  key={user.id}
+                  className="border-white/10 hover:bg-white/5 cursor-pointer"
+                  onClick={() => setProfileTarget(user)}
+                >
                   <TableCell>
                     <div className="flex items-center gap-2.5">
                       <div className="size-8 rounded-full bg-gradient-to-br from-tekton-purple-bright to-tekton-teal flex items-center justify-center text-white text-[10px] font-bold shrink-0">
@@ -231,7 +237,7 @@ export default function AdminUserManagement({ currentUserId }: Props) {
                   <TableCell className="text-white/40 text-xs hidden lg:table-cell">
                     {formatDate(user.createdAt)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="size-7 text-white/40 hover:text-white hover:bg-white/10">
@@ -374,6 +380,8 @@ export default function AdminUserManagement({ currentUserId }: Props) {
           </div>
         </DialogContent>
       </Dialog>
+
+      <UserProfileDrawer user={profileTarget} onClose={() => setProfileTarget(null)} />
 
     </div>
   )
