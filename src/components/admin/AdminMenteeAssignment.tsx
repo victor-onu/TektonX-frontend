@@ -167,8 +167,8 @@ export default function AdminMenteeAssignment() {
           </div>
         </div>
 
-        <div className="glass-card rounded-xl overflow-hidden">
-          <Table>
+        <div className="glass-card rounded-xl overflow-x-auto">
+          <Table className="min-w-[560px]">
             <TableHeader>
               <TableRow className="border-white/10 hover:bg-transparent">
                 <TableHead className="w-10">
@@ -288,8 +288,8 @@ export default function AdminMenteeAssignment() {
           />
         </div>
 
-        <div className="glass-card rounded-xl overflow-hidden">
-          <Table>
+        <div className="glass-card rounded-xl overflow-x-auto">
+          <Table className="min-w-[640px]">
             <TableHeader>
               <TableRow className="border-white/10 hover:bg-transparent">
                 <TableHead className="text-white/40 text-xs uppercase">Mentee</TableHead>

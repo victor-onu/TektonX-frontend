@@ -152,7 +152,7 @@ export default function AdminUserManagement({ currentUserId }: Props) {
           className="w-full sm:w-64 bg-white/5 border-white/20 text-white placeholder:text-white/30"
         />
         <Select value={roleFilter} onValueChange={setRoleFilter}>
-          <SelectTrigger className="w-36 bg-black border-white/20 text-white">
+          <SelectTrigger className="w-full sm:w-36 bg-black border-white/20 text-white">
             <SelectValue placeholder="Role" />
           </SelectTrigger>
           <SelectContent className="bg-black border-white/10">
@@ -163,7 +163,7 @@ export default function AdminUserManagement({ currentUserId }: Props) {
           </SelectContent>
         </Select>
         <Select value={trackFilter} onValueChange={setTrackFilter}>
-          <SelectTrigger className="w-48 bg-black border-white/20 text-white">
+          <SelectTrigger className="w-full sm:w-48 bg-black border-white/20 text-white">
             <SelectValue placeholder="Track" />
           </SelectTrigger>
           <SelectContent className="bg-black border-white/10">
@@ -176,8 +176,8 @@ export default function AdminUserManagement({ currentUserId }: Props) {
       </div>
 
       {/* Table */}
-      <div className="glass-card rounded-xl overflow-hidden">
-        <Table>
+      <div className="glass-card rounded-xl overflow-x-auto">
+        <Table className="min-w-[640px]">
           <TableHeader>
             <TableRow className="border-white/10 hover:bg-transparent">
               <TableHead className="text-white/40 text-xs uppercase">User</TableHead>

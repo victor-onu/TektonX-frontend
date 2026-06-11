@@ -250,7 +250,7 @@ export default function AdminApplicants() {
       ) : (
         <div className="glass-card rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[760px] text-sm">
               <thead>
                 <tr className="border-b border-white/10">
                   <th className="px-4 py-3 text-left text-xs text-white/50 font-medium uppercase tracking-wider">Name</th>

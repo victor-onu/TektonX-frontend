@@ -145,7 +145,7 @@ export default function AdminPendingMentors() {
           </div>
 
           {/* Right: Actions */}
-          <div className="flex items-center gap-2 shrink-0 md:flex-col md:items-stretch" onClick={(e) => e.stopPropagation()}>
+          <div className="flex flex-col sm:flex-row md:flex-col items-stretch md:items-stretch gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
             <Button
               size="sm"
               className="bg-tekton-green/15 hover:bg-tekton-green/25 text-tekton-green border border-tekton-green/30 flex items-center gap-1.5"
