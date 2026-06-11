@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import adminService from '@/services/adminService'
 import { formatDate } from '@/lib/utils'
 import type { ApplicationStatus, User } from '@/types'
+import UserProfileDrawer from './UserProfileDrawer'
 
 type FilterTab = 'all' | ApplicationStatus
 
@@ -182,6 +183,7 @@ function StatusCell({ applicant }: { applicant: User }) {
 export default function AdminApplicants() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all')
   const [search, setSearch] = useState('')
+  const [profileTarget, setProfileTarget] = useState<User | null>(null)
 
   const { data: applicants = [], isLoading } = useQuery({
     queryKey: ['admin-applicants'],
@@ -265,7 +267,11 @@ export default function AdminApplicants() {
                   const isPendingActivation = !!applicant.inviteToken
                   const isInvited = !!applicant.invitedAt
                   return (
-                  <tr key={applicant.id} className="hover:bg-white/3 transition-colors">
+                  <tr
+                    key={applicant.id}
+                    className="hover:bg-white/3 transition-colors cursor-pointer"
+                    onClick={() => setProfileTarget(applicant)}
+                  >
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-0.5">
                         <span className="text-white font-medium">{applicant.name}</span>
@@ -299,7 +305,7 @@ export default function AdminApplicants() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-white/50 text-xs">{formatDate(applicant.createdAt)}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <StatusCell applicant={applicant} />
                     </td>
                   </tr>
@@ -315,6 +321,8 @@ export default function AdminApplicants() {
       <p className="text-xs text-white/30">
         Showing {filtered.length} of {applicants.length} applicant{applicants.length !== 1 ? 's' : ''}
       </p>
+
+      <UserProfileDrawer user={profileTarget} onClose={() => setProfileTarget(null)} />
 
     </div>
   )
