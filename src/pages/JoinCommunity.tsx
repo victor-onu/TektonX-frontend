@@ -16,7 +16,7 @@ const COMMUNITY_PERKS = [
     Icon: Users,
     title: 'Connect With People',
     description:
-      'Meet and stay in touch with mentors, mentees, alumni, and other builders across the wider TektonX network.',
+      'Meet mentors, mentees, alumni, and other builders in the TektonX network.',
     accent: 'text-tekton-purple-bright',
     iconBg: 'bg-tekton-purple-bright/15',
     borderColor: 'border-l-tekton-purple-bright',
@@ -34,7 +34,7 @@ const COMMUNITY_PERKS = [
     Icon: Briefcase,
     title: 'Opportunities',
     description:
-      'Hear about jobs, gigs, scholarships, and other opportunities shared across the community.',
+      'Hear about jobs, gigs, scholarships, and other opportunities as they come up.',
     accent: 'text-tekton-green',
     iconBg: 'bg-tekton-green/15',
     borderColor: 'border-l-tekton-green',
@@ -43,7 +43,7 @@ const COMMUNITY_PERKS = [
     Icon: MessageCircle,
     title: 'Community Updates',
     description:
-      'Get curated news and stories on our programs and everything else happening at TektonX.',
+      'Stay updated on our programs and everything else happening at TektonX.',
     accent: 'text-tekton-blue',
     iconBg: 'bg-tekton-blue/15',
     borderColor: 'border-l-tekton-blue',
@@ -106,8 +106,8 @@ export default function JoinCommunity() {
           </h1>
 
           <p className="text-base text-white/55 sm:text-lg leading-relaxed max-w-2xl">
-            This is for builders — anyone using tech to shape the future. Stay in touch, connect
-            with other builders, and keep up with our programs, events, and opportunities.
+            For builders using tech to shape the future. Join to stay in touch, meet other
+            members, and hear about our programs, events, and opportunities first.
           </p>
         </div>
 
@@ -127,8 +127,7 @@ export default function JoinCommunity() {
               WHAT YOU <span className="gradient-text">GET</span>
             </h2>
             <p className="mt-5 text-white/50 max-w-xl mx-auto">
-              Membership is open to every builder — not just enrolled mentees and mentors — and
-              it's free to join.
+              It's free, and you don't have to be an enrolled mentee or mentor to join.
             </p>
           </div>
 
