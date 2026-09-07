@@ -18,6 +18,7 @@ import AdminAuditLog from '@/components/admin/AdminAuditLog'
 import AdminApplicants from '@/components/admin/AdminApplicants'
 import AdminInvite from '@/components/admin/AdminInvite'
 import AdminPartnerships from '@/components/admin/AdminPartnerships'
+import AdminCommunityMembers from '@/components/admin/AdminCommunityMembers'
 import AdminBroadcast from '@/components/admin/AdminBroadcast'
 import AdminWeeklyDigest from '@/components/admin/AdminWeeklyDigest'
 
@@ -33,6 +34,7 @@ const ADMIN_TABS = [
   { value: 'applicants', label: 'Applicants' },
   { value: 'invite', label: 'Invite' },
   { value: 'partnerships', label: 'Partnerships' },
+  { value: 'community', label: 'Community' },
   { value: 'broadcast', label: 'Broadcast' },
   { value: 'weekly-digest', label: 'Weekly Digest' },
 ] as const
@@ -183,6 +185,9 @@ export default function AdminDashboard() {
           </TabsContent>
           <TabsContent value="partnerships" className="mt-6">
             <AdminPartnerships />
+          </TabsContent>
+          <TabsContent value="community" className="mt-6">
+            <AdminCommunityMembers />
           </TabsContent>
           <TabsContent value="broadcast" className="mt-6">
             <AdminBroadcast />

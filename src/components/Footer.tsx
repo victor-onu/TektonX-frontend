@@ -8,6 +8,7 @@ const QUICK_LINKS = [
   { label: 'Programs', href: '/programs' },
   { label: 'Mentorship', href: '/mentorship' },
   { label: 'Partners', href: '/partnerships' },
+  { label: 'Join Community', href: '/join' },
 ] as const
 
 const PROGRAMS = [
