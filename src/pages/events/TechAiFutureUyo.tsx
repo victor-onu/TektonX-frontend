@@ -346,7 +346,7 @@ export default function TechAiFutureUyo() {
               className="tafu-hero-anim m-0 max-w-[38ch] text-[clamp(17px,3.4vw,22px)] leading-[1.45] text-[#1C1B2E] [animation-delay:0.62s]"
               style={{ textWrap: 'pretty' }}
             >
-              Learn what is changing, explore emerging technology, and discover how to use it to learn, build, and innovate.
+              Learn how to navigate the AI era directly from industry experts. Explore emerging tech, understand what's changing, and discover how to build the future.
             </p>
             <div className="tafu-hero-anim mt-7 flex flex-wrap gap-3 [animation-delay:0.74s]">
               <a
