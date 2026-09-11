@@ -74,8 +74,9 @@ export default function JoinCommunity() {
 
       await communityMemberService.submit(payload)
       setSubmitted(true)
-    } catch {
-      toast.error('Failed to join the community. Please try again.')
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message
+      toast.error(Array.isArray(msg) ? msg[0] : (msg ?? 'Failed to join the community. Please try again.'))
     } finally {
       setLoading(false)
     }
