@@ -19,6 +19,9 @@ import Partnerships from '@/pages/Partnerships'
 import JoinCommunity from '@/pages/JoinCommunity'
 import NotFound from '@/pages/NotFound'
 
+// Standalone event microsites (no Nav/Footer chrome)
+import TechAiFutureUyo from '@/pages/events/TechAiFutureUyo'
+
 // Auth pages
 import Login from '@/pages/auth/Login'
 import Register from '@/pages/auth/Register'
@@ -157,6 +160,9 @@ export default function App() {
                 }
               />
             </Route>
+
+            {/* ── Standalone event microsites (own header/footer, no site chrome) ── */}
+            <Route path="/events/tech-ai-future-uyo" element={<TechAiFutureUyo />} />
 
             {/* ── Catch-all ── */}
             <Route path="*" element={<NotFound />} />
