@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 
 import eventRegistrationService from '@/services/eventRegistrationService'
 import type { RegisterPayload } from '@/services/eventRegistrationService'
+import { initMetaPixel, trackMetaPixelEvent } from '@/lib/metaPixel'
 
 import heroGlobe from '@/assets/events/tech-ai-future-uyo/hero-globe.png'
 import heroGroup from '@/assets/events/tech-ai-future-uyo/hero-group.jpg'
@@ -18,6 +19,10 @@ import './TechAiFutureUyo.css'
 // ─── Event constants ──────────────────────────────────────────────────────────
 
 const EVENT_SLUG = 'tech-ai-future-uyo'
+
+// Set in .env / Vercel project env as VITE_META_PIXEL_ID. Undefined in
+// environments where it isn't configured — initMetaPixel() no-ops then.
+const META_PIXEL_ID: string | undefined = import.meta.env.VITE_META_PIXEL_ID
 
 // Static fallbacks — used while the event fetch is loading, or if it fails,
 // so the page always renders correctly (per design handoff).
@@ -222,6 +227,10 @@ export default function TechAiFutureUyo() {
   const venueLabel = event?.venue ?? FALLBACK_VENUE
   const seatLimit = event?.seatLimit ?? FALLBACK_SEAT_LIMIT
 
+  useEffect(() => {
+    initMetaPixel(META_PIXEL_ID)
+  }, [])
+
   // ─── Form state ───────────────────────────────────────────────────────────
 
   const [name, setName] = useState('')
@@ -245,8 +254,14 @@ export default function TechAiFutureUyo() {
 
       await eventRegistrationService.register(EVENT_SLUG, payload)
       setSubmitted(true)
-    } catch {
-      toast.error('Something went wrong submitting your application. Please try again.')
+      trackMetaPixelEvent('Lead')
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message
+      toast.error(
+        Array.isArray(msg)
+          ? msg[0]
+          : (msg ?? 'Something went wrong submitting your application. Please try again.'),
+      )
     } finally {
       setLoading(false)
     }
@@ -254,6 +269,17 @@ export default function TechAiFutureUyo() {
 
   return (
     <div className="tafu">
+      {META_PIXEL_ID && (
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: 'none' }}
+            src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+            alt=""
+          />
+        </noscript>
+      )}
       {/* ════════════════════════════════════════════════════════
           1. Header (sticky)
       ════════════════════════════════════════════════════════ */}
