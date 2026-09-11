@@ -21,8 +21,11 @@ declare global {
 
 let initialized = false
 
-/** Injects the Meta Pixel base script and fires the initial PageView. Safe to
- * call with an undefined/empty id (no-op) and safe to call more than once. */
+/** Injects the Meta Pixel base script and initializes it. Deliberately does
+ * NOT fire PageView — this pixel is scoped to counting completed
+ * applications only (see trackMetaPixelEvent('Lead') in TechAiFutureUyo.tsx),
+ * not page visits. Safe to call with an undefined/empty id (no-op) and safe
+ * to call more than once. */
 export function initMetaPixel(pixelId: string | undefined) {
   if (!pixelId || initialized || typeof window === 'undefined') return
   initialized = true
@@ -50,7 +53,6 @@ export function initMetaPixel(pixelId: string | undefined) {
   }
 
   window.fbq!('init', pixelId)
-  window.fbq!('track', 'PageView')
 }
 
 /** Fires a standard (or custom) Meta Pixel event. No-op if the pixel was

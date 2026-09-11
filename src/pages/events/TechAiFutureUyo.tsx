@@ -261,17 +261,10 @@ export default function TechAiFutureUyo() {
 
   return (
     <div className="tafu">
-      {META_PIXEL_ID && (
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: 'none' }}
-            src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
-            alt=""
-          />
-        </noscript>
-      )}
+      {/* No noscript PageView pixel here on purpose — this pixel only tracks
+          completed applications (Lead, fired on successful submit below),
+          not page visits, so there's no PageView to mirror for non-JS
+          visitors either. */}
       {/* ════════════════════════════════════════════════════════
           1. Header (sticky)
       ════════════════════════════════════════════════════════ */}
