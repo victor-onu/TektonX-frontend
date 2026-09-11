@@ -13,6 +13,7 @@ import heroGroup from '@/assets/events/tech-ai-future-uyo/hero-group.jpg'
 import logoWhite from '@/assets/events/tech-ai-future-uyo/logo-white.png'
 import logoEdgenexus from '@/assets/events/tech-ai-future-uyo/logo-edgenexus.png'
 import logoReenite from '@/assets/events/tech-ai-future-uyo/logo-reenite.png'
+import logoApexTechForge from '@/assets/events/tech-ai-future-uyo/logo-apex-tech-forge.png'
 
 import './TechAiFutureUyo.css'
 
@@ -59,11 +60,6 @@ const DAY_INCLUDES = [
     n: '05',
     title: 'Giveaways',
     body: 'Prizes and TektonX merch handed out through the day.',
-  },
-  {
-    n: '06',
-    title: 'A proper break',
-    body: 'Coffee, snacks and other refreshments are available to buy at the venue during the break.',
   },
 ]
 
@@ -132,7 +128,7 @@ const PANEL_QUESTIONS = [
 const FAQ_ROWS = [
   {
     q: 'Is it free?',
-    a: 'Yes. Completely free. There is no ticket and no fee at the door. The only limit is the 50 seats, which is why we ask you to apply.',
+    a: 'Yes. Completely free. There is no fee at the door. The only limit is the 50 seats, which is why we ask you to apply.',
     emphasis: true,
   },
   {
@@ -150,10 +146,6 @@ const FAQ_ROWS = [
   {
     q: 'How will I know if I got a seat?',
     a: 'By email, with the venue details and directions. Check the address before the day, and arrive by 10:00.',
-  },
-  {
-    q: 'Are refreshments provided?',
-    a: 'Not included. The venue sells coffee, snacks and drinks, and you will have time to get them during the break. Games, a quiz round and giveaways run through the day.',
   },
   {
     q: 'Will it be recorded?',
@@ -452,7 +444,10 @@ export default function TechAiFutureUyo() {
         <div className="mx-auto max-w-[1180px] px-5 py-[clamp(32px,6vw,64px)]">
           <div className={kickerClass}>In the room</div>
           <h2 className={`${sectionH2Class} max-w-[24ch]`}>What the day includes</h2>
-          <div className="mt-[26px] grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-x-[clamp(20px,4vw,36px)] gap-y-0 border-t-2 border-[#06051D]">
+          {/* minmax raised from 250 to 300: with 5 items (was 6) this resolves
+              to a balanced 3+2 layout at desktop widths instead of 4+1, which
+              left a lone trailing item stranded with a big empty gap beside it. */}
+          <div className="mt-[26px] grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-x-[clamp(20px,4vw,36px)] gap-y-0 border-t-2 border-[#06051D]">
             {DAY_INCLUDES.map((item) => (
               <div key={item.n} className="border-b border-[#DCDBE2] py-[22px]">
                 <div className="text-[10px] font-bold tracking-[0.16em] text-[#4A12BC]">{item.n}</div>
@@ -724,6 +719,10 @@ export default function TechAiFutureUyo() {
             <div className="mt-4 flex flex-wrap items-center gap-[22px]">
               <img src={logoEdgenexus} alt="Edgenexus Global" className="block h-[30px] w-auto" />
               <img src={logoReenite} alt="Reenite" className="block h-[36px] w-auto" />
+              {/* Own dark backing (unlike the two flat logos above) — its wordmark
+                  is white, so it needs a dark ground to stay legible; kept as its
+                  own small badge rather than forcing it transparent. */}
+              <img src={logoApexTechForge} alt="Apex Tech Forge Academy" className="block h-[48px] w-auto" />
             </div>
           </div>
           <div className="border-l-2 border-[#DCDBE2] pl-[clamp(16px,3vw,28px)]">
@@ -754,6 +753,18 @@ export default function TechAiFutureUyo() {
               <p className="mt-4 max-w-[34ch] text-[14px] leading-[1.55] text-[#B9BACB]">
                 Road to Buildverse. Uyo, Akwa Ibom State.
               </p>
+              <a
+                href="tel:+2349071372853"
+                className="mt-3 block min-h-6 text-[15px] text-[#F7F4EF] no-underline hover:text-[#A97BFF]"
+              >
+                Call or WhatsApp: 0907 137 2853
+              </a>
+              <a
+                href="mailto:info@tektonxlabs.com"
+                className="mt-1.5 block min-h-6 text-[15px] text-[#F7F4EF] no-underline hover:text-[#A97BFF]"
+              >
+                info@tektonxlabs.com
+              </a>
             </div>
             <div>
               <div className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#8B5CF6]">Follow</div>
