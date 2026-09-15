@@ -18,7 +18,7 @@ import {
 import { useScrollToHash } from '@/hooks/useScrollToHash'
 import { StatCard, DarkButton, IconBadge, JoinPanel } from '@/components/marketing/ui'
 import { eyebrowStyle } from '@/components/marketing/tokens'
-import heroX from '@/assets/marketing/hero-x.png'
+import heroX from '@/assets/marketing/hero-x.webp'
 import tektonxMark from '@/assets/marketing/tektonx-mark.svg'
 import p01 from '@/assets/marketing/photos/p01.jpeg'
 import p03 from '@/assets/marketing/photos/p03.jpeg'
@@ -151,16 +151,23 @@ export default function Index() {
           }}
         >
           <div
-            className="tx-marketing-rise"
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 26, minWidth: 0 }}
           >
+            {/* Each line rises in on its own delay (a cascade) instead of the
+                whole block fading in as one piece — pure CSS, so it plays
+                immediately regardless of connection speed. */}
             <h1 style={{ fontSize: 'clamp(52px,6.4vw,96px)', lineHeight: 0.86, letterSpacing: '0.005em', color: '#0E0B12' }}>
-              BUILDING PEOPLE.
-              <br />
-              BUILDING PRODUCTS.
-              <br />
+              <span className="tx-marketing-rise" style={{ display: 'block', animationDelay: '0s' }}>
+                BUILDING PEOPLE.
+              </span>
+              <span className="tx-marketing-rise" style={{ display: 'block', animationDelay: '0.12s' }}>
+                BUILDING PRODUCTS.
+              </span>
               <span
+                className="tx-marketing-rise"
                 style={{
+                  display: 'block',
+                  animationDelay: '0.24s',
                   background: 'linear-gradient(100deg,#7C3AED,#C026D3)',
                   WebkitBackgroundClip: 'text',
                   backgroundClip: 'text',
@@ -170,10 +177,13 @@ export default function Index() {
                 BUILDING AFRICA.
               </span>
             </h1>
-            <p style={{ fontSize: 18, lineHeight: 1.7, color: '#5C5661', maxWidth: '48ch', margin: 0 }}>
+            <p
+              className="tx-marketing-rise"
+              style={{ animationDelay: '0.4s', fontSize: 18, lineHeight: 1.7, color: '#5C5661', maxWidth: '48ch', margin: 0 }}
+            >
               Building communities of young African builders through learning, mentorship, and technology.
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14 }}>
+            <div className="tx-marketing-rise" style={{ animationDelay: '0.52s', display: 'flex', flexWrap: 'wrap', gap: 14 }}>
               <DarkButton to="/join">Join the community</DarkButton>
               <a
                 href="#programs"
@@ -199,13 +209,30 @@ export default function Index() {
           </div>
           <div
             className="tx-marketing-heroimg"
-            style={{ minWidth: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: -56 }}
+            style={{ position: 'relative', minWidth: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: -56 }}
           >
+            {/* Blurred radial glow — plain CSS, so it's there instantly even
+                before the image file below has finished downloading. */}
+            <div
+              aria-hidden
+              className="tx-hero-glow"
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                width: '70%',
+                aspectRatio: '1',
+                borderRadius: '50%',
+                background:
+                  'radial-gradient(circle at 50% 50%, rgba(124,58,237,0.28), rgba(192,38,211,0.08) 55%, rgba(124,58,237,0) 72%)',
+                pointerEvents: 'none',
+              }}
+            />
             <img
               src={heroX}
               alt="TektonX mark with community members"
               className="tx-marketing-drift"
-              style={{ width: '100%', maxWidth: 'none', height: 'auto', display: 'block' }}
+              style={{ position: 'relative', width: '100%', maxWidth: 'none', height: 'auto', display: 'block' }}
             />
           </div>
         </div>

@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/events/tech-ai-future-uyo", "destination": "/events/tech-ai-future-uyo/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

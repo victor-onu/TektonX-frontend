@@ -82,6 +82,37 @@
   animation: txDrift 26s ease-in-out infinite;
 }
 
+/* Soft glow behind the hero's X-mark image — pure CSS (a blurred radial
+   gradient), so it renders instantly regardless of connection speed; it
+   doesn't wait on any image to load. */
+@keyframes txGlow {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+
+.tx-hero-glow {
+  animation: txGlow 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tx-marketing-rise {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+  .tx-marketing-drift,
+  .tx-hero-glow {
+    animation: none;
+  }
+}
+
 @keyframes txPulse {
   0%,
   100% {

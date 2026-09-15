@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo-purple-mark.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#5E17EB" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!--
+      This is a SEPARATE static HTML entry (see vite.config.ts's
+      rollupOptions.input and vercel.json's route-specific rewrite), built and
+      served ONLY for this one URL, purely so link-preview crawlers (WhatsApp,
+      Facebook, Slack, iMessage, etc.) — which fetch raw HTML and never run
+      JavaScript — see event-specific title/description/image instead of the
+      site-wide ones in the root index.html. A real visitor's browser loads
+      the exact same React app (same /src/main.tsx bootstrap below) and lands
+      on the normal interactive TechAiFutureUyo page — this file has no
+      content of its own beyond the <head> tags.
+    -->
+
+    <!-- SEO -->
+    <title>Tech, AI and the Future: Uyo | TektonX</title>
+    <meta name="description" content="A free half-day event in Uyo. Tech insights, hands-on sessions, and a panel on AI and the future of work. Sat 17 Oct 2026, Reenite Space. 50 seats, by application." />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tektonxlabs.com/events/tech-ai-future-uyo" />
+    <meta property="og:title" content="Tech, AI and the Future: Uyo" />
+    <meta property="og:description" content="A free half-day event in Uyo. Tech insights, hands-on sessions, and a panel on AI and the future of work. Sat 17 Oct 2026, Reenite Space. 50 seats, by application." />
+    <meta property="og:site_name" content="TektonX" />
+    <meta property="og:image" content="https://tektonxlabs.com/og-image-uyo.jpg" />
+    <meta property="og:image:width" content="1080" />
+    <meta property="og:image:height" content="1251" />
+    <meta property="og:image:alt" content="Tech, AI and the Future: Uyo — Sat 17 Oct 2026" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tech, AI and the Future: Uyo" />
+    <meta name="twitter:description" content="A free half-day event in Uyo. Tech insights, hands-on sessions, and a panel on AI and the future of work. Sat 17 Oct 2026, Reenite Space. 50 seats, by application." />
+    <meta name="twitter:image" content="https://tektonxlabs.com/og-image-uyo.jpg" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
