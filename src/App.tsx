@@ -7,6 +7,7 @@ import { AuthProvider } from '@/context/AuthContext'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import PublicLayout from '@/components/layouts/PublicLayout'
 import AuthLayout from '@/components/layouts/AuthLayout'
+import MarketingLayout from '@/components/layouts/MarketingLayout'
 
 // Public pages
 import Index from '@/pages/Index'
@@ -54,17 +55,21 @@ export default function App() {
               <Route path="/auth/activate" element={<Activate />} />
             </Route>
 
+            {/* ── Marketing layout (community-led Home + About redesign) ── */}
+            <Route element={<MarketingLayout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/mentors" element={<Mentors />} />
+              <Route path="/join" element={<JoinCommunity />} />
+            </Route>
+
             {/* ── Public layout (Nav + Footer) ── */}
             <Route element={<PublicLayout />}>
               {/* Public */}
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
               <Route path="/programs" element={<Programs />} />
               <Route path="/mentorship" element={<Mentorship />} />
-              <Route path="/mentors" element={<Mentors />} />
               <Route path="/verify/:code" element={<VerifyCertificate />} />
               <Route path="/partnerships" element={<Partnerships />} />
-              <Route path="/join" element={<JoinCommunity />} />
 
               {/* Protected — mentee only */}
               <Route

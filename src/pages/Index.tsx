@@ -1,5 +1,9 @@
 import { Link } from 'react-router-dom'
 import {
+  CircleCheck,
+  Play,
+  ArrowUpRight,
+  ArrowRight,
   Users,
   Code,
   Trophy,
@@ -9,337 +13,865 @@ import {
   Target,
   UsersRound,
   Shield,
-  ArrowRight,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
-// ─── Stats ────────────────────────────────────────────────────────────────────
+import { useScrollToHash } from '@/hooks/useScrollToHash'
+import { StatCard, DarkButton, IconBadge, JoinPanel } from '@/components/marketing/ui'
+import { eyebrowStyle } from '@/components/marketing/tokens'
+import heroX from '@/assets/marketing/hero-x.png'
+import tektonxMark from '@/assets/marketing/tektonx-mark.svg'
+import p01 from '@/assets/marketing/photos/p01.jpeg'
+import p03 from '@/assets/marketing/photos/p03.jpeg'
+import p06 from '@/assets/marketing/photos/p06.jpeg'
+import s25 from '@/assets/marketing/solex/s25.jpg'
+import s75 from '@/assets/marketing/solex/s75.jpg'
+import s111 from '@/assets/marketing/solex/s111.jpg'
+import s130 from '@/assets/marketing/solex/s130.jpg'
+import s145 from '@/assets/marketing/solex/s145.jpg'
+import s181 from '@/assets/marketing/solex/s181.jpg'
 
-const STATS = [
-  { value: '1000+', label: 'Young People Reached' },
-  { value: '100%', label: 'Expert Mentors' },
-  { value: '8', label: 'Tech Tracks' },
-  { value: '3', label: 'Months Program' },
-]
+const FACEBOOK_REEL_URL = 'https://www.facebook.com/share/r/1DSXhKBTbC/?mibextid=wwXIfr'
 
-// ─── Programs ─────────────────────────────────────────────────────────────────
+// ─── Programs ───────────────────────────────────────────────────────────────
 
 const PROGRAMS = [
   {
     Icon: Users,
-    title: 'From Campus to Tech Careers',
+    title: 'FROM CAMPUS TO TECH CAREERS',
     description: 'Outreach and awareness sessions across university campuses, inspiring students in unreached regions.',
-    accent: 'text-tekton-purple-bright',
-    iconBg: 'bg-tekton-purple-bright/15',
+    gradient: 'linear-gradient(150deg,#A855F7,#6D28D9)',
+    shadowColor: 'rgba(124,58,237,0.34)',
   },
   {
     Icon: Code,
-    title: 'Code for Growth',
+    title: 'CODE FOR GROWTH',
     description: 'Structured bootcamps in coding, design, product management, and digital skills.',
-    accent: 'text-tekton-green',
-    iconBg: 'bg-tekton-green/15',
+    gradient: 'linear-gradient(150deg,#34D399,#0F766E)',
+    shadowColor: 'rgba(16,185,129,0.32)',
   },
   {
     Icon: Trophy,
-    title: 'TektonX Competitions',
+    title: 'TEKTONX COMPETITIONS',
     description: 'Inter-school and inter-community hackathons, coding contests, and innovation challenges.',
-    accent: 'text-tekton-yellow',
-    iconBg: 'bg-tekton-yellow/15',
+    gradient: 'linear-gradient(150deg,#F59E0B,#B45309)',
+    shadowColor: 'rgba(217,119,6,0.30)',
   },
   {
     Icon: Building2,
-    title: 'TektonX Hub',
+    title: 'TEKTONX HUB',
     description: 'Physical and virtual hub for young innovators with coworking spaces and training programs.',
-    accent: 'text-tekton-teal',
-    iconBg: 'bg-tekton-teal/15',
+    gradient: 'linear-gradient(150deg,#2DD4BF,#0E7490)',
+    shadowColor: 'rgba(14,116,144,0.30)',
   },
   {
     Icon: Heart,
-    title: 'Mentorship & Career Support',
+    title: 'MENTORSHIP & CAREER SUPPORT',
     description: 'Pairing participants with experienced tech professionals for career guidance and job support.',
-    accent: 'text-tekton-purple-bright',
-    iconBg: 'bg-tekton-purple-bright/15',
+    gradient: 'linear-gradient(150deg,#E879F9,#A21CAF)',
+    shadowColor: 'rgba(192,38,211,0.30)',
   },
   {
     Icon: Lightbulb,
-    title: 'Tech Pathways Series',
+    title: 'TECH PATHWAYS SERIES',
     description: 'Interactive workshops, talks, and competitions introducing young people to tech opportunities.',
-    accent: 'text-tekton-blue',
-    iconBg: 'bg-tekton-blue/15',
+    gradient: 'linear-gradient(150deg,#60A5FA,#1D4ED8)',
+    shadowColor: 'rgba(29,78,216,0.30)',
   },
-]
+] as const
 
-// ─── Core Values ──────────────────────────────────────────────────────────────
+// ─── Core values ────────────────────────────────────────────────────────────
 
 const VALUES = [
   {
     Icon: Target,
     title: 'ACCESS FOR ALL',
     description: 'We remove barriers to tech education and opportunities.',
+    gradient: 'linear-gradient(150deg,#A855F7,#6D28D9)',
+    shadowColor: 'rgba(124,58,237,0.32)',
   },
   {
     Icon: Users,
     title: 'EMPOWERMENT',
     description: 'We equip young people to build sustainable careers and solutions.',
+    gradient: 'linear-gradient(150deg,#E879F9,#A21CAF)',
+    shadowColor: 'rgba(192,38,211,0.30)',
   },
   {
     Icon: Lightbulb,
     title: 'INNOVATION',
     description: 'We nurture creativity and problem-solving with a future-focused mindset.',
+    gradient: 'linear-gradient(150deg,#60A5FA,#4338CA)',
+    shadowColor: 'rgba(67,56,202,0.30)',
   },
   {
     Icon: UsersRound,
     title: 'COMMUNITY',
     description: 'We foster collaboration, networking, and shared growth.',
+    gradient: 'linear-gradient(150deg,#34D399,#0F766E)',
+    shadowColor: 'rgba(16,185,129,0.30)',
   },
   {
     Icon: Shield,
     title: 'INTEGRITY',
     description: 'We remain transparent, ethical, and people-centered in all we do.',
+    gradient: 'linear-gradient(150deg,#C084FC,#7C3AED)',
+    shadowColor: 'rgba(124,58,237,0.32)',
   },
-]
+] as const
 
-// ─── Component ────────────────────────────────────────────────────────────────
+const MENTORSHIP_PILLS = ['8 tech tracks', '3-month cycle', '1:1 pairing', 'Career support', 'Certificate on completion']
+
+// ─── Component ──────────────────────────────────────────────────────────────
 
 export default function Index() {
+  useScrollToHash()
+
   return (
-    <div className="flex flex-col">
-      {/* ════════════════════════════════════════════════════════
-          Section 1 — Hero
-      ════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-screen pt-16 flex items-center justify-center overflow-hidden bg-black">
-        {/* Background image */}
-        <div className="pointer-events-none absolute inset-0 z-0">
-          <img
-            src="https://mgx-backend-cdn.metadl.com/generate/images/902124/2026-01-13/41b32de7-8bae-49dd-953d-e03d6840af7e.png"
-            alt=""
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black" />
-        </div>
-        {/* Orbs + grid on top of image */}
-        <div className="pointer-events-none absolute inset-0 z-[1]">
-          <div className="absolute -top-20 -right-20 size-[600px] rounded-full bg-tekton-purple-bright/20 blur-[120px]" />
-          <div className="absolute bottom-0 -left-20 size-[400px] rounded-full bg-tekton-teal/15 blur-[100px]" />
-          <div className="absolute inset-0 bg-grid opacity-20" />
-        </div>
-
-        <div className="relative z-[2] mx-auto max-w-5xl px-4 text-center flex flex-col items-center gap-8">
-          {/* Main headline */}
-          <h1 className="font-heading text-6xl leading-[0.95] tracking-wide text-white sm:text-7xl lg:text-8xl">
-            BUILDING PEOPLE.
-            <br />
-            <span className="gradient-text">BUILDING PRODUCTS.</span>
-            <br />
-            BUILDING AFRICA.
-          </h1>
-
-          {/* Subheading */}
-          <p className="max-w-2xl text-base text-white/55 sm:text-lg leading-relaxed">
-            TektonX is a youth-focused tech empowerment and innovation lab dedicated to helping
-            young people across Africa discover, learn, and create in technology.
-          </p>
-
-          {/* CTA buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Button
-              asChild
-              size="lg"
-              className="bg-tekton-purple-bright px-8 text-white hover:bg-tekton-purple-bright/90 glow-purple gap-2 text-base font-semibold"
-            >
-              <Link to="/mentorship">
-                Join Mentorship Program
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-white/20 bg-white/5 px-8 text-white hover:bg-white/10 hover:border-white/30 backdrop-blur-sm text-base font-medium"
-            >
-              <Link to="/programs">Explore Programs</Link>
-            </Button>
-          </div>
-
-          {/* Stats row */}
-          <div className="mt-4 flex items-center justify-center divide-x divide-white/10 rounded-2xl border border-white/10 bg-white/[0.04] px-2 py-4 backdrop-blur-sm">
-            {STATS.map(({ value, label }) => (
-              <div key={label} className="flex flex-col items-center gap-1 px-6 sm:px-10">
-                <span className="font-heading text-3xl leading-none gradient-text sm:text-4xl">
-                  {value}
-                </span>
-                <span className="text-xs font-medium text-white/40 uppercase tracking-wider">{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom fade */}
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-[2]" />
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
-          Section 2 — Our Programs
-      ════════════════════════════════════════════════════════ */}
-      <section className="py-28 px-4 bg-white/[0.02]">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-16 text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-tekton-purple-bright/70">
-              What We Offer
-            </p>
-            <h2 className="font-heading text-5xl text-white sm:text-6xl">
-              OUR{' '}
-              <span className="gradient-text">PROGRAMS</span>
-            </h2>
-            <p className="mt-5 text-white/50 max-w-xl mx-auto">
-              Comprehensive programs designed to empower young Africans with tech skills and opportunities
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {PROGRAMS.map(({ Icon, title, description, accent, iconBg }) => (
-              <div
-                key={title}
-                className="glass-card rounded-2xl p-7 flex flex-col gap-4 smooth-hover hover:-translate-y-0.5 transition-all hover:border-white/20"
-              >
-                <div className={`flex size-12 items-center justify-center rounded-xl shrink-0 ${iconBg}`}>
-                  <Icon className={`size-6 ${accent}`} />
-                </div>
-                <h3 className="font-heading text-2xl text-white">{title}</h3>
-                <p className="text-sm text-white/55 leading-relaxed">{description}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-tekton-purple-bright/50 text-tekton-purple-bright hover:bg-tekton-purple-bright hover:text-white gap-2"
-            >
-              <Link to="/programs">
-                View All Programs
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
-          Section 3 — Our Core Values
-      ════════════════════════════════════════════════════════ */}
-      <section className="relative py-28 px-4 bg-black bg-grid">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
-        <div className="relative z-10 mx-auto max-w-6xl">
-          <div className="mb-16 text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-tekton-teal/70">
-              What Drives Us
-            </p>
-            <h2 className="font-heading text-5xl text-white sm:text-6xl">
-              OUR CORE{' '}
-              <span className="gradient-text">VALUES</span>
-            </h2>
-            <p className="mt-5 text-white/50 max-w-xl mx-auto">
-              The principles that guide everything we do at TektonX
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
-            {VALUES.map(({ Icon, title, description }) => (
-              <div
-                key={title}
-                className="glass-card rounded-2xl p-6 flex flex-col items-center text-center gap-3 smooth-hover hover:-translate-y-1 transition-all"
-              >
-                <div className="flex size-11 items-center justify-center rounded-xl bg-tekton-green/15">
-                  <Icon className="size-5 text-tekton-green" />
-                </div>
-                <h3 className="font-heading text-lg text-white">{title}</h3>
-                <p className="text-xs text-white/55 leading-relaxed">{description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
-          Section 4 — Partner Teaser
-      ════════════════════════════════════════════════════════ */}
-      <section className="py-16 px-4 bg-white/[0.03] border-y border-white/[0.06]">
-        <div className="mx-auto max-w-3xl flex flex-col items-center gap-5 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tekton-teal/70">
-            Partner With Us
-          </p>
-          <h2 className="font-heading text-4xl text-white sm:text-5xl">
-            PARTNER WITH <span className="gradient-text">US</span>
-          </h2>
-          <p className="text-white/50 max-w-md">
-            Join companies investing in Africa's next generation of tech talent.
-          </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-tekton-purple-bright text-white hover:bg-tekton-purple-bright/90 glow-purple font-semibold gap-2 mt-1"
+    <div className="tx-marketing">
+      {/* Hero */}
+      <section
+        id="top-hero"
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          background:
+            'radial-gradient(70% 62% at 76% 40%, rgba(168,85,247,0.13) 0%, rgba(250,248,246,0) 72%), #FAF8F6',
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            maxWidth: 1440,
+            margin: '0 auto',
+            padding: '40px 28px 32px',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))',
+            gap: '8px 24px',
+            alignItems: 'center',
+          }}
+        >
+          <div
+            className="tx-marketing-rise"
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 26, minWidth: 0 }}
           >
-            <Link to="/partnerships">Become a Partner &rarr;</Link>
-          </Button>
+            <h1 style={{ fontSize: 'clamp(52px,6.4vw,96px)', lineHeight: 0.86, letterSpacing: '0.005em', color: '#0E0B12' }}>
+              BUILDING PEOPLE.
+              <br />
+              BUILDING PRODUCTS.
+              <br />
+              <span
+                style={{
+                  background: 'linear-gradient(100deg,#7C3AED,#C026D3)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                BUILDING AFRICA.
+              </span>
+            </h1>
+            <p style={{ fontSize: 18, lineHeight: 1.7, color: '#5C5661', maxWidth: '48ch', margin: 0 }}>
+              Building communities of young African builders through learning, mentorship, and technology.
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14 }}>
+              <DarkButton to="/join">Join the community</DarkButton>
+              <a
+                href="#programs"
+                className="tx-btn-light-a"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  background: '#FFFFFF',
+                  color: '#141118',
+                  fontSize: 16,
+                  fontWeight: 600,
+                  padding: '17px 30px',
+                  borderRadius: 10,
+                  border: '1px solid rgba(20,17,24,0.08)',
+                  boxShadow: '0 6px 20px rgba(20,17,24,0.07)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                See what we run
+              </a>
+            </div>
+          </div>
+          <div
+            className="tx-marketing-heroimg"
+            style={{ minWidth: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: -56 }}
+          >
+            <img
+              src={heroX}
+              alt="TektonX mark with community members"
+              className="tx-marketing-drift"
+              style={{ width: '100%', maxWidth: 'none', height: 'auto', display: 'block' }}
+            />
+          </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════
-          Section 5 — CTA Banner
-      ════════════════════════════════════════════════════════ */}
-      <section className="py-28 px-4">
-        <div className="mx-auto max-w-5xl">
-          <div className="relative overflow-hidden rounded-3xl border border-tekton-purple-bright/20 px-8 py-20 text-center">
-            {/* Gradient background */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: 'linear-gradient(135deg, rgba(76,29,149,0.6) 0%, rgba(124,58,237,0.4) 50%, rgba(20,184,166,0.2) 100%)',
-              }}
-            />
-            {/* Decorative orbs */}
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute -top-20 -right-20 size-60 rounded-full bg-tekton-purple-bright/20 blur-3xl" />
-              <div className="absolute -bottom-20 -left-20 size-60 rounded-full bg-tekton-teal/15 blur-3xl" />
+      {/* Trust strip */}
+      <section style={{ padding: '8px 28px 0' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 28, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 19, color: '#413B47', fontWeight: 500 }}>
+            A growing community of students, builders and industry speakers
+          </span>
+          <span style={{ flex: '1 1 120px', height: 1, background: 'rgba(20,17,24,0.12)', minWidth: 60 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ display: 'flex' }}>
+              <img
+                src={p01}
+                alt=""
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 999,
+                  objectFit: 'cover',
+                  objectPosition: '50% 26%',
+                  border: '2px solid #F5F4F3',
+                  display: 'block',
+                }}
+              />
+              <img
+                src={s130}
+                alt=""
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 999,
+                  objectFit: 'cover',
+                  objectPosition: '38% 42%',
+                  border: '2px solid #F5F4F3',
+                  marginLeft: -14,
+                  display: 'block',
+                }}
+              />
+              <img
+                src={s25}
+                alt=""
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 999,
+                  objectFit: 'cover',
+                  objectPosition: '50% 20%',
+                  border: '2px solid #F5F4F3',
+                  marginLeft: -14,
+                  display: 'block',
+                }}
+              />
             </div>
-            {/* Grid overlay */}
-            <div className="absolute inset-0 bg-grid opacity-20" />
+            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
+              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, color: '#141118' }}>1000+</span>
+              <span style={{ fontSize: 14, color: '#5C5661' }}>builders reached so far</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="relative z-10 flex flex-col items-center gap-6">
-              <h2 className="font-heading text-5xl text-white sm:text-6xl leading-tight">
-                READY TO START YOUR
-                <br />
-                <span className="gradient-text">TECH JOURNEY?</span>
-              </h2>
-              <p className="max-w-lg text-white/65 leading-relaxed">
-                Join our mentorship program and get paired with experienced tech professionals
-                who will guide you through your chosen tech track.
+      {/* Stats row */}
+      <section style={{ padding: '56px 28px 0' }}>
+        <div
+          style={{
+            maxWidth: 1240,
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(185px,1fr))',
+            gap: 20,
+          }}
+        >
+          <StatCard value="1000+" label="Young builders reached" />
+          <StatCard value="10+" label="Speakers from industry" />
+          <StatCard value="8" label="Tech tracks" />
+          <StatCard value="100%" label="Expert mentors" />
+        </div>
+      </section>
+
+      {/* The Series */}
+      <section id="series" style={{ padding: '110px 28px 0' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 18, marginBottom: 48 }}>
+            <span style={eyebrowStyle}>Where we gather</span>
+            <h2 style={{ fontSize: 'clamp(40px,5.4vw,76px)', lineHeight: 0.9, color: '#141118' }}>THE SERIES</h2>
+            <p style={{ fontSize: 18, lineHeight: 1.65, color: '#5C5661', maxWidth: '58ch', margin: 0 }}>
+              Every edition puts builders, speakers and students in one room for a day. What starts as a talk ends
+              as a group chat, a team, and the next thing someone ships.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 22 }}>
+            {/* Edition 1.0 */}
+            <article
+              className="tx-card-hover"
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid rgba(20,17,24,0.06)',
+                borderRadius: 22,
+                padding: '14px 14px 30px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 18,
+                minWidth: 0,
+              }}
+            >
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateRows: '1fr 1fr',
+                  gap: 6,
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  aspectRatio: '4/3',
+                  background: '#EDEAF2',
+                }}
+              >
+                <img
+                  src={p01}
+                  alt="FROM CAMPUS TO TECH CAREERS 1.0"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', gridRow: '1 / span 2' }}
+                />
+                <img src={p03} alt="FROM CAMPUS TO TECH CAREERS 1.0" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                <img src={p06} alt="FROM CAMPUS TO TECH CAREERS 1.0" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '0 16px' }}>
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignSelf: 'flex-start',
+                    background: 'rgba(124,58,237,0.1)',
+                    borderRadius: 999,
+                    padding: '7px 14px',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: '#6D28D9',
+                  }}
+                >
+                  Edition 1.0
+                </span>
+                <h3 style={{ fontSize: 30, lineHeight: 1, color: '#141118' }}>FROM CAMPUS TO TECH CAREERS 1.0</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.65, color: '#5C5661', margin: 0 }}>
+                  The first room. Talks from people working in the industry, open Q&amp;A, and the first hundreds of
+                  builders in the community.
+                </p>
+              </div>
+            </article>
+
+            {/* Edition 2.0 */}
+            <article
+              className="tx-card-hover"
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid rgba(20,17,24,0.06)',
+                borderRadius: 22,
+                padding: '14px 14px 30px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 18,
+                minWidth: 0,
+              }}
+            >
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateRows: '1fr 1fr',
+                  gap: 6,
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  aspectRatio: '4/3',
+                  background: '#EDEAF2',
+                }}
+              >
+                <img
+                  src={s145}
+                  alt="FROM CAMPUS TO TECH CAREERS 2.0"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    objectPosition: '50% 34%',
+                    display: 'block',
+                    gridRow: '1 / span 2',
+                  }}
+                />
+                <img src={s111} alt="FROM CAMPUS TO TECH CAREERS 2.0" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                <img src={s25} alt="FROM CAMPUS TO TECH CAREERS 2.0" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '0 16px' }}>
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignSelf: 'flex-start',
+                    background: 'rgba(124,58,237,0.1)',
+                    borderRadius: 999,
+                    padding: '7px 14px',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: '#6D28D9',
+                  }}
+                >
+                  Edition 2.0
+                </span>
+                <h3 style={{ fontSize: 30, lineHeight: 1, color: '#141118' }}>FROM CAMPUS TO TECH CAREERS 2.0</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.65, color: '#5C5661', margin: 0 }}>
+                  Bigger room, more speakers, more tracks. Students mapped a direction and left with people to build
+                  alongside.
+                </p>
+              </div>
+            </article>
+
+            {/* Tech. AI. Future. — no stills; Facebook reel link only */}
+            <article
+              style={{
+                position: 'relative',
+                overflow: 'hidden',
+                borderRadius: 22,
+                background: 'linear-gradient(150deg,#4C1D95 0%,#7C3AED 58%,#C026D3 100%)',
+                padding: '14px 14px 30px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 18,
+                minWidth: 0,
+                boxShadow: '0 24px 56px rgba(76,29,149,0.26)',
+              }}
+            >
+              <a
+                href={FACEBOOK_REEL_URL}
+                target="_blank"
+                rel="noopener"
+                aria-label="Watch the Tech. AI. Future. recap"
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  aspectRatio: '4/3',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1px solid rgba(255,255,255,0.28)',
+                }}
+              >
+                <img
+                  src={tektonxMark}
+                  alt=""
+                  style={{ position: 'absolute', width: '66%', height: 'auto', opacity: 0.16, filter: 'brightness(0) invert(1)' }}
+                />
+                <span
+                  style={{
+                    position: 'relative',
+                    width: 74,
+                    height: 74,
+                    borderRadius: 999,
+                    background: '#FFFFFF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 14px 34px rgba(20,17,24,0.3)',
+                  }}
+                >
+                  <Play size={28} color="#4C1D95" fill="#4C1D95" />
+                </span>
+              </a>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '0 16px' }}>
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignSelf: 'flex-start',
+                    background: 'rgba(255,255,255,0.18)',
+                    border: '1px solid rgba(255,255,255,0.45)',
+                    borderRadius: 999,
+                    padding: '7px 14px',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: '#FFFFFF',
+                  }}
+                >
+                  Latest edition
+                </span>
+                <h3 style={{ fontSize: 30, lineHeight: 1, color: '#FFFFFF' }}>TECH. AI. FUTURE.</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.65, color: '#FFFFFF', margin: 0 }}>
+                  A day on where AI is taking the work, and what builders here should do about it. Watch the whole
+                  thing in a minute.
+                </p>
+                <a
+                  href={FACEBOOK_REEL_URL}
+                  target="_blank"
+                  rel="noopener"
+                  className="tx-recap-link"
+                  style={{
+                    fontSize: 14,
+                    color: '#FFFFFF',
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    alignSelf: 'flex-start',
+                  }}
+                >
+                  Watch the recap <ArrowUpRight size={15} />
+                </a>
+              </div>
+            </article>
+          </div>
+
+          {/* Next edition band */}
+          <div
+            style={{
+              marginTop: 22,
+              background: '#FFFFFF',
+              border: '1px dashed rgba(124,58,237,0.35)',
+              borderRadius: 22,
+              padding: '36px 34px',
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 22,
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 }}>
+              <span style={eyebrowStyle}>Next edition</span>
+              <h3 style={{ fontSize: 34, lineHeight: 1, color: '#141118' }}>YOUR CAMPUS, YOUR CITY</h3>
+              <p style={{ fontSize: 16, lineHeight: 1.65, color: '#5C5661', margin: 0, maxWidth: '52ch' }}>
+                We are opening the next round of editions. Tell us where the builders are and we will bring the room
+                to them.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <Button
-                  asChild
-                  size="lg"
-                  className="bg-white text-tekton-purple-deep hover:bg-white/90 font-semibold px-10 text-base"
-                >
-                  <Link to="/auth/register">Register as Mentee</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="border-white/40 bg-white/5 px-10 text-white hover:bg-white/10 hover:border-white/60 backdrop-blur-sm font-semibold text-base"
-                >
-                  <Link to="/auth/register?role=mentor">Become a Mentor</Link>
-                </Button>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+              <Link
+                to="/partnerships"
+                className="tx-btn-dark"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  background: '#141118',
+                  color: '#FFFFFF',
+                  fontSize: 16,
+                  fontWeight: 600,
+                  padding: '16px 28px',
+                  borderRadius: 10,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Host an edition
+              </Link>
+              <Link
+                to="/join"
+                className="tx-btn-light-b"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  background: '#FFFFFF',
+                  color: '#141118',
+                  fontSize: 16,
+                  fontWeight: 600,
+                  padding: '16px 28px',
+                  borderRadius: 10,
+                  border: '1px solid rgba(20,17,24,0.1)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Get notified
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who we are */}
+      <section id="about" style={{ padding: '110px 28px 0' }}>
+        <div
+          style={{
+            maxWidth: 1240,
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(min(340px,100%),1fr))',
+            gap: 64,
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 24, minWidth: 0 }}>
+            <span style={eyebrowStyle}>Who we are</span>
+            <h2 style={{ fontSize: 'clamp(40px,5vw,68px)', lineHeight: 0.92, color: '#141118' }}>
+              ON THE GROUND,
+              <br />
+              NOT ONLINE ONLY
+            </h2>
+            <p style={{ fontSize: 18, lineHeight: 1.7, color: '#5C5661', margin: 0, maxWidth: '52ch' }}>
+              Tekton is a Greek word meaning builder. The X stands for everything: people and products. We gather
+              young builders in the rooms where the opportunity usually stops, lecture halls, hostels and community
+              centres, and give them somewhere to keep building afterwards.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 16, color: '#2C2534' }}>
+                <CircleCheck size={20} color="#7C3AED" /> Sessions led by people working in the industry
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 16, color: '#2C2534' }}>
+                <CircleCheck size={20} color="#7C3AED" /> Peer-to-peer building, not a lecture series
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 16, color: '#2C2534' }}>
+                <CircleCheck size={20} color="#7C3AED" /> A community you stay in after the event ends
+              </span>
+            </div>
+            <a
+              href="#programs"
+              className="tx-btn-dark"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 10,
+                background: '#141118',
+                color: '#FFFFFF',
+                fontSize: 16,
+                fontWeight: 600,
+                padding: '16px 28px',
+                borderRadius: 10,
+                marginTop: 4,
+              }}
+            >
+              See our programs
+            </a>
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid rgba(20,17,24,0.06)',
+                borderRadius: 24,
+                padding: 12,
+                boxShadow: '0 24px 60px rgba(20,17,24,0.08)',
+              }}
+            >
+              <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '4/5', background: '#EDEAF2' }}>
+                <img
+                  src={s75}
+                  alt="A participant at the From Campus to Tech Careers backdrop, PAAU 2025"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Our Programs */}
+      <section id="programs" style={{ padding: '120px 28px 0' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              gap: 18,
+              marginBottom: 56,
+            }}
+          >
+            <span style={eyebrowStyle}>What we offer</span>
+            <h2 style={{ fontSize: 'clamp(40px,5.4vw,76px)', lineHeight: 0.9, color: '#141118', maxWidth: '22ch' }}>
+              OUR PROGRAMS
+            </h2>
+            <p style={{ fontSize: 18, lineHeight: 1.65, color: '#5C5661', maxWidth: '56ch', margin: 0 }}>
+              Six programs that carry a young person from first exposure to a paid role.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(320px,100%),1fr))', gap: 22 }}>
+            {PROGRAMS.map(({ Icon, title, description, gradient, shadowColor }) => (
+              <article
+                key={title}
+                className="tx-card-hover"
+                style={{
+                  background: '#FFFFFF',
+                  border: '1px solid rgba(20,17,24,0.06)',
+                  borderRadius: 20,
+                  padding: '34px 32px 36px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 16,
+                  minWidth: 0,
+                }}
+              >
+                <IconBadge Icon={Icon} gradient={gradient} shadowColor={shadowColor} size="lg" />
+                <h3 style={{ fontSize: 30, lineHeight: 1, color: '#141118' }}>{title}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.65, color: '#5C5661', margin: 0 }}>{description}</p>
+              </article>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 48 }}>
+            <a
+              href="#programs"
+              className="tx-btn-light-a"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 10,
+                background: '#FFFFFF',
+                color: '#141118',
+                fontSize: 16,
+                fontWeight: 600,
+                padding: '16px 30px',
+                borderRadius: 10,
+                border: '1px solid rgba(20,17,24,0.08)',
+                boxShadow: '0 6px 20px rgba(20,17,24,0.06)',
+              }}
+            >
+              View all programs <ArrowRight size={16} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Mentorship */}
+      <section id="mentorship" style={{ padding: '120px 28px 0' }}>
+        <div
+          style={{
+            maxWidth: 1240,
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(min(340px,100%),1fr))',
+            gap: 64,
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ minWidth: 0, order: -1 }}>
+            <div
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid rgba(20,17,24,0.06)',
+                borderRadius: 24,
+                padding: 12,
+                boxShadow: '0 24px 60px rgba(20,17,24,0.08)',
+              }}
+            >
+              <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '4/5', background: '#EDEAF2' }}>
+                <img
+                  src={s181}
+                  alt="A TektonX mentor speaking at the PAAU outreach"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 32%', display: 'block' }}
+                />
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 24, minWidth: 0 }}>
+            <span style={eyebrowStyle}>Mentorship</span>
+            <h2 style={{ fontSize: 'clamp(40px,5vw,68px)', lineHeight: 0.92, color: '#141118' }}>
+              PAIRED WITH SOMEONE
+              <br />
+              WHO HAS DONE IT
+            </h2>
+            <p style={{ fontSize: 18, lineHeight: 1.7, color: '#5C5661', margin: 0, maxWidth: '52ch' }}>
+              Every mentee is matched to a track and an experienced professional working in it, then runs a
+              three-month cycle of sessions, feedback and job support — not a one-off webinar.
+            </p>
+            <a
+              href="#join"
+              className="tx-btn-dark"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 10,
+                background: '#141118',
+                color: '#FFFFFF',
+                fontSize: 16,
+                fontWeight: 600,
+                padding: '16px 28px',
+                borderRadius: 10,
+              }}
+            >
+              Learn more
+            </a>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 6 }}>
+              {MENTORSHIP_PILLS.map((pill) => (
+                <span
+                  key={pill}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 9,
+                    background: '#FFFFFF',
+                    border: '1px solid rgba(20,17,24,0.08)',
+                    borderRadius: 999,
+                    padding: '12px 20px',
+                    fontSize: 15,
+                    color: '#2C2534',
+                  }}
+                >
+                  <CircleCheck size={17} color="#7C3AED" /> {pill}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Core values */}
+      <section id="values" style={{ padding: '120px 28px 0' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              gap: 18,
+              marginBottom: 56,
+            }}
+          >
+            <span style={eyebrowStyle}>What drives us</span>
+            <h2 style={{ fontSize: 'clamp(40px,5.4vw,76px)', lineHeight: 0.9, color: '#141118', maxWidth: '24ch' }}>
+              OUR CORE VALUES
+            </h2>
+            <p style={{ fontSize: 18, lineHeight: 1.65, color: '#5C5661', maxWidth: '56ch', margin: 0 }}>
+              The principles that guide everything we do at TektonX.
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+            {VALUES.map(({ Icon, title, description, gradient, shadowColor }) => (
+              <div
+                key={title}
+                style={{
+                  flex: '1 1 210px',
+                  background: '#FFFFFF',
+                  border: '1px solid rgba(20,17,24,0.06)',
+                  borderRadius: 18,
+                  padding: '28px 26px 30px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12,
+                  minWidth: 0,
+                }}
+              >
+                <IconBadge Icon={Icon} gradient={gradient} shadowColor={shadowColor} size="sm" />
+                <h3 style={{ fontSize: 24, lineHeight: 1, color: '#141118' }}>{title}</h3>
+                <p style={{ fontSize: 15, lineHeight: 1.6, color: '#5C5661', margin: 0 }}>{description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <JoinPanel
+        heading="COME BUILD WITH US"
+        headingMaxCh="20ch"
+        body="Join the community, come to the next event, or bring TektonX to your location."
+        bodyMaxCh="56ch"
+        align="center"
+        primary={{ to: '/join', label: 'Join the community' }}
+        secondary={{ to: '/partnerships', label: 'Bring TektonX to your location' }}
+      />
     </div>
   )
 }

@@ -2,12 +2,18 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Eye, EyeOff } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import authService from '@/services/authService'
 import { useAuth } from '@/hooks/useAuth'
 import type { User } from '@/types'
+import logoBlackHorizontal from '@/assets/marketing/logo-black-horizontal.svg'
+
+// Light-theme field styling shared by every input on this form — same shape
+// as the shadcn defaults, just re-tinted for a white background (matches
+// JoinCommunity.tsx's already-converted fields).
+const fieldClassName =
+  'bg-white border-[rgba(20,17,24,0.12)] text-[#141118] placeholder:text-[#7A737F] focus-visible:border-[#7C3AED] focus-visible:ring-[#7C3AED]/30'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -45,35 +51,38 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md flex flex-col gap-6">
+    // AuthLayout already centers/backgrounds the page (min-h-screen, flex,
+    // items-center, justify-center, px-4) — no need to repeat that here. A
+    // duplicate wrapper used to make this card size unreliably (narrower at
+    // 1440px than at 375px, since a nested flex-center shrinks to fit).
+    <div className="w-full max-w-md flex flex-col gap-6 py-16">
         {/* Brand */}
         <div className="flex flex-col items-center gap-3">
           <Link to="/">
-            <img src="/logo-gradient-horizontal.svg" alt="TektonX" className="h-10 w-auto hover:opacity-80 transition-opacity" />
+            <img src={logoBlackHorizontal} alt="TektonX" className="h-10 w-auto hover:opacity-80 transition-opacity" />
           </Link>
-          <p className="text-xs text-white/40 uppercase tracking-widest">Sign in to your account</p>
+          <p className="text-xs text-[#7A737F] uppercase tracking-widest">Sign in to your account</p>
         </div>
 
         {/* Card */}
-        <div className="glass-card rounded-2xl p-8 flex flex-col gap-5">
+        <div className="bg-white border border-[rgba(20,17,24,0.06)] shadow-[0_24px_60px_rgba(20,17,24,0.08)] rounded-2xl p-8 flex flex-col gap-5">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <Label className="text-sm text-white/60">Email address</Label>
+              <Label className="text-sm text-[#413B47]">Email address</Label>
               <Input
                 type="email"
                 placeholder="you@example.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                className={fieldClassName}
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
-                <Label className="text-sm text-white/60">Password</Label>
-                <Link to="/auth/forgot-password" className="text-xs text-tekton-blue hover:text-tekton-blue/80">
+                <Label className="text-sm text-[#413B47]">Password</Label>
+                <Link to="/auth/forgot-password" className="text-xs text-[#7C3AED] hover:text-[#7C3AED]/80">
                   Forgot password?
                 </Link>
               </div>
@@ -84,24 +93,32 @@ export default function Login() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pr-10"
+                  className={`${fieldClassName} pr-10`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7A737F] hover:text-[#413B47]"
                 >
                   {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
               </div>
             </div>
 
-            {error && <p className="text-red-400 text-sm">{error}</p>}
+            {error && <p className="text-[#DC2626] text-sm">{error}</p>}
 
-            <Button
+            <button
               type="submit"
               disabled={loading}
-              className="w-full bg-tekton-purple-bright hover:bg-tekton-purple-bright/90 mt-1"
+              className="tx-cta-gradient mt-1 w-full inline-flex items-center justify-center gap-2 rounded-md text-white text-sm font-medium"
+              style={{
+                background: 'linear-gradient(100deg,#7C3AED,#C026D3)',
+                padding: '17px 30px',
+                borderRadius: 10,
+                boxShadow: '0 6px 18px rgba(124,58,237,0.28)',
+                opacity: loading ? 0.75 : 1,
+                cursor: loading ? 'default' : 'pointer',
+              }}
             >
               {loading ? (
                 <span className="flex items-center gap-2">
@@ -109,19 +126,18 @@ export default function Login() {
                   Signing in&hellip;
                 </span>
               ) : 'Sign In'}
-            </Button>
+            </button>
           </form>
 
-          <div className="h-px bg-white/10" />
+          <div className="h-px bg-[rgba(20,17,24,0.08)]" />
 
-          <p className="text-center text-sm text-white/50">
+          <p className="text-center text-sm text-[#7A737F]">
             Don&apos;t have an account?{' '}
-            <Link to="/auth/register" className="text-tekton-blue hover:text-tekton-blue/80">
+            <Link to="/auth/register" className="text-[#7C3AED] hover:text-[#7C3AED]/80">
               Create one
             </Link>
           </p>
         </div>
-      </div>
     </div>
   )
 }

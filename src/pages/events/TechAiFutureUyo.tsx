@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, MessageCircle, X } from 'lucide-react'
 
 import eventRegistrationService from '@/services/eventRegistrationService'
 import type { RegisterPayload } from '@/services/eventRegistrationService'
@@ -24,6 +24,15 @@ const EVENT_SLUG = 'tech-ai-future-uyo'
 // Set in .env / Vercel project env as VITE_META_PIXEL_ID. Undefined in
 // environments where it isn't configured — initMetaPixel() no-ops then.
 const META_PIXEL_ID: string | undefined = import.meta.env.VITE_META_PIXEL_ID
+
+// Shown after a successful application: a modal counts down, then redirects
+// this same tab to the WhatsApp group's invite link (there's no way to add
+// someone to a WhatsApp group without them tapping "Join Group" themselves —
+// this gets them to that screen automatically instead of making them find the
+// link some other way). A visible button lets them jump there immediately
+// instead of waiting out the countdown.
+const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/DsehDtpot4DJDhmXEVgBnh?mode=gi_t'
+const WHATSAPP_REDIRECT_SECONDS = 5
 
 // Static fallbacks — used while the event fetch is loading, or if it fails,
 // so the page always renders correctly (per design handoff).
@@ -234,6 +243,21 @@ export default function TechAiFutureUyo() {
   const [question, setQuestion] = useState('')
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false)
+  const [whatsAppSecondsLeft, setWhatsAppSecondsLeft] = useState(WHATSAPP_REDIRECT_SECONDS)
+
+  // Counts down while the modal is open, then redirects this tab to the
+  // WhatsApp group. Dismissing the modal (showWhatsAppModal → false) lets the
+  // cleanup clear the pending tick, so it never fires after being closed.
+  useEffect(() => {
+    if (!showWhatsAppModal) return
+    if (whatsAppSecondsLeft <= 0) {
+      window.location.href = WHATSAPP_GROUP_URL
+      return
+    }
+    const id = setTimeout(() => setWhatsAppSecondsLeft(s => s - 1), 1000)
+    return () => clearTimeout(id)
+  }, [showWhatsAppModal, whatsAppSecondsLeft])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -246,6 +270,8 @@ export default function TechAiFutureUyo() {
 
       await eventRegistrationService.register(EVENT_SLUG, payload)
       setSubmitted(true)
+      setWhatsAppSecondsLeft(WHATSAPP_REDIRECT_SECONDS)
+      setShowWhatsAppModal(true)
       trackMetaPixelEvent('Lead')
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message
@@ -789,6 +815,63 @@ export default function TechAiFutureUyo() {
           </div>
         </div>
       </footer>
+
+      {/* ════════════════════════════════════════════════════════
+          WhatsApp redirect modal — shown once, right after a
+          successful application. Counts down, then redirects this
+          tab to the group invite link; "Join now" skips the wait,
+          "Not now" cancels it (see the countdown effect above).
+      ════════════════════════════════════════════════════════ */}
+      {showWhatsAppModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#06051D]/60 px-5"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="whatsapp-modal-heading"
+        >
+          <div className="relative w-full max-w-[440px] border-2 border-[#06051D] bg-white p-[clamp(24px,5vw,36px)]">
+            <button
+              type="button"
+              onClick={() => setShowWhatsAppModal(false)}
+              aria-label="Close"
+              className="absolute right-4 top-4 text-[#4A4B5E] hover:text-[#06051D]"
+            >
+              <X className="size-5" />
+            </button>
+
+            <div className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#4A12BC]">
+              Application received
+            </div>
+            <h2
+              id="whatsapp-modal-heading"
+              className="mt-3 pr-6 text-[clamp(26px,6vw,34px)] font-extrabold uppercase leading-[1.05] tracking-[-0.03em]"
+            >
+              You&rsquo;re in!
+            </h2>
+            <p className="mt-3 text-[15px] leading-[1.55] text-[#4A4B5E]">
+              Check your email for confirmation. We&rsquo;ll also take you to our WhatsApp
+              group in <span className="font-bold text-[#06051D]">{whatsAppSecondsLeft}s</span>,
+              so you don&rsquo;t miss updates before the day.
+            </p>
+
+            <a
+              href={WHATSAPP_GROUP_URL}
+              className="mt-6 flex min-h-[54px] items-center justify-center gap-3 bg-[#5E17EB] px-6 py-4 text-[14px] font-bold uppercase tracking-[0.08em] text-white no-underline hover:bg-[#4A12BC]"
+            >
+              <MessageCircle className="size-[18px]" />
+              Join WhatsApp Group Now
+            </a>
+
+            <button
+              type="button"
+              onClick={() => setShowWhatsAppModal(false)}
+              className="mt-4 w-full text-center text-[13px] text-[#4A4B5E] underline decoration-[rgba(74,75,94,0.4)] underline-offset-2 hover:text-[#06051D]"
+            >
+              Not now
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
