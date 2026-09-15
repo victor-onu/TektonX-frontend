@@ -8,7 +8,7 @@ import eventRegistrationService from '@/services/eventRegistrationService'
 import type { RegisterPayload } from '@/services/eventRegistrationService'
 import { initMetaPixel, trackMetaPixelEvent } from '@/lib/metaPixel'
 
-import heroGlobe from '@/assets/events/tech-ai-future-uyo/hero-globe.png'
+import heroGlobe from '@/assets/events/tech-ai-future-uyo/hero-globe.webp'
 import heroGroup from '@/assets/events/tech-ai-future-uyo/hero-group.jpg'
 import logoWhite from '@/assets/events/tech-ai-future-uyo/logo-white.png'
 import logoEdgenexus from '@/assets/events/tech-ai-future-uyo/logo-edgenexus.png'
