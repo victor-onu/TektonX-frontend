@@ -53,4 +53,17 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        // A second HTML entry, built and served only at
+        // /events/tech-ai-future-uyo (see vercel.json), so that route can
+        // carry its own <title>/description/Open Graph/Twitter Card tags
+        // instead of the site-wide ones — the actual page content still
+        // comes from the same React app (same /src/main.tsx bootstrap).
+        uyoEvent: path.resolve(__dirname, 'events/tech-ai-future-uyo/index.html'),
+      },
+    },
+  },
 })

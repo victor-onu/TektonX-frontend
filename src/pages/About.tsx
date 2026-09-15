@@ -1,7 +1,7 @@
 import { useScrollToHash } from '@/hooks/useScrollToHash'
 import { StatCard, DarkButton, JoinPanel } from '@/components/marketing/ui'
 import { eyebrowStyle } from '@/components/marketing/tokens'
-import heroX from '@/assets/marketing/hero-x.png'
+import heroX from '@/assets/marketing/hero-x.webp'
 import p02 from '@/assets/marketing/photos/p02.jpeg'
 import p08 from '@/assets/marketing/photos/p08.jpeg'
 import s25 from '@/assets/marketing/solex/s25.jpg'
