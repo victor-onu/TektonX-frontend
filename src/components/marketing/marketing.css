@@ -1,0 +1,197 @@
+/*
+ * Scoped design system for the community-led Home ("/") and About ("/about")
+ * redesign, per the `design_handoff_tektonx_community` handoff. Everything
+ * here is scoped under `.tx-marketing` so it never touches the main app's
+ * dark theme used by every other page (Navigation/Footer/PublicLayout).
+ *
+ * Bebas Neue + Inter are already loaded globally (see `src/index.css`'s
+ * top-of-file Google Fonts `@import` and `@theme inline` font tokens) — no
+ * new font loading is needed here.
+ */
+
+.tx-marketing {
+  background: #f5f4f3;
+  color: #141118;
+  width: 100%;
+}
+
+/*
+ * The main app has a global `h1,h2,h3,h4,h5,h6 { font-family: "Bebas Neue";
+ * letter-spacing: 0.05em }` base rule (src/index.css) for its own
+ * poster-style headings. This handoff's type scale calls for 0.02em
+ * tracking, so it must be overridden per heading here — a compound selector
+ * like `.tx-marketing h1` outranks the bare `h1` type selector regardless of
+ * source order.
+ */
+.tx-marketing h1,
+.tx-marketing h2,
+.tx-marketing h3,
+.tx-marketing h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  margin: 0;
+}
+
+.tx-marketing ::selection {
+  background: rgba(124, 58, 237, 0.16);
+}
+
+.tx-marketing *:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 3px;
+}
+
+.tx-marketing-nav {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tx-marketing-nav::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes txRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes txDrift {
+  0% {
+    transform: scale(1) translate(0px, -6px);
+  }
+  50% {
+    transform: scale(1.03) translate(-8px, 6px);
+  }
+  100% {
+    transform: scale(1) translate(0px, -6px);
+  }
+}
+
+.tx-marketing-rise {
+  animation: txRise 900ms cubic-bezier(0.22, 0.9, 0.24, 1) both;
+}
+
+.tx-marketing-drift {
+  animation: txDrift 26s ease-in-out infinite;
+}
+
+@keyframes txPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Light-theme loading skeleton — used by Mentors' stat pill and card grid
+   while their queries are in flight. */
+.tx-skeleton {
+  background: rgba(20, 17, 24, 0.08);
+  border-radius: 6px;
+  animation: txPulse 1.6s ease-in-out infinite;
+}
+
+/*
+ * Hover states. Base colors/shadows are set inline (to mirror the handoff's
+ * exact values 1:1), so these overrides need `!important` to win over an
+ * inline `style` attribute on the same property — that's expected here, not
+ * a specificity workaround gone wrong.
+ */
+.tx-hover-accent:hover {
+  color: #7c3aed !important;
+}
+
+.tx-cta-gradient:hover {
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4) !important;
+}
+
+.tx-btn-dark:hover {
+  background: #2c2534 !important;
+}
+
+.tx-btn-light-a:hover {
+  box-shadow: 0 10px 26px rgba(20, 17, 24, 0.12) !important;
+}
+
+.tx-btn-light-b:hover {
+  box-shadow: 0 10px 26px rgba(20, 17, 24, 0.1) !important;
+}
+
+.tx-card-hover:hover {
+  box-shadow: 0 18px 44px rgba(20, 17, 24, 0.09) !important;
+}
+
+.tx-recap-link:hover {
+  color: #f5f4f3 !important;
+}
+
+.tx-social:hover {
+  color: #7c3aed !important;
+}
+
+.tx-footer-link:hover {
+  color: #7c3aed !important;
+}
+
+.tx-btn-white-purple:hover {
+  background: #f5f4f3 !important;
+}
+
+.tx-btn-translucent:hover {
+  background: #ffffff !important;
+  color: #4c1d95 !important;
+}
+
+/* Header reflow — the only breakpoint in this handoff. */
+@media (max-width: 760px) {
+  .tx-marketing-head {
+    display: grid !important;
+    grid-template-columns: auto 1fr !important;
+    align-items: center !important;
+    row-gap: 6px !important;
+    column-gap: 12px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    min-height: 0 !important;
+  }
+  .tx-marketing-head > a {
+    grid-column: 1 !important;
+  }
+  .tx-marketing-head > nav {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+  }
+  .tx-marketing-head > div {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+  }
+  .tx-marketing-head > a > img {
+    height: 40px !important;
+    width: 74px !important;
+  }
+  .tx-marketing-heroimg {
+    margin-right: 0 !important;
+  }
+
+  /* The nav row scrolls horizontally with its scrollbar hidden (by design —
+     see README), which at very narrow widths clips the last item ("Join
+     Community") with no visual hint there's more to scroll to. A right-edge
+     fade signals that without bringing back a visible scrollbar. Scoped to
+     this breakpoint only — at wider widths the nav fits with room to spare,
+     so a permanent fade there would just dim content that isn't clipped. */
+  .tx-marketing-head > nav {
+    padding-right: 28px !important;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent 100%);
+  }
+}

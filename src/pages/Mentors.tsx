@@ -1,53 +1,91 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Linkedin, ArrowRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { cn, getInitials } from '@/lib/utils'
+import { DarkButton } from '@/components/marketing/ui'
+import { eyebrowStyle } from '@/components/marketing/tokens'
+import { getInitials } from '@/lib/utils'
 import { TECH_TRACKS } from '@/types'
 import mentorService from '@/services/mentorService'
 import type { TechTrack } from '@/types'
 
 // ─── Track color map ──────────────────────────────────────────────────────────
+// Reuses the exact gradient/shadow pairs already established for icon badges
+// on Home/About (see PROGRAMS/VALUES in `Index.tsx`) rather than introducing
+// new hues — there happen to be exactly 8 distinct pairs across those two
+// arrays, one per tech track.
 
-const TRACK_BADGE_COLORS: Partial<Record<TechTrack, string>> = {
-  'Software Development (Frontend & Backend)': 'bg-tekton-purple-bright/15 text-tekton-purple-bright border-tekton-purple-bright/30',
-  'UI/UX Design': 'bg-tekton-teal/15 text-tekton-teal border-tekton-teal/30',
-  'Mobile App Development': 'bg-tekton-blue/15 text-tekton-blue border-tekton-blue/30',
-  'Product/Project Management': 'bg-tekton-yellow/15 text-tekton-yellow border-tekton-yellow/30',
-  'Quality Assurance (QA)': 'bg-tekton-green/15 text-tekton-green border-tekton-green/30',
-  'Data (Analysis/Science)': 'bg-tekton-purple-bright/15 text-tekton-purple-bright border-tekton-purple-bright/30',
-  'Cybersecurity': 'bg-red-500/15 text-red-400 border-red-500/30',
-  'Web3': 'bg-orange-500/15 text-orange-400 border-orange-500/30',
+const TRACK_STYLES: Record<TechTrack, { gradient: string; shadowColor: string; badgeText: string; badgeBg: string }> = {
+  'Software Development (Frontend & Backend)': {
+    gradient: 'linear-gradient(150deg,#A855F7,#6D28D9)',
+    shadowColor: 'rgba(124,58,237,0.34)',
+    badgeText: '#6D28D9',
+    badgeBg: 'rgba(124,58,237,0.1)',
+  },
+  'UI/UX Design': {
+    gradient: 'linear-gradient(150deg,#2DD4BF,#0E7490)',
+    shadowColor: 'rgba(14,116,144,0.30)',
+    badgeText: '#0E7490',
+    badgeBg: 'rgba(14,116,144,0.1)',
+  },
+  'Mobile App Development': {
+    gradient: 'linear-gradient(150deg,#60A5FA,#1D4ED8)',
+    shadowColor: 'rgba(29,78,216,0.30)',
+    badgeText: '#1D4ED8',
+    badgeBg: 'rgba(29,78,216,0.1)',
+  },
+  'Product/Project Management': {
+    gradient: 'linear-gradient(150deg,#F59E0B,#B45309)',
+    shadowColor: 'rgba(217,119,6,0.30)',
+    badgeText: '#B45309',
+    badgeBg: 'rgba(217,119,6,0.1)',
+  },
+  'Quality Assurance (QA)': {
+    gradient: 'linear-gradient(150deg,#34D399,#0F766E)',
+    shadowColor: 'rgba(16,185,129,0.32)',
+    badgeText: '#0F766E',
+    badgeBg: 'rgba(16,185,129,0.1)',
+  },
+  'Data (Analysis/Science)': {
+    gradient: 'linear-gradient(150deg,#C084FC,#7C3AED)',
+    shadowColor: 'rgba(124,58,237,0.32)',
+    badgeText: '#7C3AED',
+    badgeBg: 'rgba(124,58,237,0.1)',
+  },
+  'Cybersecurity': {
+    gradient: 'linear-gradient(150deg,#E879F9,#A21CAF)',
+    shadowColor: 'rgba(192,38,211,0.30)',
+    badgeText: '#A21CAF',
+    badgeBg: 'rgba(192,38,211,0.1)',
+  },
+  'Web3': {
+    gradient: 'linear-gradient(150deg,#60A5FA,#4338CA)',
+    shadowColor: 'rgba(67,56,202,0.30)',
+    badgeText: '#4338CA',
+    badgeBg: 'rgba(67,56,202,0.1)',
+  },
 }
 
-const TRACK_BANNER_COLORS: Partial<Record<TechTrack, string>> = {
-  'Software Development (Frontend & Backend)': 'from-tekton-purple-bright/20 to-tekton-purple-deep/10',
-  'UI/UX Design': 'from-tekton-teal/20 to-tekton-blue/10',
-  'Mobile App Development': 'from-tekton-blue/20 to-tekton-teal/10',
-  'Product/Project Management': 'from-tekton-yellow/20 to-tekton-green/10',
-  'Quality Assurance (QA)': 'from-tekton-green/20 to-tekton-teal/10',
-  'Data (Analysis/Science)': 'from-tekton-purple-bright/20 to-tekton-blue/10',
-  'Cybersecurity': 'from-red-500/20 to-tekton-purple-deep/10',
-  'Web3': 'from-orange-500/20 to-tekton-yellow/10',
+const FALLBACK_STYLE = { gradient: 'linear-gradient(150deg,#A3A3A3,#525252)', shadowColor: 'rgba(20,17,24,0.2)', badgeText: '#413B47', badgeBg: 'rgba(20,17,24,0.06)' }
+
+function trackLabel(track: string) {
+  return track.split(' (')[0].split('/')[0].trim()
 }
 
 // ─── Skeleton card ────────────────────────────────────────────────────────────
 
 function MentorCardSkeleton() {
   return (
-    <div className="glass-card rounded-2xl overflow-hidden animate-pulse">
-      {/* Banner */}
-      <div className="h-16 bg-white/5" />
-      <div className="p-6 flex flex-col items-center gap-4 -mt-8">
-        <div className="size-20 rounded-full bg-white/10 ring-4 ring-black" />
-        <div className="h-4 w-32 rounded bg-white/10" />
-        <div className="h-3 w-24 rounded bg-white/10" />
-        <div className="h-5 w-20 rounded-full bg-white/10" />
-        <div className="w-full space-y-2">
-          <div className="h-3 w-full rounded bg-white/10" />
-          <div className="h-3 w-5/6 rounded bg-white/10" />
-          <div className="h-3 w-4/6 rounded bg-white/10" />
+    <div style={{ background: '#FFFFFF', border: '1px solid rgba(20,17,24,0.06)', borderRadius: 22, overflow: 'hidden' }}>
+      <div className="tx-skeleton" style={{ height: 64, borderRadius: 0 }} />
+      <div style={{ padding: '0 24px 24px', marginTop: -32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+        <div className="tx-skeleton" style={{ width: 80, height: 80, borderRadius: 999, border: '4px solid #FFFFFF' }} />
+        <div className="tx-skeleton" style={{ width: 130, height: 16 }} />
+        <div className="tx-skeleton" style={{ width: 90, height: 12 }} />
+        <div className="tx-skeleton" style={{ width: 80, height: 20, borderRadius: 999 }} />
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="tx-skeleton" style={{ width: '100%', height: 12 }} />
+          <div className="tx-skeleton" style={{ width: '85%', height: 12 }} />
+          <div className="tx-skeleton" style={{ width: '65%', height: 12 }} />
         </div>
       </div>
     </div>
@@ -64,6 +102,13 @@ export default function Mentors() {
     queryFn: () => mentorService.getPublicMentors(selectedTrack),
   })
 
+  // Independent of the track filter above — always the full unfiltered list,
+  // used solely to show an accurate total in the hero stat.
+  const { data: totalMentors = [], isLoading: isLoadingTotal, isError: isErrorTotal } = useQuery({
+    queryKey: ['mentors', 'all'],
+    queryFn: () => mentorService.getPublicMentors(),
+  })
+
   const displayedMentors = selectedTrack
     ? mentors.filter((m) => m.track === selectedTrack)
     : mentors
@@ -73,77 +118,141 @@ export default function Mentors() {
     : `Showing ${displayedMentors.length} mentor${displayedMentors.length !== 1 ? 's' : ''}`
 
   return (
-    <div className="flex flex-col">
+    <div className="tx-marketing">
       {/* ════════════════════════════════════════════════════════
           Section 1 — Hero
       ════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[55vh] flex flex-col items-center justify-center px-4 pt-24 pb-16 text-center overflow-hidden bg-black">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-20 right-0 size-[500px] rounded-full bg-tekton-purple-bright/15 blur-[120px]" />
-          <div className="absolute bottom-0 -left-20 size-[300px] rounded-full bg-tekton-teal/10 blur-[100px]" />
-          <div className="absolute inset-0 bg-grid opacity-30" />
-        </div>
+      <section
+        id="mentors-hero"
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          background: 'radial-gradient(70% 62% at 50% 32%, rgba(168,85,247,0.14) 0%, rgba(250,248,246,0) 72%), #FAF8F6',
+        }}
+      >
+        <div
+          className="tx-marketing-rise"
+          style={{
+            maxWidth: 900,
+            margin: '0 auto',
+            padding: '100px 28px 72px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            gap: 26,
+          }}
+        >
+          <span style={eyebrowStyle}>The People Behind the Growth</span>
 
-        <div className="relative z-10 max-w-3xl flex flex-col items-center gap-6">
-          <span className="inline-flex items-center rounded-full border border-tekton-purple-bright/40 bg-tekton-purple-bright/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-tekton-purple-bright">
-            The People Behind the Growth
-          </span>
-
-          <h1 className="font-heading text-5xl text-white sm:text-6xl lg:text-7xl leading-tight">
+          <h1 style={{ fontSize: 'clamp(52px,7vw,96px)', lineHeight: 0.9, color: '#0E0B12' }}>
             MEET YOUR{' '}
-            <span className="gradient-text">MENTORS</span>
+            <span
+              style={{
+                background: 'linear-gradient(100deg,#7C3AED,#C026D3)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              MENTORS
+            </span>
           </h1>
 
           {/* Stats pill */}
-          <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 text-sm text-white/60 backdrop-blur-sm">
-            <span className="font-heading text-2xl gradient-text">50+</span>
-            <span>Expert Mentors across</span>
-            <span className="font-semibold text-white">8 Tech Tracks</span>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 10,
+              background: '#FFFFFF',
+              border: '1px solid rgba(20,17,24,0.08)',
+              borderRadius: 999,
+              padding: '13px 22px',
+              boxShadow: '0 6px 20px rgba(20,17,24,0.06)',
+            }}
+          >
+            {isLoadingTotal ? (
+              <span className="tx-skeleton" style={{ display: 'inline-block', width: 28, height: 24 }} />
+            ) : (
+              <span
+                style={{
+                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontSize: 24,
+                  lineHeight: 1,
+                  background: 'linear-gradient(100deg,#7C3AED,#C026D3)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                {isErrorTotal ? '—' : totalMentors.length}
+              </span>
+            )}
+            <span style={{ fontSize: 15, color: '#5C5661' }}>Expert Mentors across</span>
+            <span style={{ fontSize: 15, fontWeight: 600, color: '#141118' }}>8 Tech Tracks</span>
           </div>
 
-          <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-xl">
-            Meet the experienced professionals who dedicate their time and expertise to guide the next
-            generation of African tech talent. Each mentor is carefully vetted and matched to their track.
+          <p style={{ fontSize: 18, lineHeight: 1.7, color: '#5C5661', maxWidth: '58ch', margin: 0 }}>
+            Meet the experienced professionals who dedicate their time and expertise to guide the next generation
+            of African tech talent. Each mentor is carefully vetted and matched to their track.
           </p>
         </div>
-
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent" />
       </section>
 
       {/* ════════════════════════════════════════════════════════
           Section 2 — Track Filter
       ════════════════════════════════════════════════════════ */}
-      <section className="py-8 px-4 bg-black border-y border-white/[0.06]">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <section style={{ background: '#FFFFFF', borderTop: '1px solid rgba(20,17,24,0.07)', borderBottom: '1px solid rgba(20,17,24,0.07)' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto', padding: '20px 28px' }}>
+          <div className="tx-marketing-nav" style={{ display: 'flex', gap: 10, overflowX: 'auto' }}>
             {/* All pill */}
             <button
               onClick={() => setSelectedTrack(undefined)}
-              className={cn(
-                'inline-flex shrink-0 items-center rounded-full border px-5 py-2 text-sm font-semibold transition-all smooth-hover',
-                selectedTrack === undefined
-                  ? 'bg-tekton-purple-bright border-tekton-purple-bright text-white glow-purple'
-                  : 'glass-card border-white/15 text-white/50 hover:text-white hover:border-white/30',
-              )}
+              style={{
+                flexShrink: 0,
+                display: 'inline-flex',
+                alignItems: 'center',
+                borderRadius: 999,
+                padding: '10px 20px',
+                fontSize: 14,
+                fontWeight: 600,
+                whiteSpace: 'nowrap',
+                border: selectedTrack === undefined ? 'none' : '1px solid rgba(20,17,24,0.1)',
+                background: selectedTrack === undefined ? 'linear-gradient(100deg,#7C3AED,#C026D3)' : '#FFFFFF',
+                color: selectedTrack === undefined ? '#FFFFFF' : '#413B47',
+                boxShadow: selectedTrack === undefined ? '0 6px 18px rgba(124,58,237,0.28)' : 'none',
+              }}
             >
               All Mentors
             </button>
 
             {/* Track pills */}
-            {TECH_TRACKS.map((track) => (
-              <button
-                key={track}
-                onClick={() => setSelectedTrack(track)}
-                className={cn(
-                  'inline-flex shrink-0 items-center rounded-full border px-5 py-2 text-sm font-medium transition-all smooth-hover',
-                  selectedTrack === track
-                    ? 'bg-tekton-purple-bright border-tekton-purple-bright text-white glow-purple'
-                    : 'glass-card border-white/15 text-white/50 hover:text-white hover:border-white/30',
-                )}
-              >
-                {track.split(' (')[0].split('/')[0].trim()}
-              </button>
-            ))}
+            {TECH_TRACKS.map((track) => {
+              const active = selectedTrack === track
+              return (
+                <button
+                  key={track}
+                  onClick={() => setSelectedTrack(track)}
+                  style={{
+                    flexShrink: 0,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    borderRadius: 999,
+                    padding: '10px 20px',
+                    fontSize: 14,
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                    border: active ? 'none' : '1px solid rgba(20,17,24,0.1)',
+                    background: active ? 'linear-gradient(100deg,#7C3AED,#C026D3)' : '#FFFFFF',
+                    color: active ? '#FFFFFF' : '#413B47',
+                    boxShadow: active ? '0 6px 18px rgba(124,58,237,0.28)' : 'none',
+                  }}
+                >
+                  {trackLabel(track)}
+                </button>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -151,16 +260,16 @@ export default function Mentors() {
       {/* ════════════════════════════════════════════════════════
           Section 3 — Mentors Grid
       ════════════════════════════════════════════════════════ */}
-      <section className="py-16 px-4 bg-black">
-        <div className="mx-auto max-w-7xl">
+      <section style={{ padding: '72px 28px' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto' }}>
           {/* Result count */}
           {!isLoading && !isError && (
-            <p className="mb-8 text-sm text-white/35 font-mono">{countLabel}</p>
+            <p style={{ marginBottom: 32, fontSize: 14, color: '#7A737F', fontFamily: 'monospace' }}>{countLabel}</p>
           )}
 
           {/* Loading skeletons */}
           {isLoading && (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 22 }}>
               {Array.from({ length: 6 }).map((_, i) => (
                 <MentorCardSkeleton key={i} />
               ))}
@@ -169,59 +278,104 @@ export default function Mentors() {
 
           {/* Error state */}
           {isError && (
-            <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-              <p className="text-white/40 text-base">
-                We couldn't load the mentors right now. Please try again later.
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '80px 0', textAlign: 'center' }}>
+              <p style={{ fontSize: 16, color: '#7A737F' }}>
+                We couldn&apos;t load the mentors right now. Please try again later.
               </p>
             </div>
           )}
 
           {/* Mentor cards */}
           {!isLoading && !isError && displayedMentors.length > 0 && (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 22 }}>
               {displayedMentors.map((mentor) => {
-                const trackBadge = TRACK_BADGE_COLORS[mentor.track as TechTrack] ?? 'bg-white/10 text-white/60 border-white/20'
-                const trackBanner = TRACK_BANNER_COLORS[mentor.track as TechTrack] ?? 'from-white/5 to-white/0'
+                const style = TRACK_STYLES[mentor.track as TechTrack] ?? FALLBACK_STYLE
                 return (
-                  <div
+                  <article
                     key={mentor.id}
-                    className="glass-card rounded-2xl overflow-hidden smooth-hover hover:-translate-y-1
-                      hover:border-tekton-purple-bright/30 hover:shadow-[0_0_30px_rgba(124,58,237,0.15)]
-                      transition-all flex flex-col"
+                    className="tx-card-hover"
+                    style={{
+                      background: '#FFFFFF',
+                      border: '1px solid rgba(20,17,24,0.06)',
+                      borderRadius: 22,
+                      overflow: 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      minWidth: 0,
+                    }}
                   >
                     {/* Gradient banner */}
-                    <div className={`h-16 bg-gradient-to-r ${trackBanner}`} />
+                    <div style={{ height: 64, background: style.gradient }} />
 
-                    <div className="px-6 pb-6 flex flex-col items-center text-center gap-3 -mt-8 flex-1">
+                    <div style={{ padding: '0 24px 28px', marginTop: -32, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 10, flex: '1 1 auto' }}>
                       {/* Avatar */}
                       {mentor.profilePhotoUrl ? (
                         <img
                           src={mentor.profilePhotoUrl}
                           alt={mentor.name}
-                          className="size-20 rounded-full object-cover ring-4 ring-black"
+                          style={{ width: 80, height: 80, borderRadius: 999, objectFit: 'cover', border: '4px solid #FFFFFF', boxShadow: '0 6px 18px rgba(20,17,24,0.12)' }}
                         />
                       ) : (
-                        <div className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-tekton-purple-bright to-tekton-purple-deep text-white text-xl font-heading ring-4 ring-black">
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 80,
+                            height: 80,
+                            borderRadius: 999,
+                            border: '4px solid #FFFFFF',
+                            boxShadow: '0 6px 18px rgba(20,17,24,0.12)',
+                            background: style.gradient,
+                            color: '#FFFFFF',
+                            fontFamily: "'Bebas Neue', sans-serif",
+                            fontSize: 22,
+                          }}
+                        >
                           {getInitials(mentor.name)}
                         </div>
                       )}
 
                       {/* Name & title */}
-                      <div className="flex flex-col gap-1 w-full">
-                        <p className="font-heading text-xl text-white">{mentor.name}</p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
+                        <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: '0.02em', color: '#141118' }}>{mentor.name}</p>
                         {mentor.title && (
-                          <p className="text-sm text-white/50 truncate px-2">{mentor.title}</p>
+                          <p style={{ fontSize: 14, color: '#7A737F', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', padding: '0 8px' }}>{mentor.title}</p>
                         )}
                       </div>
 
                       {/* Track badge */}
-                      <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${trackBadge}`}>
-                        {mentor.track.split(' (')[0].split('/')[0].trim()}
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          borderRadius: 999,
+                          padding: '5px 14px',
+                          fontSize: 12,
+                          fontWeight: 700,
+                          background: style.badgeBg,
+                          color: style.badgeText,
+                        }}
+                      >
+                        {trackLabel(mentor.track)}
                       </span>
 
                       {/* Bio */}
                       {mentor.bio && (
-                        <p className="text-sm text-white/50 leading-relaxed line-clamp-2 text-left w-full flex-1">
+                        <p
+                          style={{
+                            fontSize: 14,
+                            lineHeight: 1.6,
+                            color: '#5C5661',
+                            textAlign: 'left',
+                            width: '100%',
+                            flex: '1 1 auto',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                          }}
+                        >
                           {mentor.bio}
                         </p>
                       )}
@@ -233,14 +387,15 @@ export default function Mentors() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`${mentor.name} on LinkedIn`}
-                          className="mt-auto flex items-center gap-1.5 text-xs text-white/35 transition-colors hover:text-tekton-blue"
+                          className="tx-hover-accent"
+                          style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#7A737F' }}
                         >
-                          <Linkedin className="size-3.5" />
+                          <Linkedin size={14} />
                           LinkedIn Profile
                         </a>
                       )}
                     </div>
-                  </div>
+                  </article>
                 )
               })}
             </div>
@@ -248,17 +403,26 @@ export default function Mentors() {
 
           {/* Empty state */}
           {!isLoading && !isError && displayedMentors.length === 0 && (
-            <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-              <div className="glass-card rounded-2xl px-8 py-10 max-w-md border-white/10">
-                <p className="text-white/50 text-sm leading-relaxed">
-                  No mentors found for the selected track yet.
-                  We're actively recruiting experts in this area — check back soon!
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '80px 0', textAlign: 'center' }}>
+              <div style={{ background: '#FFFFFF', border: '1px solid rgba(20,17,24,0.06)', borderRadius: 22, padding: '40px 32px', maxWidth: 440 }}>
+                <p style={{ fontSize: 15, lineHeight: 1.65, color: '#5C5661', margin: 0 }}>
+                  No mentors found for the selected track yet. We&apos;re actively recruiting experts in this area
+                  — check back soon!
                 </p>
                 <button
                   onClick={() => setSelectedTrack(undefined)}
-                  className="mt-4 text-tekton-purple-bright text-sm hover:text-tekton-purple-bright/80 transition-colors flex items-center gap-1 mx-auto"
+                  className="tx-hover-accent"
+                  style={{
+                    marginTop: 16,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    fontSize: 14,
+                    color: '#7C3AED',
+                    fontWeight: 600,
+                  }}
                 >
-                  View all mentors <ArrowRight className="size-3" />
+                  View all mentors <ArrowRight size={14} />
                 </button>
               </div>
             </div>
@@ -269,37 +433,43 @@ export default function Mentors() {
       {/* ════════════════════════════════════════════════════════
           Section 4 — Become a Mentor CTA
       ════════════════════════════════════════════════════════ */}
-      <section className="py-24 px-4 bg-white/[0.02]">
-        <div className="mx-auto max-w-3xl">
-          <div className="relative overflow-hidden glass-card rounded-3xl px-8 py-14 text-center border-glow-teal">
-            {/* Decorative */}
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute -top-10 -right-10 size-40 rounded-full bg-tekton-teal/10 blur-3xl" />
-              <div className="absolute -bottom-10 -left-10 size-40 rounded-full bg-tekton-purple-bright/10 blur-3xl" />
-            </div>
-
-            <div className="relative z-10 flex flex-col items-center gap-5">
-              <span className="inline-flex items-center rounded-full border border-tekton-teal/30 bg-tekton-teal/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-tekton-teal">
-                Join Our Team
-              </span>
-              <h2 className="font-heading text-4xl text-white sm:text-5xl">
-                BECOME A <span className="gradient-text">MENTOR</span>
-              </h2>
-              <p className="text-white/55 text-sm sm:text-base leading-relaxed max-w-lg">
-                Have 2+ years of industry experience and a passion for teaching? Join our growing network of
-                mentors and help shape Africa's next generation of tech leaders.
-              </p>
-              <Button
-                asChild
-                size="lg"
-                className="bg-tekton-purple-bright px-8 text-white hover:bg-tekton-purple-bright/90 glow-purple font-semibold gap-2"
+      <section style={{ padding: '48px 28px 120px' }}>
+        <div style={{ maxWidth: 780, margin: '0 auto' }}>
+          <div
+            style={{
+              background: '#FFFFFF',
+              border: '1px solid rgba(20,17,24,0.06)',
+              borderRadius: 28,
+              padding: 'clamp(40px,6vw,72px) clamp(28px,5vw,56px)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              gap: 20,
+              boxShadow: '0 24px 60px rgba(20,17,24,0.08)',
+            }}
+          >
+            <span style={eyebrowStyle}>Join Our Team</span>
+            <h2 style={{ fontSize: 'clamp(38px,4.6vw,58px)', lineHeight: 0.95, color: '#141118' }}>
+              BECOME A{' '}
+              <span
+                style={{
+                  background: 'linear-gradient(100deg,#7C3AED,#C026D3)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
               >
-                <Link to="/auth/register">
-                  Apply as a Mentor
-                  <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-            </div>
+                MENTOR
+              </span>
+            </h2>
+            <p style={{ fontSize: 17, lineHeight: 1.7, color: '#5C5661', maxWidth: '52ch', margin: 0 }}>
+              Have 2+ years of industry experience and a passion for teaching? Join our growing network of mentors
+              and help shape Africa&apos;s next generation of tech leaders.
+            </p>
+            <DarkButton to="/auth/register">
+              Apply as a Mentor <ArrowRight size={16} />
+            </DarkButton>
           </div>
         </div>
       </section>

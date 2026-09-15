@@ -2,10 +2,16 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Eye, EyeOff } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import authService from '@/services/authService'
+import logoBlackHorizontal from '@/assets/marketing/logo-black-horizontal.svg'
+
+// Light-theme field styling shared by every input on this form — same shape
+// as the shadcn defaults, just re-tinted for a white background (matches
+// JoinCommunity.tsx's already-converted fields).
+const fieldClassName =
+  'bg-white border-[rgba(20,17,24,0.12)] text-[#141118] placeholder:text-[#7A737F] focus-visible:border-[#7C3AED] focus-visible:ring-[#7C3AED]/30'
 
 export default function ResetPassword() {
   const navigate = useNavigate()
@@ -35,61 +41,72 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md flex flex-col gap-6">
+    // AuthLayout already centers/backgrounds the page — see Login.tsx for why
+    // this no longer duplicates that wrapper.
+    <div className="w-full max-w-md flex flex-col gap-6 py-16">
         <div className="flex flex-col items-center gap-3">
           <Link to="/">
-            <img src="/logo-gradient-horizontal.svg" alt="TektonX" className="h-10 w-auto hover:opacity-80 transition-opacity" />
+            <img src={logoBlackHorizontal} alt="TektonX" className="h-10 w-auto hover:opacity-80 transition-opacity" />
           </Link>
-          <p className="text-xs text-white/40 uppercase tracking-widest">Set New Password</p>
+          <p className="text-xs text-[#7A737F] uppercase tracking-widest">Set New Password</p>
         </div>
 
-        <div className="glass-card rounded-2xl p-8 flex flex-col gap-5">
+        <div className="bg-white border border-[rgba(20,17,24,0.06)] shadow-[0_24px_60px_rgba(20,17,24,0.08)] rounded-2xl p-8 flex flex-col gap-5">
           {!token ? (
             <div className="text-center flex flex-col gap-4">
-              <p className="text-red-400">Invalid reset link.</p>
-              <Link to="/auth/forgot-password" className="text-tekton-blue hover:text-tekton-blue/80 text-sm">
+              <p className="text-[#DC2626]">Invalid reset link.</p>
+              <Link to="/auth/forgot-password" className="text-[#7C3AED] hover:text-[#7C3AED]/80 text-sm">
                 Request a new link
               </Link>
             </div>
           ) : (
             <>
               <div className="flex flex-col gap-1">
-                <p className="text-white font-medium">Set a new password</p>
-                <p className="text-sm text-white/50">Min 8 characters, 1 uppercase letter, 1 number.</p>
+                <p className="text-[#141118] font-medium">Set a new password</p>
+                <p className="text-sm text-[#5C5661]">Min 8 characters, 1 uppercase letter, 1 number.</p>
               </div>
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <Label className="text-sm text-white/60">New password</Label>
+                  <Label className="text-sm text-[#413B47]">New password</Label>
                   <div className="relative">
                     <Input type={showPassword ? 'text' : 'password'} value={password}
                       onChange={e => setPassword(e.target.value)} required placeholder="••••••••"
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pr-10" />
+                      className={`${fieldClassName} pr-10`} />
                     <button type="button" onClick={() => setShowPassword(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7A737F] hover:text-[#413B47]">
                       {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </button>
                   </div>
                 </div>
-                {error && <p className="text-red-400 text-sm">{error}</p>}
-                <Button type="submit" disabled={loading}
-                  className="w-full bg-tekton-purple-bright hover:bg-tekton-purple-bright/90">
+                {error && <p className="text-[#DC2626] text-sm">{error}</p>}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="tx-cta-gradient w-full inline-flex items-center justify-center gap-2 rounded-md text-white text-sm font-medium"
+                  style={{
+                    background: 'linear-gradient(100deg,#7C3AED,#C026D3)',
+                    padding: '17px 30px',
+                    borderRadius: 10,
+                    boxShadow: '0 6px 18px rgba(124,58,237,0.28)',
+                    opacity: loading ? 0.75 : 1,
+                    cursor: loading ? 'default' : 'pointer',
+                  }}
+                >
                   {loading ? (
                     <span className="flex items-center gap-2">
                       <span className="size-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       Resetting&hellip;
                     </span>
                   ) : 'Reset Password'}
-                </Button>
+                </button>
               </form>
-              <div className="h-px bg-white/10" />
-              <Link to="/auth/login" className="text-center text-sm text-white/50 hover:text-white transition-colors">
+              <div className="h-px bg-[rgba(20,17,24,0.08)]" />
+              <Link to="/auth/login" className="text-center text-sm text-[#7A737F] hover:text-[#141118] transition-colors">
                 &larr; Back to login
               </Link>
             </>
           )}
         </div>
-      </div>
     </div>
   )
 }
