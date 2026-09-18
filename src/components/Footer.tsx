@@ -126,14 +126,14 @@ export default function Footer({ variant = 'dark' }: { variant?: 'dark' | 'light
             </h4>
             <div className="flex flex-col gap-5">
               <a
-                href="mailto:tektonxlabs@gmail.com"
+                href="mailto:info@tektonxlabs.com"
                 className={cn(
                   'flex items-center gap-2 text-sm transition-colors group',
                   isLight ? 'text-[#5C5661] hover:text-[#141118]' : 'text-white/40 hover:text-white',
                 )}
               >
                 <Mail className="size-4 shrink-0 text-tekton-teal/60 group-hover:text-tekton-teal transition-colors" />
-                tektonxlabs@gmail.com
+                info@tektonxlabs.com
               </a>
               <Button
                 asChild

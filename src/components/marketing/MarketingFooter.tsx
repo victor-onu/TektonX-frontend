@@ -107,7 +107,7 @@ export default function MarketingFooter() {
             <Link to="/join" style={footerLinkStyle} className="tx-footer-link">
               Join Community
             </Link>
-            <a href="mailto:tektonxlabs@gmail.com" style={footerLinkStyle} className="tx-footer-link">
+            <a href="mailto:info@tektonxlabs.com" style={footerLinkStyle} className="tx-footer-link">
               Contact
             </a>
           </div>
@@ -140,11 +140,11 @@ export default function MarketingFooter() {
               Join the community <ArrowUpRight size={16} />
             </Link>
             <a
-              href="mailto:tektonxlabs@gmail.com"
+              href="mailto:info@tektonxlabs.com"
               style={{ fontSize: 15, color: '#5C5661', display: 'inline-flex', alignItems: 'center', gap: 8 }}
               className="tx-footer-link"
             >
-              <Mail size={16} /> tektonxlabs@gmail.com
+              <Mail size={16} /> info@tektonxlabs.com
             </a>
           </div>
         </div>
