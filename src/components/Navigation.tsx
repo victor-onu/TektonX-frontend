@@ -36,6 +36,8 @@ function getDashboardPath(role: UserRole): string {
   switch (role) {
     case 'admin':
       return '/dashboard/admin'
+    case 'community_manager':
+      return '/dashboard/community-manager'
     case 'mentor':
       return '/dashboard/mentor'
     case 'mentee':

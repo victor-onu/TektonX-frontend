@@ -46,6 +46,7 @@ const roleBadgeClass: Record<string, string> = {
   mentee: 'bg-tekton-blue/15 text-tekton-blue border border-tekton-blue/30',
   mentor: 'bg-tekton-green/15 text-tekton-green border border-tekton-green/30',
   admin: 'bg-tekton-purple-bright/15 text-tekton-purple-bright border border-tekton-purple-bright/30',
+  community_manager: 'bg-tekton-yellow/15 text-tekton-yellow border border-tekton-yellow/30',
 }
 
 const statusBadgeClass: Record<string, string> = {
@@ -223,7 +224,7 @@ export default function AdminUserManagement({ currentUserId }: Props) {
                   </TableCell>
                   <TableCell>
                     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${roleBadgeClass[user.role] ?? ''}`}>
-                      {user.role}
+                      {user.role.replace('_', ' ')}
                     </span>
                   </TableCell>
                   <TableCell className="text-white/70 text-sm hidden md:table-cell">
@@ -324,6 +325,7 @@ export default function AdminUserManagement({ currentUserId }: Props) {
               <SelectItem value="mentee">Mentee</SelectItem>
               <SelectItem value="mentor">Mentor</SelectItem>
               <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="community_manager">Community Manager</SelectItem>
             </SelectContent>
           </Select>
           <div className="flex gap-2 justify-end mt-2">

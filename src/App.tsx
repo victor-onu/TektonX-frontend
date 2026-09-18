@@ -35,6 +35,7 @@ import MenteeDashboard from '@/pages/dashboard/MenteeDashboard'
 import MentorDashboard from '@/pages/dashboard/MentorDashboard'
 import MentorPending from '@/pages/dashboard/MentorPending'
 import AdminDashboard from '@/pages/dashboard/AdminDashboard'
+import CommunityManagerDashboard from '@/pages/dashboard/CommunityManagerDashboard'
 import Roadmap from '@/pages/Roadmap'
 import Communication from '@/pages/Communication'
 import Messages from '@/pages/Messages'
@@ -107,6 +108,16 @@ export default function App() {
                 element={
                   <ProtectedRoute allowedRoles={['admin']}>
                     <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Protected — community manager only */}
+              <Route
+                path="/dashboard/community-manager"
+                element={
+                  <ProtectedRoute allowedRoles={['community_manager']}>
+                    <CommunityManagerDashboard />
                   </ProtectedRoute>
                 }
               />
