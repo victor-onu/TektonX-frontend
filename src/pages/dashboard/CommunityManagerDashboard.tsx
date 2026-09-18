@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { marked } from 'marked'
 import { toast } from 'sonner'
 import { AlertTriangle, Check, Download, Paperclip, Send, X } from 'lucide-react'
+import '@/components/marketing/marketing.css'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -36,6 +37,12 @@ const volunteerLabel: Record<string, string> = {
   maybe: 'Maybe',
   no: 'No',
 }
+
+// Light-theme field styling shared by inputs/selects on this page — same
+// pattern as JoinCommunity.tsx's `fieldClassName`, re-tinted for a white
+// background instead of this dashboard's old dark-theme fields.
+const fieldClassName =
+  'bg-white border-[rgba(20,17,24,0.12)] text-[#141118] placeholder:text-[#7A737F] focus-visible:border-[#7C3AED] focus-visible:ring-[#7C3AED]/30'
 
 // ─── Registrants table ──────────────────────────────────────────────────────
 
@@ -83,11 +90,11 @@ function RegistrantsTable({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-heading text-xl text-white">REGISTRANTS</h2>
+        <h2 className="text-xl text-[#141118]">REGISTRANTS</h2>
         <button
           onClick={handleExport}
           disabled={exporting || !slug || registrants.length === 0}
-          className="inline-flex items-center gap-2 rounded-lg border border-tekton-green/30 bg-tekton-green/10 px-4 py-2.5 text-sm font-medium text-tekton-green smooth-hover hover:bg-tekton-green/20 transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg border border-[rgba(20,17,24,0.12)] bg-white px-4 py-2.5 text-sm font-medium text-[#141118] transition-colors hover:border-[#7C3AED]/40 hover:text-[#7C3AED] disabled:opacity-50"
         >
           <Download className="size-4" />
           {exporting ? 'Exporting…' : 'Export CSV'}
@@ -98,56 +105,56 @@ function RegistrantsTable({
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search by name, email, or organisation..."
-        className="bg-white/5 border-white/10 text-white placeholder:text-white/30 sm:max-w-xs"
+        className={`${fieldClassName} sm:max-w-xs`}
       />
 
-      <div className="glass-card rounded-xl overflow-x-auto">
+      <div className="rounded-xl border border-[rgba(20,17,24,0.06)] bg-white overflow-x-auto tx-card-hover">
         {isLoading ? (
-          <div className="flex flex-col divide-y divide-white/5">
+          <div className="flex flex-col divide-y divide-[rgba(20,17,24,0.06)]">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex items-center gap-4 px-6 py-4">
-                <div className="h-4 w-32 rounded bg-white/10 animate-pulse" />
-                <div className="h-4 w-40 rounded bg-white/10 animate-pulse" />
-                <div className="h-4 w-24 rounded bg-white/10 animate-pulse" />
-                <div className="h-4 w-24 rounded bg-white/10 animate-pulse ml-auto" />
+                <div className="h-4 w-32 rounded tx-skeleton" />
+                <div className="h-4 w-40 rounded tx-skeleton" />
+                <div className="h-4 w-24 rounded tx-skeleton" />
+                <div className="h-4 w-24 rounded tx-skeleton ml-auto" />
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex items-center justify-center py-16">
-            <p className="text-sm text-white/40">
+            <p className="text-sm text-[#7A737F]">
               {registrants.length === 0 ? 'No registrants yet for this event.' : 'No registrants match your search.'}
             </p>
           </div>
         ) : (
           <Table className="min-w-[900px]">
             <TableHeader>
-              <TableRow className="border-white/10 hover:bg-transparent">
-                <TableHead className="text-white/50 text-xs uppercase tracking-wider">Name</TableHead>
-                <TableHead className="text-white/50 text-xs uppercase tracking-wider">Email</TableHead>
-                <TableHead className="text-white/50 text-xs uppercase tracking-wider">Phone</TableHead>
-                <TableHead className="text-white/50 text-xs uppercase tracking-wider">Role</TableHead>
-                <TableHead className="text-white/50 text-xs uppercase tracking-wider">Organisation</TableHead>
-                <TableHead className="text-white/50 text-xs uppercase tracking-wider">Volunteer</TableHead>
-                <TableHead className="text-white/50 text-xs uppercase tracking-wider">Question</TableHead>
-                <TableHead className="text-white/50 text-xs uppercase tracking-wider">Registered</TableHead>
+              <TableRow className="border-[rgba(20,17,24,0.06)] hover:bg-transparent">
+                <TableHead className="text-[#7A737F] text-xs uppercase tracking-wider">Name</TableHead>
+                <TableHead className="text-[#7A737F] text-xs uppercase tracking-wider">Email</TableHead>
+                <TableHead className="text-[#7A737F] text-xs uppercase tracking-wider">Phone</TableHead>
+                <TableHead className="text-[#7A737F] text-xs uppercase tracking-wider">Role</TableHead>
+                <TableHead className="text-[#7A737F] text-xs uppercase tracking-wider">Organisation</TableHead>
+                <TableHead className="text-[#7A737F] text-xs uppercase tracking-wider">Volunteer</TableHead>
+                <TableHead className="text-[#7A737F] text-xs uppercase tracking-wider">Question</TableHead>
+                <TableHead className="text-[#7A737F] text-xs uppercase tracking-wider">Registered</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.map((r) => (
-                <TableRow key={r.id} className="border-white/5 hover:bg-white/[0.03]">
-                  <TableCell className="font-medium text-white">{r.name}</TableCell>
-                  <TableCell className="text-white/70">{r.email}</TableCell>
-                  <TableCell className="text-white/70">{r.phone}</TableCell>
-                  <TableCell className="text-white/70">{r.role}</TableCell>
-                  <TableCell className="text-white/70">{r.organisation ?? '—'}</TableCell>
-                  <TableCell className="text-white/70">
+                <TableRow key={r.id} className="border-[rgba(20,17,24,0.06)] hover:bg-[rgba(124,58,237,0.04)]">
+                  <TableCell className="font-medium text-[#141118]">{r.name}</TableCell>
+                  <TableCell className="text-[#5C5661]">{r.email}</TableCell>
+                  <TableCell className="text-[#5C5661]">{r.phone}</TableCell>
+                  <TableCell className="text-[#5C5661]">{r.role}</TableCell>
+                  <TableCell className="text-[#5C5661]">{r.organisation ?? '—'}</TableCell>
+                  <TableCell className="text-[#5C5661]">
                     {r.volunteer ? volunteerLabel[r.volunteer] ?? r.volunteer : '—'}
                   </TableCell>
-                  <TableCell className="text-white/70 max-w-[240px] truncate" title={r.question ?? undefined}>
+                  <TableCell className="text-[#5C5661] max-w-[240px] truncate" title={r.question ?? undefined}>
                     {r.question ?? '—'}
                   </TableCell>
-                  <TableCell className="text-white/50 text-sm">{formatDate(r.createdAt)}</TableCell>
+                  <TableCell className="text-[#7A737F] text-sm">{formatDate(r.createdAt)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -256,8 +263,8 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h2 className="font-heading text-xl text-white">EMAIL REGISTRANTS</h2>
-        <p className="text-xs text-white/40">
+        <h2 className="text-xl text-[#141118]">EMAIL REGISTRANTS</h2>
+        <p className="text-xs text-[#7A737F]">
           Compose a Markdown email and send it to this event&apos;s registrants, with optional attachments.
         </p>
       </div>
@@ -267,32 +274,32 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
         {/* LEFT: form */}
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs text-white/60">Subject</Label>
+            <Label className="text-xs text-[#413B47]">Subject</Label>
             <Input
               value={subject}
               maxLength={200}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="e.g. Important details for Saturday's event"
-              className="bg-white/5 border-white/20 text-white placeholder:text-white/30"
+              className={fieldClassName}
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs text-white/60">
-              Message <span className="text-white/30">(Markdown supported — **bold**, *italic*, [links](url), - lists)</span>
+            <Label className="text-xs text-[#413B47]">
+              Message <span className="text-[#7A737F]">(Markdown supported — **bold**, *italic*, [links](url), - lists)</span>
             </Label>
             <Textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={8}
               placeholder={`Hi everyone,\n\nHere's an update on the event...\n\nThanks,\nTektonX Team`}
-              className="bg-white/5 border-white/20 text-white placeholder:text-white/30 font-mono text-sm min-h-32 sm:min-h-64"
+              className={`${fieldClassName} font-mono text-sm min-h-32 sm:min-h-64`}
             />
           </div>
 
           {/* Audience */}
           <div className="flex flex-col gap-2">
-            <Label className="text-xs text-white/60">Audience</Label>
+            <Label className="text-xs text-[#413B47]">Audience</Label>
             <div className="flex flex-col gap-2">
               {AUDIENCE_OPTIONS.map((opt) => {
                 const active = audience === opt.value
@@ -303,22 +310,22 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
                     onClick={() => setAudience(opt.value)}
                     className={`flex items-start gap-2.5 text-left rounded-lg border px-3 py-2 transition-colors ${
                       active
-                        ? 'border-tekton-purple-bright bg-tekton-purple-bright/10'
-                        : 'border-white/10 bg-white/5 hover:border-white/20'
+                        ? 'border-[#7C3AED] bg-[rgba(124,58,237,0.08)]'
+                        : 'border-[rgba(20,17,24,0.12)] bg-white hover:border-[rgba(20,17,24,0.24)]'
                     }`}
                   >
                     <div className={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border ${
-                      active ? 'border-tekton-purple-bright bg-tekton-purple-bright' : 'border-white/30'
+                      active ? 'border-[#7C3AED] bg-[#7C3AED]' : 'border-[rgba(20,17,24,0.24)]'
                     }`}>
                       {active && <Check className="size-3 text-white" />}
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm text-white font-medium flex items-center gap-2">
+                      <span className="text-sm text-[#141118] font-medium flex items-center gap-2">
                         {opt.label}
-                        {opt.value === 'all' && <span className="text-xs text-white/40">({allCount})</span>}
-                        {opt.value === 'volunteers' && <span className="text-xs text-white/40">({volunteerCount})</span>}
+                        {opt.value === 'all' && <span className="text-xs text-[#7A737F]">({allCount})</span>}
+                        {opt.value === 'volunteers' && <span className="text-xs text-[#7A737F]">({volunteerCount})</span>}
                       </span>
-                      <span className="text-xs text-white/40">{opt.description}</span>
+                      <span className="text-xs text-[#7A737F]">{opt.description}</span>
                     </div>
                   </button>
                 )
@@ -328,29 +335,29 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
 
           {audience === 'manual' && (
             <div className="flex flex-col gap-1.5">
-              <Label className="text-xs text-white/60">
-                Email addresses <span className="text-white/30">(comma or newline separated)</span>
+              <Label className="text-xs text-[#413B47]">
+                Email addresses <span className="text-[#7A737F]">(comma or newline separated)</span>
               </Label>
               <Textarea
                 value={manualEmails}
                 onChange={(e) => setManualEmails(e.target.value)}
                 rows={4}
                 placeholder={'speaker@example.com\npartner@example.com'}
-                className="bg-white/5 border-white/20 text-white placeholder:text-white/30 text-sm"
+                className={`${fieldClassName} text-sm`}
               />
             </div>
           )}
 
           {/* Attachments */}
           <div className="flex flex-col gap-2">
-            <Label className="text-xs text-white/60">
-              Attachments <span className="text-white/30">(optional — up to {MAX_ATTACHMENTS} files, 10MB each)</span>
+            <Label className="text-xs text-[#413B47]">
+              Attachments <span className="text-[#7A737F]">(optional — up to {MAX_ATTACHMENTS} files, 10MB each)</span>
             </Label>
             <div
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => { e.preventDefault(); if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files) }}
               onClick={() => fileInputRef.current?.click()}
-              className="relative rounded-xl border-2 border-dashed border-white/20 hover:border-white/40 bg-white/5 p-6 flex flex-col items-center gap-2 cursor-pointer transition-colors"
+              className="relative rounded-xl border-2 border-dashed border-[rgba(20,17,24,0.15)] hover:border-[#7C3AED]/40 bg-white p-6 flex flex-col items-center gap-2 cursor-pointer transition-colors"
             >
               <input
                 ref={fileInputRef}
@@ -362,19 +369,19 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
                   e.target.value = ''
                 }}
               />
-              <Paperclip className="size-5 text-white/40" />
-              <p className="text-sm text-white/50 text-center">Click to attach files or drag and drop</p>
+              <Paperclip className="size-5 text-[#7A737F]" />
+              <p className="text-sm text-[#5C5661] text-center">Click to attach files or drag and drop</p>
             </div>
 
             {attachments.length > 0 && (
               <ul className="flex flex-col gap-1.5">
                 {attachments.map((file, i) => (
-                  <li key={`${file.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
-                    <span className="text-xs text-white/70 truncate">{file.name}</span>
+                  <li key={`${file.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg border border-[rgba(20,17,24,0.08)] bg-white px-3 py-2">
+                    <span className="text-xs text-[#5C5661] truncate">{file.name}</span>
                     <button
                       type="button"
                       onClick={() => removeAttachment(i)}
-                      className="text-white/40 hover:text-red-400 transition-colors shrink-0"
+                      className="text-[#7A737F] hover:text-[#DC2626] transition-colors shrink-0"
                       aria-label={`Remove ${file.name}`}
                     >
                       <X className="size-3.5" />
@@ -385,11 +392,11 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
             )}
           </div>
 
-          <div className="pt-2 border-t border-white/10">
+          <div className="pt-2 border-t border-[rgba(20,17,24,0.08)]">
             <Button
               onClick={openConfirm}
               disabled={!slug}
-              className="bg-tekton-purple-bright text-white hover:bg-tekton-purple-bright/90 disabled:opacity-40"
+              className="tx-cta-gradient bg-[linear-gradient(100deg,#7C3AED,#C026D3)] text-white border-0 shadow-[0_6px_18px_rgba(124,58,237,0.28)] hover:opacity-95 disabled:opacity-40"
             >
               <Send className="size-4 mr-1.5" />
               Send Email
@@ -399,11 +406,11 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
 
         {/* RIGHT: live preview */}
         <div className="flex flex-col gap-2">
-          <Label className="text-xs text-white/60">Live preview</Label>
-          <div className="rounded-lg border border-white/10 bg-zinc-900 overflow-hidden">
-            <div className="bg-zinc-950 border-b border-white/10 px-4 py-2.5">
-              <p className="text-[11px] uppercase text-white/30 tracking-wider">Subject</p>
-              <p className="text-sm text-white truncate">{subject || 'No subject'}</p>
+          <Label className="text-xs text-[#413B47]">Live preview</Label>
+          <div className="rounded-lg border border-[rgba(20,17,24,0.08)] overflow-hidden">
+            <div className="bg-[#FAF8F6] border-b border-[rgba(20,17,24,0.08)] px-4 py-2.5">
+              <p className="text-[11px] uppercase text-[#7A737F] tracking-wider">Subject</p>
+              <p className="text-sm text-[#141118] truncate">{subject || 'No subject'}</p>
             </div>
             <div className="bg-white text-zinc-900 p-6 max-h-[500px] overflow-y-auto">
               <p className="text-sm text-zinc-500 mb-3">Hi <span className="text-zinc-900 font-medium">[recipient name]</span>,</p>
@@ -419,34 +426,38 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
 
       {/* Confirmation dialog */}
       <Dialog open={confirmOpen} onOpenChange={(o) => !o && !sending && setConfirmOpen(false)}>
-        <DialogContent className="bg-black/95 border-white/10 text-white max-w-md">
+        <DialogContent className="bg-white border-[rgba(20,17,24,0.08)] text-[#141118] max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertTriangle className="size-5 text-tekton-yellow" />
               Confirm Email
             </DialogTitle>
-            <DialogDescription className="text-white/60">
-              This will send an email to <span className="text-white font-semibold">{recipientSummary}</span>. This action cannot be undone.
+            <DialogDescription className="text-[#5C5661]">
+              This will send an email to <span className="text-[#141118] font-semibold">{recipientSummary}</span>. This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-xs text-white/60">
-            <p><span className="text-white/40">Subject:</span> <span className="text-white">{subject}</span></p>
+          <div className="rounded-lg border border-[rgba(20,17,24,0.08)] bg-[#FAF8F6] p-3 text-xs text-[#5C5661]">
+            <p><span className="text-[#7A737F]">Subject:</span> <span className="text-[#141118]">{subject}</span></p>
             <p className="mt-1">
-              <span className="text-white/40">Audience:</span>{' '}
-              <span className="text-white">{AUDIENCE_OPTIONS.find((o) => o.value === audience)?.label}</span>
+              <span className="text-[#7A737F]">Audience:</span>{' '}
+              <span className="text-[#141118]">{AUDIENCE_OPTIONS.find((o) => o.value === audience)?.label}</span>
             </p>
             {attachments.length > 0 && (
               <p className="mt-1">
-                <span className="text-white/40">Attachments:</span>{' '}
-                <span className="text-white">{attachments.length} file{attachments.length === 1 ? '' : 's'}</span>
+                <span className="text-[#7A737F]">Attachments:</span>{' '}
+                <span className="text-[#141118]">{attachments.length} file{attachments.length === 1 ? '' : 's'}</span>
               </p>
             )}
           </div>
           <DialogFooter className="gap-2">
-            <Button variant="outline" disabled={sending} onClick={() => setConfirmOpen(false)} className="border-white/20 text-white/70">
+            <Button variant="outline" disabled={sending} onClick={() => setConfirmOpen(false)} className="border-[rgba(20,17,24,0.12)] text-[#5C5661]">
               Cancel
             </Button>
-            <Button disabled={sending} onClick={handleConfirmSend} className="bg-tekton-purple-bright text-white hover:bg-tekton-purple-bright/90">
+            <Button
+              disabled={sending}
+              onClick={handleConfirmSend}
+              className="tx-cta-gradient bg-[linear-gradient(100deg,#7C3AED,#C026D3)] text-white border-0 shadow-[0_6px_18px_rgba(124,58,237,0.28)] hover:opacity-95"
+            >
               {sending ? 'Sending…' : 'Confirm & Send'}
             </Button>
           </DialogFooter>
@@ -481,37 +492,47 @@ export default function CommunityManagerDashboard() {
   const selectedEvent = events.find((e) => e.slug === effectiveSlug) ?? null
 
   return (
-    <div className="min-h-screen bg-black pt-24 pb-16 px-4">
+    <div className="tx-marketing min-h-screen bg-[#F5F4F3] pt-24 pb-16 px-4">
       <div className="mx-auto max-w-7xl flex flex-col gap-8">
 
         {/* Page heading */}
         <div>
-          <h1 className="font-heading text-4xl text-white sm:text-5xl">
-            COMMUNITY <span className="gradient-text">MANAGER</span>
+          <h1 className="text-4xl sm:text-5xl" style={{ color: '#141118' }}>
+            COMMUNITY{' '}
+            <span
+              style={{
+                background: 'linear-gradient(100deg,#7C3AED,#C026D3)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              MANAGER
+            </span>
           </h1>
           {currentUser && (
-            <p className="mt-1 text-sm text-white/50">Logged in as {currentUser.name}</p>
+            <p className="mt-1 text-sm text-[#7A737F]">Logged in as {currentUser.name}</p>
           )}
         </div>
 
         {/* Event picker */}
-        <div className="glass-card rounded-xl p-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="rounded-xl border border-[rgba(20,17,24,0.06)] bg-white p-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between tx-card-hover">
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs text-white/60">Event</Label>
+            <Label className="text-xs text-[#413B47]">Event</Label>
             {eventsLoading ? (
-              <div className="h-9 w-64 rounded bg-white/10 animate-pulse" />
+              <div className="h-9 w-64 rounded tx-skeleton" />
             ) : eventsError ? (
-              <p className="text-sm text-red-400">Failed to load events. Is the API running?</p>
+              <p className="text-sm text-[#DC2626]">Failed to load events. Is the API running?</p>
             ) : events.length === 0 ? (
-              <p className="text-sm text-white/40">No events found.</p>
+              <p className="text-sm text-[#7A737F]">No events found.</p>
             ) : (
               <Select value={effectiveSlug ?? undefined} onValueChange={setSelectedSlug}>
-                <SelectTrigger className="w-full sm:w-80 bg-white/5 border-white/20 text-white">
+                <SelectTrigger className="w-full sm:w-80 bg-white border-[rgba(20,17,24,0.12)] text-[#141118]">
                   <SelectValue placeholder="Select an event" />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-900 border-white/10 text-white">
+                <SelectContent className="bg-white border-[rgba(20,17,24,0.1)] text-[#141118]">
                   {events.map((e) => (
-                    <SelectItem key={e.id} value={e.slug} className="text-white hover:bg-white/10">
+                    <SelectItem key={e.id} value={e.slug} className="text-[#141118] focus:bg-[#7C3AED]/10">
                       {e.name}
                     </SelectItem>
                   ))}
@@ -520,7 +541,7 @@ export default function CommunityManagerDashboard() {
             )}
           </div>
           {selectedEvent && (
-            <div className="flex flex-col gap-0.5 text-xs text-white/50 sm:text-right">
+            <div className="flex flex-col gap-0.5 text-xs text-[#7A737F] sm:text-right">
               <span>{formatDate(selectedEvent.startsAt)}</span>
               <span>{selectedEvent.venue} · {selectedEvent.seatLimit} seats</span>
             </div>
@@ -528,14 +549,14 @@ export default function CommunityManagerDashboard() {
         </div>
 
         {!eventsLoading && !eventsError && events.length === 0 ? (
-          <div className="glass-card rounded-xl p-10 flex items-center justify-center">
-            <p className="text-sm text-white/40">There are no events to manage yet.</p>
+          <div className="rounded-xl border border-[rgba(20,17,24,0.06)] bg-white p-10 flex items-center justify-center">
+            <p className="text-sm text-[#7A737F]">There are no events to manage yet.</p>
           </div>
         ) : (
           <>
             {registrantsError ? (
-              <div className="glass-card rounded-xl p-10 flex items-center justify-center">
-                <p className="text-sm text-red-400">Failed to load registrants. Is the API running?</p>
+              <div className="rounded-xl border border-[rgba(20,17,24,0.06)] bg-white p-10 flex items-center justify-center">
+                <p className="text-sm text-[#DC2626]">Failed to load registrants. Is the API running?</p>
               </div>
             ) : (
               <RegistrantsTable registrants={registrants} isLoading={registrantsLoading} slug={effectiveSlug} />
