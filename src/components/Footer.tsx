@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Twitter, Linkedin, Instagram, Facebook, Mail, ArrowUpRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
 const QUICK_LINKS = [
@@ -21,15 +22,17 @@ const PROGRAMS = [
 ] as const
 
 const SOCIAL_LINKS = [
-  { label: 'Twitter / X', href: 'https://x.com/TektonXLab', Icon: Twitter, hoverColor: 'hover:text-white' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/tektonx-labs', Icon: Linkedin, hoverColor: 'hover:text-[#0A66C2]' },
-  { label: 'Instagram', href: 'https://www.instagram.com/tektonxlabs/', Icon: Instagram, hoverColor: 'hover:text-[#E1306C]' },
-  { label: 'Facebook', href: 'https://www.facebook.com/tektonXlabs', Icon: Facebook, hoverColor: 'hover:text-[#1877F2]' },
+  { label: 'Twitter / X', href: 'https://x.com/TektonXLab', Icon: Twitter, hoverColor: 'hover:text-white', lightHoverColor: 'hover:text-[#141118]' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/tektonx-labs', Icon: Linkedin, hoverColor: 'hover:text-[#0A66C2]', lightHoverColor: 'hover:text-[#0A66C2]' },
+  { label: 'Instagram', href: 'https://www.instagram.com/tektonxlabs/', Icon: Instagram, hoverColor: 'hover:text-[#E1306C]', lightHoverColor: 'hover:text-[#E1306C]' },
+  { label: 'Facebook', href: 'https://www.facebook.com/tektonXlabs', Icon: Facebook, hoverColor: 'hover:text-[#1877F2]', lightHoverColor: 'hover:text-[#1877F2]' },
 ] as const
 
-export default function Footer() {
+export default function Footer({ variant = 'dark' }: { variant?: 'dark' | 'light' }) {
+  const isLight = variant === 'light'
+
   return (
-    <footer className="relative bg-black border-t-0">
+    <footer className={cn('relative border-t-0', isLight ? 'bg-white' : 'bg-black')}>
       {/* Gradient top border line */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-tekton-purple-bright/60 to-transparent" />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-tekton-teal/30 to-transparent mt-px" />
@@ -42,20 +45,25 @@ export default function Footer() {
               <span className="font-heading text-2xl leading-none gradient-text tracking-wider group-hover:opacity-90 transition-opacity">
                 TEKTONX
               </span>
-              <span className="text-xs font-medium text-white/30 tracking-widest uppercase">LABS</span>
+              <span className={cn('text-xs font-medium tracking-widest uppercase', isLight ? 'text-[#7A737F]' : 'text-white/30')}>LABS</span>
             </Link>
-            <p className="text-sm text-white/40 leading-relaxed max-w-[220px]">
+            <p className={cn('text-sm leading-relaxed max-w-[220px]', isLight ? 'text-[#5C5661]' : 'text-white/40')}>
               Building People. Building Products. Building Africa.
             </p>
             <div className="flex items-center gap-2 mt-1">
-              {SOCIAL_LINKS.map(({ label, href, Icon, hoverColor }) => (
+              {SOCIAL_LINKS.map(({ label, href, Icon, hoverColor, lightHoverColor }) => (
                 <a
                   key={label}
                   href={href}
                   aria-label={label}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`flex size-8 items-center justify-center rounded-lg glass-card text-white/30 transition-all smooth-hover ${hoverColor} hover:border-white/20 hover:-translate-y-0.5`}
+                  className={cn(
+                    'flex size-8 items-center justify-center rounded-lg transition-all smooth-hover hover:-translate-y-0.5',
+                    isLight
+                      ? `border border-[rgba(20,17,24,0.1)] bg-white text-[#7A737F] hover:border-[rgba(20,17,24,0.2)] ${lightHoverColor}`
+                      : `glass-card text-white/30 hover:border-white/20 ${hoverColor}`,
+                  )}
                 >
                   <Icon className="size-3.5" />
                 </a>
@@ -65,7 +73,7 @@ export default function Footer() {
 
           {/* ── Column 2: Quick Links ── */}
           <div>
-            <h4 className="mb-5 text-xs font-semibold uppercase tracking-[0.15em] text-white/30">
+            <h4 className={cn('mb-5 text-xs font-semibold uppercase tracking-[0.15em]', isLight ? 'text-[#7A737F]' : 'text-white/30')}>
               Quick Links
             </h4>
             <ul className="flex flex-col gap-3">
@@ -73,7 +81,10 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     to={href}
-                    className="group flex items-center gap-1 text-sm text-white/40 transition-colors hover:text-white"
+                    className={cn(
+                      'group flex items-center gap-1 text-sm transition-colors',
+                      isLight ? 'text-[#5C5661] hover:text-[#141118]' : 'text-white/40 hover:text-white',
+                    )}
                   >
                     <span className="relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-tekton-teal after:transition-all group-hover:after:w-full">
                       {label}
@@ -86,7 +97,7 @@ export default function Footer() {
 
           {/* ── Column 3: Programs ── */}
           <div>
-            <h4 className="mb-5 text-xs font-semibold uppercase tracking-[0.15em] text-white/30">
+            <h4 className={cn('mb-5 text-xs font-semibold uppercase tracking-[0.15em]', isLight ? 'text-[#7A737F]' : 'text-white/30')}>
               Programs
             </h4>
             <ul className="flex flex-col gap-3">
@@ -94,7 +105,10 @@ export default function Footer() {
                 <li key={program}>
                   <Link
                     to="/programs"
-                    className="group flex items-center gap-1 text-sm text-white/40 transition-colors hover:text-white"
+                    className={cn(
+                      'group flex items-center gap-1 text-sm transition-colors',
+                      isLight ? 'text-[#5C5661] hover:text-[#141118]' : 'text-white/40 hover:text-white',
+                    )}
                   >
                     <span className="relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-tekton-teal after:transition-all group-hover:after:w-full">
                       {program}
@@ -107,13 +121,16 @@ export default function Footer() {
 
           {/* ── Column 4: Contact ── */}
           <div>
-            <h4 className="mb-5 text-xs font-semibold uppercase tracking-[0.15em] text-white/30">
+            <h4 className={cn('mb-5 text-xs font-semibold uppercase tracking-[0.15em]', isLight ? 'text-[#7A737F]' : 'text-white/30')}>
               Contact
             </h4>
             <div className="flex flex-col gap-5">
               <a
                 href="mailto:tektonxlabs@gmail.com"
-                className="flex items-center gap-2 text-sm text-white/40 transition-colors hover:text-white group"
+                className={cn(
+                  'flex items-center gap-2 text-sm transition-colors group',
+                  isLight ? 'text-[#5C5661] hover:text-[#141118]' : 'text-white/40 hover:text-white',
+                )}
               >
                 <Mail className="size-4 shrink-0 text-tekton-teal/60 group-hover:text-tekton-teal transition-colors" />
                 tektonxlabs@gmail.com
@@ -134,12 +151,12 @@ export default function Footer() {
       </div>
 
       {/* ── Bottom bar ── */}
-      <div className="border-t border-white/[0.06]">
+      <div className={cn('border-t', isLight ? 'border-[rgba(20,17,24,0.06)]' : 'border-white/[0.06]')}>
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-white/25">
+          <p className={cn('text-xs', isLight ? 'text-[#7A737F]' : 'text-white/25')}>
             &copy; 2026 TektonX. All rights reserved.
           </p>
-          <p className="text-xs text-white/20 tracking-wide">
+          <p className={cn('text-xs tracking-wide', isLight ? 'text-[#9B95A0]' : 'text-white/20')}>
             Built for Africa's Tech Future
           </p>
         </div>

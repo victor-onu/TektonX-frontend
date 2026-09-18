@@ -4,10 +4,12 @@ import { Toaster } from 'sonner'
 
 import queryClient from '@/lib/queryClient'
 import { AuthProvider } from '@/context/AuthContext'
+import { useScrollToTop } from '@/hooks/useScrollToTop'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import PublicLayout from '@/components/layouts/PublicLayout'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import MarketingLayout from '@/components/layouts/MarketingLayout'
+import CommunityManagerLayout from '@/components/layouts/CommunityManagerLayout'
 
 // Public pages
 import Index from '@/pages/Index'
@@ -41,11 +43,17 @@ import Communication from '@/pages/Communication'
 import Messages from '@/pages/Messages'
 import Profile from '@/pages/Profile'
 
+function ScrollToTop() {
+  useScrollToTop()
+  return null
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* ── Auth layout (no Nav/Footer, centered) ── */}
             <Route element={<AuthLayout />}>
@@ -112,16 +120,6 @@ export default function App() {
                 }
               />
 
-              {/* Protected — community manager only */}
-              <Route
-                path="/dashboard/community-manager"
-                element={
-                  <ProtectedRoute allowedRoles={['community_manager']}>
-                    <CommunityManagerDashboard />
-                  </ProtectedRoute>
-                }
-              />
-
               {/* Protected — mentee & mentor */}
               <Route
                 path="/roadmap"
@@ -172,6 +170,18 @@ export default function App() {
                 element={
                   <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
                     <Messages />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+
+            {/* ── Community manager layout (light Nav/Footer, scoped to this one route) ── */}
+            <Route element={<CommunityManagerLayout />}>
+              <Route
+                path="/dashboard/community-manager"
+                element={
+                  <ProtectedRoute allowedRoles={['community_manager']}>
+                    <CommunityManagerDashboard />
                   </ProtectedRoute>
                 }
               />

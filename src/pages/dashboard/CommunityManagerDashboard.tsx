@@ -271,35 +271,35 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        {/* LEFT: form */}
-        <div className="flex flex-col gap-5">
+        {/* LEFT: form (dark panel — intentional contrast against the light preview column) */}
+        <div className="rounded-xl border border-white/10 bg-[#141118] p-6 flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs text-[#413B47]">Subject</Label>
+            <Label className="text-xs text-white/60">Subject</Label>
             <Input
               value={subject}
               maxLength={200}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="e.g. Important details for Saturday's event"
-              className={fieldClassName}
+              className="bg-white/5 border-white/20 text-white placeholder:text-white/30"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs text-[#413B47]">
-              Message <span className="text-[#7A737F]">(Markdown supported — **bold**, *italic*, [links](url), - lists)</span>
+            <Label className="text-xs text-white/60">
+              Message <span className="text-white/30">(Markdown supported — **bold**, *italic*, [links](url), - lists)</span>
             </Label>
             <Textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={8}
               placeholder={`Hi everyone,\n\nHere's an update on the event...\n\nThanks,\nTektonX Team`}
-              className={`${fieldClassName} font-mono text-sm min-h-32 sm:min-h-64`}
+              className="bg-white/5 border-white/20 text-white placeholder:text-white/30 font-mono text-sm min-h-32 sm:min-h-64"
             />
           </div>
 
           {/* Audience */}
           <div className="flex flex-col gap-2">
-            <Label className="text-xs text-[#413B47]">Audience</Label>
+            <Label className="text-xs text-white/60">Audience</Label>
             <div className="flex flex-col gap-2">
               {AUDIENCE_OPTIONS.map((opt) => {
                 const active = audience === opt.value
@@ -310,22 +310,22 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
                     onClick={() => setAudience(opt.value)}
                     className={`flex items-start gap-2.5 text-left rounded-lg border px-3 py-2 transition-colors ${
                       active
-                        ? 'border-[#7C3AED] bg-[rgba(124,58,237,0.08)]'
-                        : 'border-[rgba(20,17,24,0.12)] bg-white hover:border-[rgba(20,17,24,0.24)]'
+                        ? 'border-tekton-purple-bright bg-tekton-purple-bright/10'
+                        : 'border-white/10 bg-white/5 hover:border-white/20'
                     }`}
                   >
                     <div className={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border ${
-                      active ? 'border-[#7C3AED] bg-[#7C3AED]' : 'border-[rgba(20,17,24,0.24)]'
+                      active ? 'border-tekton-purple-bright bg-tekton-purple-bright' : 'border-white/30'
                     }`}>
                       {active && <Check className="size-3 text-white" />}
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm text-[#141118] font-medium flex items-center gap-2">
+                      <span className="text-sm text-white font-medium flex items-center gap-2">
                         {opt.label}
-                        {opt.value === 'all' && <span className="text-xs text-[#7A737F]">({allCount})</span>}
-                        {opt.value === 'volunteers' && <span className="text-xs text-[#7A737F]">({volunteerCount})</span>}
+                        {opt.value === 'all' && <span className="text-xs text-white/40">({allCount})</span>}
+                        {opt.value === 'volunteers' && <span className="text-xs text-white/40">({volunteerCount})</span>}
                       </span>
-                      <span className="text-xs text-[#7A737F]">{opt.description}</span>
+                      <span className="text-xs text-white/40">{opt.description}</span>
                     </div>
                   </button>
                 )
@@ -335,29 +335,29 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
 
           {audience === 'manual' && (
             <div className="flex flex-col gap-1.5">
-              <Label className="text-xs text-[#413B47]">
-                Email addresses <span className="text-[#7A737F]">(comma or newline separated)</span>
+              <Label className="text-xs text-white/60">
+                Email addresses <span className="text-white/30">(comma or newline separated)</span>
               </Label>
               <Textarea
                 value={manualEmails}
                 onChange={(e) => setManualEmails(e.target.value)}
                 rows={4}
                 placeholder={'speaker@example.com\npartner@example.com'}
-                className={`${fieldClassName} text-sm`}
+                className="bg-white/5 border-white/20 text-white placeholder:text-white/30 text-sm"
               />
             </div>
           )}
 
           {/* Attachments */}
           <div className="flex flex-col gap-2">
-            <Label className="text-xs text-[#413B47]">
-              Attachments <span className="text-[#7A737F]">(optional — up to {MAX_ATTACHMENTS} files, 10MB each)</span>
+            <Label className="text-xs text-white/60">
+              Attachments <span className="text-white/30">(optional — up to {MAX_ATTACHMENTS} files, 10MB each)</span>
             </Label>
             <div
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => { e.preventDefault(); if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files) }}
               onClick={() => fileInputRef.current?.click()}
-              className="relative rounded-xl border-2 border-dashed border-[rgba(20,17,24,0.15)] hover:border-[#7C3AED]/40 bg-white p-6 flex flex-col items-center gap-2 cursor-pointer transition-colors"
+              className="relative rounded-xl border-2 border-dashed border-white/20 hover:border-white/40 bg-white/5 p-6 flex flex-col items-center gap-2 cursor-pointer transition-colors"
             >
               <input
                 ref={fileInputRef}
@@ -369,19 +369,19 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
                   e.target.value = ''
                 }}
               />
-              <Paperclip className="size-5 text-[#7A737F]" />
-              <p className="text-sm text-[#5C5661] text-center">Click to attach files or drag and drop</p>
+              <Paperclip className="size-5 text-white/40" />
+              <p className="text-sm text-white/50 text-center">Click to attach files or drag and drop</p>
             </div>
 
             {attachments.length > 0 && (
               <ul className="flex flex-col gap-1.5">
                 {attachments.map((file, i) => (
-                  <li key={`${file.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg border border-[rgba(20,17,24,0.08)] bg-white px-3 py-2">
-                    <span className="text-xs text-[#5C5661] truncate">{file.name}</span>
+                  <li key={`${file.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
+                    <span className="text-xs text-white/70 truncate">{file.name}</span>
                     <button
                       type="button"
                       onClick={() => removeAttachment(i)}
-                      className="text-[#7A737F] hover:text-[#DC2626] transition-colors shrink-0"
+                      className="text-white/40 hover:text-red-400 transition-colors shrink-0"
                       aria-label={`Remove ${file.name}`}
                     >
                       <X className="size-3.5" />
@@ -392,11 +392,11 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
             )}
           </div>
 
-          <div className="pt-2 border-t border-[rgba(20,17,24,0.08)]">
+          <div className="pt-2 border-t border-white/10">
             <Button
               onClick={openConfirm}
               disabled={!slug}
-              className="tx-cta-gradient bg-[linear-gradient(100deg,#7C3AED,#C026D3)] text-white border-0 shadow-[0_6px_18px_rgba(124,58,237,0.28)] hover:opacity-95 disabled:opacity-40"
+              className="bg-tekton-purple-bright text-white hover:bg-tekton-purple-bright/90 disabled:opacity-40"
             >
               <Send className="size-4 mr-1.5" />
               Send Email
