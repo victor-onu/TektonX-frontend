@@ -180,7 +180,7 @@ export default function App() {
               <Route
                 path="/dashboard/community-manager"
                 element={
-                  <ProtectedRoute allowedRoles={['community_manager']}>
+                  <ProtectedRoute allowedRoles={['community_manager', 'admin']}>
                     <CommunityManagerDashboard />
                   </ProtectedRoute>
                 }
