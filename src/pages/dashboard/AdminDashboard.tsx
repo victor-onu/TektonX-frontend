@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Users, GraduationCap, UserCheck, Shield, Link as LinkIcon, CheckCircle } from 'lucide-react'
+import { Users, GraduationCap, UserCheck, Shield, Link as LinkIcon, CalendarCheck, CheckCircle } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import adminService from '@/services/adminService'
@@ -78,13 +79,22 @@ export default function AdminDashboard() {
       <div className="mx-auto max-w-7xl flex flex-col gap-8">
 
         {/* Page heading */}
-        <div>
-          <h1 className="font-heading text-4xl text-white sm:text-5xl">
-            ADMIN <span className="gradient-text">DASHBOARD</span>
-          </h1>
-          {currentUser && (
-            <p className="mt-1 text-sm text-white/50">Logged in as {currentUser.name}</p>
-          )}
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="font-heading text-4xl text-white sm:text-5xl">
+              ADMIN <span className="gradient-text">DASHBOARD</span>
+            </h1>
+            {currentUser && (
+              <p className="mt-1 text-sm text-white/50">Logged in as {currentUser.name}</p>
+            )}
+          </div>
+          <RouterLink
+            to="/dashboard/community-manager"
+            className="inline-flex items-center gap-2 rounded-lg border border-tekton-purple-bright/30 bg-tekton-purple-bright/10 px-4 py-2.5 text-sm font-medium text-tekton-purple-bright smooth-hover hover:bg-tekton-purple-bright/20 transition-colors"
+          >
+            <CalendarCheck className="size-4" />
+            Manage Event Registrants
+          </RouterLink>
         </div>
 
         {/* Stats row */}
