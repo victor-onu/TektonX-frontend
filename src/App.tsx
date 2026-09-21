@@ -4,10 +4,12 @@ import { Toaster } from 'sonner'
 
 import queryClient from '@/lib/queryClient'
 import { AuthProvider } from '@/context/AuthContext'
+import { useScrollToTop } from '@/hooks/useScrollToTop'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import PublicLayout from '@/components/layouts/PublicLayout'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import MarketingLayout from '@/components/layouts/MarketingLayout'
+import CommunityManagerLayout from '@/components/layouts/CommunityManagerLayout'
 
 // Public pages
 import Index from '@/pages/Index'
@@ -35,16 +37,23 @@ import MenteeDashboard from '@/pages/dashboard/MenteeDashboard'
 import MentorDashboard from '@/pages/dashboard/MentorDashboard'
 import MentorPending from '@/pages/dashboard/MentorPending'
 import AdminDashboard from '@/pages/dashboard/AdminDashboard'
+import CommunityManagerDashboard from '@/pages/dashboard/CommunityManagerDashboard'
 import Roadmap from '@/pages/Roadmap'
 import Communication from '@/pages/Communication'
 import Messages from '@/pages/Messages'
 import Profile from '@/pages/Profile'
+
+function ScrollToTop() {
+  useScrollToTop()
+  return null
+}
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* ── Auth layout (no Nav/Footer, centered) ── */}
             <Route element={<AuthLayout />}>
@@ -161,6 +170,18 @@ export default function App() {
                 element={
                   <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
                     <Messages />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+
+            {/* ── Community manager layout (light Nav/Footer, scoped to this one route) ── */}
+            <Route element={<CommunityManagerLayout />}>
+              <Route
+                path="/dashboard/community-manager"
+                element={
+                  <ProtectedRoute allowedRoles={['community_manager']}>
+                    <CommunityManagerDashboard />
                   </ProtectedRoute>
                 }
               />

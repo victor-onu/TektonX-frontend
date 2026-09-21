@@ -26,6 +26,7 @@ export default function Login() {
 
   const redirectByRole = (user: User) => {
     if (user.role === 'admin') return navigate('/dashboard/admin')
+    if (user.role === 'community_manager') return navigate('/dashboard/community-manager')
     if (user.role === 'mentor') {
       if (user.status === 'active') return navigate('/dashboard/mentor')
       return navigate('/dashboard/mentor/pending')

@@ -26,6 +26,7 @@ export default function ProtectedRoute({ children, allowedRoles, requireApproval
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     // Redirect to the correct dashboard based on actual role
     if (user.role === 'admin') return <Navigate to="/dashboard/admin" replace />
+    if (user.role === 'community_manager') return <Navigate to="/dashboard/community-manager" replace />
     if (user.role === 'mentor') return <Navigate to="/dashboard/mentor" replace />
     return <Navigate to="/dashboard/mentee" replace />
   }

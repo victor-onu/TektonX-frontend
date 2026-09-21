@@ -1,6 +1,6 @@
 // ─── Union Types ─────────────────────────────────────────────────────────────
 
-export type UserRole = 'admin' | 'mentor' | 'mentee'
+export type UserRole = 'admin' | 'mentor' | 'mentee' | 'community_manager'
 
 export type UserStatus = 'active' | 'inactive' | 'suspended' | 'alumni'
 
