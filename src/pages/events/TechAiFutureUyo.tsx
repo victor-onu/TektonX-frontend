@@ -752,7 +752,7 @@ export default function TechAiFutureUyo() {
               Backing the Road to Buildverse, or want your brand in the room in Uyo? We are taking partner conversations now.
             </p>
             <a
-              href="mailto:partners@tektonxlabs.com?subject=Partnership%20%E2%80%94%20Tech%2C%20AI%20and%20the%20Future%20Uyo"
+              href="mailto:info@tektonxlabs.com?subject=Partnership%20%E2%80%94%20Tech%2C%20AI%20and%20the%20Future%20Uyo"
               className="mt-4 inline-flex min-h-[48px] items-center border-2 border-[#06051D] px-[22px] py-3.5 text-[13px] font-bold uppercase tracking-[0.08em] text-[#06051D] no-underline hover:bg-[#F1EBFF]"
             >
               Enquire about partnering
