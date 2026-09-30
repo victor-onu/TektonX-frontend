@@ -23,8 +23,14 @@ export interface EventRegistrant {
 }
 
 export type EmailAudience = 'all' | 'volunteers' | 'manual'
+export type SmsAudience = 'all' | 'volunteers' | 'manual'
 
 export interface EmailRegistrantsResult {
+  sent: number
+  failed: number
+}
+
+export interface SmsRegistrantsResult {
   sent: number
   failed: number
 }
@@ -46,6 +52,13 @@ const eventAdminService = {
     const { data } = await api.post(`/events/${slug}/registrations/email`, formData, {
       headers: { 'Content-Type': undefined },
     })
+    return data
+  },
+  smsRegistrants: async (
+    slug: string,
+    payload: { message: string; audience: SmsAudience; manualPhones?: string },
+  ): Promise<SmsRegistrantsResult> => {
+    const { data } = await api.post(`/events/${slug}/registrations/sms`, payload)
     return data
   },
 }

@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { marked } from 'marked'
 import { toast } from 'sonner'
-import { AlertTriangle, Check, Download, Paperclip, Send, X } from 'lucide-react'
+import { AlertTriangle, Check, Download, MessageSquare, Paperclip, Send, X } from 'lucide-react'
 import '@/components/marketing/marketing.css'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -18,7 +18,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
-import eventAdminService, { type EmailAudience, type EventRegistrant } from '@/services/eventAdminService'
+import eventAdminService, { type EmailAudience, type EventRegistrant, type SmsAudience } from '@/services/eventAdminService'
 import { useAuth } from '@/hooks/useAuth'
 import { formatDate } from '@/lib/utils'
 import type { User } from '@/types'
@@ -30,6 +30,12 @@ const AUDIENCE_OPTIONS: { value: EmailAudience; label: string; description: stri
   { value: 'all', label: 'All registrants', description: 'Everyone who registered for this event' },
   { value: 'volunteers', label: 'Volunteers only', description: 'Registrants who answered "Yes" to volunteering' },
   { value: 'manual', label: 'Manual list', description: 'Type or paste email addresses — not limited to registrants' },
+]
+
+const SMS_AUDIENCE_OPTIONS: { value: SmsAudience; label: string; description: string }[] = [
+  { value: 'all', label: 'All registrants', description: 'Everyone who registered for this event' },
+  { value: 'volunteers', label: 'Volunteers only', description: 'Registrants who answered "Yes" to volunteering' },
+  { value: 'manual', label: 'Manual list', description: 'Type or paste phone numbers — not limited to registrants' },
 ]
 
 const volunteerLabel: Record<string, string> = {
@@ -468,6 +474,252 @@ function EmailComposer({ registrants, slug }: { registrants: EventRegistrant[]; 
   )
 }
 
+// ─── SMS Composer ───────────────────────────────────────────────────────────
+
+function SMSComposer({ registrants, slug }: { registrants: EventRegistrant[]; slug: string | null }) {
+  const [message, setMessage] = useState('')
+  const [audience, setAudience] = useState<SmsAudience>('all')
+  const [manualPhones, setManualPhones] = useState('')
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [sending, setSending] = useState(false)
+
+  const allCount = registrants.length
+  const volunteerCount = registrants.filter((r) => r.volunteer === 'yes').length
+
+  // SMS page calculation: 160 chars = 1 page, then 153 per page after that
+  const calculatePages = (text: string): number => {
+    const length = text.length
+    if (length === 0) return 0
+    if (length <= 160) return 1
+    return Math.ceil((length - 160) / 153) + 1
+  }
+
+  const pages = calculatePages(message)
+  const charsUsed = message.length
+  const charsRemaining = pages === 0 ? 160 : pages === 1 ? 160 - charsUsed : ((pages * 153) - charsUsed + 7)
+
+  function getValidationError(): string | null {
+    if (!slug) return 'Select an event first.'
+    if (!message.trim()) return 'Message is required.'
+    if (audience === 'manual' && !manualPhones.trim()) return 'Enter at least one phone number for the manual list.'
+    if (audience === 'volunteers' && volunteerCount === 0) return 'No volunteers found for this event.'
+    return null
+  }
+
+  function openConfirm() {
+    const err = getValidationError()
+    if (err) { toast.error(err); return }
+    setConfirmOpen(true)
+  }
+
+  async function handleConfirmSend() {
+    if (!slug) return
+    setSending(true)
+    try {
+      const payload = {
+        message,
+        audience,
+        ...(audience === 'manual' && { manualPhones }),
+      }
+
+      const res = await eventAdminService.smsRegistrants(slug, payload)
+      if (res.failed === 0) {
+        toast.success(`SMS sent to ${res.sent} recipient${res.sent === 1 ? '' : 's'}.`)
+      } else {
+        toast.success(`Sent ${res.sent}, ${res.failed} failed.`)
+      }
+      setConfirmOpen(false)
+      setMessage('')
+      setAudience('all')
+      setManualPhones('')
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message
+      toast.error(msg ?? 'Failed to send SMS.')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  const recipientSummary =
+    audience === 'all' ? `${allCount} registrant${allCount === 1 ? '' : 's'}`
+      : audience === 'volunteers' ? `${volunteerCount} volunteer${volunteerCount === 1 ? '' : 's'}`
+        : 'the manual list below'
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-xl text-[#141118]">SMS REGISTRANTS</h2>
+        <p className="text-xs text-[#7A737F]">
+          Send bulk SMS to this event&apos;s registrants. Phone numbers should be in international format (e.g., 2347037770033).
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        {/* LEFT: form */}
+        <div className="rounded-xl border border-white/10 bg-[#141118] p-6 flex flex-col gap-5">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <Label className="text-xs text-white/60">Message</Label>
+              <div className="flex items-center gap-2 text-xs">
+                <span className={`${pages > 1 ? 'text-tekton-yellow font-medium' : 'text-white/40'}`}>
+                  {charsUsed} chars
+                </span>
+                <span className="text-white/20">·</span>
+                <span className={`${pages > 1 ? 'text-tekton-yellow font-medium' : 'text-white/40'}`}>
+                  {pages} page{pages === 1 ? '' : 's'}
+                </span>
+                {pages > 1 && (
+                  <>
+                    <span className="text-white/20">·</span>
+                    <span className="text-white/40">{charsRemaining} left in page {pages}</span>
+                  </>
+                )}
+              </div>
+            </div>
+            <Textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={8}
+              placeholder={`Hi everyone,\n\nHere's an important update about the event...\n\nThanks,\nTektonX Team`}
+              className="bg-white/5 border-white/20 text-white placeholder:text-white/30 text-sm min-h-32 sm:min-h-64"
+            />
+          </div>
+
+          {/* Audience */}
+          <div className="flex flex-col gap-2">
+            <Label className="text-xs text-white/60">Audience</Label>
+            <div className="flex flex-col gap-2">
+              {SMS_AUDIENCE_OPTIONS.map((opt) => {
+                const active = audience === opt.value
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setAudience(opt.value)}
+                    className={`flex items-start gap-2.5 text-left rounded-lg border px-3 py-2 transition-colors ${
+                      active
+                        ? 'border-tekton-purple-bright bg-tekton-purple-bright/10'
+                        : 'border-white/10 bg-white/5 hover:border-white/20'
+                    }`}
+                  >
+                    <div className={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border ${
+                      active ? 'border-tekton-purple-bright bg-tekton-purple-bright' : 'border-white/30'
+                    }`}>
+                      {active && <Check className="size-3 text-white" />}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm text-white font-medium flex items-center gap-2">
+                        {opt.label}
+                        {opt.value === 'all' && <span className="text-xs text-white/40">({allCount})</span>}
+                        {opt.value === 'volunteers' && <span className="text-xs text-white/40">({volunteerCount})</span>}
+                      </span>
+                      <span className="text-xs text-white/40">{opt.description}</span>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {audience === 'manual' && (
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-xs text-white/60">
+                Phone numbers <span className="text-white/30">(comma or newline separated, international format)</span>
+              </Label>
+              <Textarea
+                value={manualPhones}
+                onChange={(e) => setManualPhones(e.target.value)}
+                rows={4}
+                placeholder={'2347037770033\n2349050030090'}
+                className="bg-white/5 border-white/20 text-white placeholder:text-white/30 text-sm font-mono"
+              />
+            </div>
+          )}
+
+          <div className="pt-2 border-t border-white/10">
+            <Button
+              onClick={openConfirm}
+              disabled={!slug}
+              className="bg-tekton-purple-bright text-white hover:bg-tekton-purple-bright/90 disabled:opacity-40"
+            >
+              <MessageSquare className="size-4 mr-1.5" />
+              Send SMS
+            </Button>
+          </div>
+        </div>
+
+        {/* RIGHT: preview */}
+        <div className="flex flex-col gap-2">
+          <Label className="text-xs text-[#413B47]">Preview</Label>
+          <div className="rounded-lg border border-[rgba(20,17,24,0.08)] overflow-hidden">
+            <div className="bg-[#FAF8F6] border-b border-[rgba(20,17,24,0.08)] px-4 py-2.5">
+              <p className="text-[11px] uppercase text-[#7A737F] tracking-wider">SMS Preview</p>
+              <p className="text-sm text-[#141118]">TektonX</p>
+            </div>
+            <div className="bg-white text-zinc-900 p-6 max-h-[500px] overflow-y-auto">
+              <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                {message || 'Your message will appear here…'}
+              </div>
+              <div className="mt-4 pt-4 border-t border-zinc-200 text-xs text-zinc-500">
+                <p>Character count: {charsUsed}</p>
+                <p className={pages > 1 ? 'text-amber-600 font-medium' : ''}>
+                  SMS pages: {pages} {pages > 1 ? '(message will be split into multiple SMS)' : ''}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Confirmation dialog */}
+      <Dialog open={confirmOpen} onOpenChange={(o) => !o && !sending && setConfirmOpen(false)}>
+        <DialogContent className="bg-white border-[rgba(20,17,24,0.08)] text-[#141118] max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="size-5 text-tekton-yellow" />
+              Confirm SMS
+            </DialogTitle>
+            <DialogDescription className="text-[#5C5661]">
+              This will send an SMS to <span className="text-[#141118] font-semibold">{recipientSummary}</span>. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="rounded-lg border border-[rgba(20,17,24,0.08)] bg-[#FAF8F6] p-3 text-xs text-[#5C5661]">
+            <p>
+              <span className="text-[#7A737F]">Audience:</span>{' '}
+              <span className="text-[#141118]">{SMS_AUDIENCE_OPTIONS.find((o) => o.value === audience)?.label}</span>
+            </p>
+            <p className="mt-1">
+              <span className="text-[#7A737F]">Message length:</span>{' '}
+              <span className="text-[#141118]">{charsUsed} characters</span>
+            </p>
+            <p className="mt-1">
+              <span className="text-[#7A737F]">SMS pages:</span>{' '}
+              <span className={`${pages > 1 ? 'text-amber-600 font-medium' : 'text-[#141118]'}`}>
+                {pages} {pages > 1 ? '(costs will apply per page)' : ''}
+              </span>
+            </p>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" disabled={sending} onClick={() => setConfirmOpen(false)} className="border-[rgba(20,17,24,0.12)] text-[#5C5661]">
+              Cancel
+            </Button>
+            <Button
+              disabled={sending}
+              onClick={handleConfirmSend}
+              className="tx-cta-gradient bg-[linear-gradient(100deg,#7C3AED,#C026D3)] text-white border-0 shadow-[0_6px_18px_rgba(124,58,237,0.28)] hover:opacity-95"
+            >
+              {sending ? 'Sending…' : 'Confirm & Send'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+    </div>
+  )
+}
+
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function CommunityManagerDashboard() {
@@ -563,6 +815,8 @@ export default function CommunityManagerDashboard() {
             )}
 
             <EmailComposer registrants={registrants} slug={effectiveSlug} />
+
+            <SMSComposer registrants={registrants} slug={effectiveSlug} />
           </>
         )}
 
