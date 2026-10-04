@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { marked } from 'marked'
 import { toast } from 'sonner'
-import { AlertTriangle, Check, Download, MessageSquare, Paperclip, Send, X } from 'lucide-react'
+import { AlertTriangle, Check, ChevronLeft, ChevronRight, Download, MessageSquare, Paperclip, Send, X } from 'lucide-react'
 import '@/components/marketing/marketing.css'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -63,6 +63,8 @@ function RegistrantsTable({
 }) {
   const [search, setSearch] = useState('')
   const [exporting, setExporting] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase()
@@ -73,6 +75,23 @@ function RegistrantsTable({
       (r.organisation ?? '').toLowerCase().includes(query),
     )
   }, [registrants, search])
+
+  // Reset to page 1 when search changes
+  const handleSearchChange = (value: string) => {
+    setSearch(value)
+    setCurrentPage(1)
+  }
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filtered.length / pageSize)
+  const startIndex = (currentPage - 1) * pageSize
+  const endIndex = startIndex + pageSize
+  const paginatedResults = filtered.slice(startIndex, endIndex)
+
+  // Reset to page 1 if current page exceeds total pages
+  if (currentPage > totalPages && totalPages > 0) {
+    setCurrentPage(1)
+  }
 
   async function handleExport() {
     if (!slug) return
@@ -107,12 +126,32 @@ function RegistrantsTable({
         </button>
       </div>
 
-      <Input
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search by name, email, or organisation..."
-        className={`${fieldClassName} sm:max-w-xs`}
-      />
+      <div className="flex flex-wrap items-center gap-3">
+        <Input
+          value={search}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          placeholder="Search by name, email, or organisation..."
+          className={`${fieldClassName} sm:max-w-xs flex-1 min-w-[200px]`}
+        />
+        {filtered.length > 0 && (
+          <div className="flex items-center gap-2">
+            <Label className="text-xs text-[#7A737F]">Per page:</Label>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value))
+                setCurrentPage(1)
+              }}
+              className="h-9 rounded-lg border border-[rgba(20,17,24,0.12)] bg-white px-3 text-sm text-[#141118] focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/30"
+            >
+              <option value={15}>15</option>
+              <option value={20}>20</option>
+              <option value={30}>30</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+        )}
+      </div>
 
       <div className="rounded-xl border border-[rgba(20,17,24,0.06)] bg-white overflow-x-auto tx-card-hover">
         {isLoading ? (
@@ -147,7 +186,7 @@ function RegistrantsTable({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((r) => (
+              {paginatedResults.map((r) => (
                 <TableRow key={r.id} className="border-[rgba(20,17,24,0.06)] hover:bg-[rgba(124,58,237,0.04)]">
                   <TableCell className="font-medium text-[#141118]">{r.name}</TableCell>
                   <TableCell className="text-[#5C5661]">{r.email}</TableCell>
@@ -167,6 +206,60 @@ function RegistrantsTable({
           </Table>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {filtered.length > 0 && totalPages > 1 && (
+        <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+          <p className="text-[#7A737F]">
+            Showing {startIndex + 1} to {Math.min(endIndex, filtered.length)} of {filtered.length} registrant{filtered.length === 1 ? '' : 's'}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="inline-flex items-center gap-1 rounded-lg border border-[rgba(20,17,24,0.12)] bg-white px-3 py-2 text-sm font-medium text-[#141118] transition-colors hover:border-[#7C3AED]/40 hover:text-[#7C3AED] disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="size-4" />
+              Previous
+            </button>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum: number
+                if (totalPages <= 5) {
+                  pageNum = i + 1
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i
+                } else {
+                  pageNum = currentPage - 2 + i
+                }
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`flex size-9 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${
+                      currentPage === pageNum
+                        ? 'border-[#7C3AED] bg-[#7C3AED] text-white'
+                        : 'border-[rgba(20,17,24,0.12)] bg-white text-[#141118] hover:border-[#7C3AED]/40 hover:text-[#7C3AED]'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                )
+              })}
+            </div>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="inline-flex items-center gap-1 rounded-lg border border-[rgba(20,17,24,0.12)] bg-white px-3 py-2 text-sm font-medium text-[#141118] transition-colors hover:border-[#7C3AED]/40 hover:text-[#7C3AED] disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Next
+              <ChevronRight className="size-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
