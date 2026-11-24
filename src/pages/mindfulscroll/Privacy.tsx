@@ -53,8 +53,8 @@ export default function MindfulScrollPrivacy() {
           without it the app runs in a lighter mode.
         </li>
         <li>
-          <strong>Display over other apps and notifications</strong> are used to show break screens and warnings before
-          a limit is reached.
+          <strong>Notifications</strong> are used for warnings before a limit is reached, break reminders, and the
+          ongoing notice that protection is active.
         </li>
         <li>
           <strong>Device admin (uninstall protection)</strong> is optional and only makes it harder to uninstall the app
@@ -100,13 +100,19 @@ export default function MindfulScrollPrivacy() {
       <h2 id="your-choices">Your choices</h2>
       <ul>
         <li>
-          <strong>See your data:</strong> Settings &rsaquo; Export data saves a copy of everything the app stores.
+          <strong>See your data:</strong> Settings &rsaquo; Export data saves a copy of what the app
+          stores, except your PIN.
         </li>
         <li>
-          <strong>Delete your data:</strong> use Settings &rsaquo; Delete all data in the app, uninstall it, or clear
-          its storage in Android settings. Because we
-          don&rsquo;t hold your usage data, there is nothing more to delete on our side. For purchase records held by
-          RevenueCat, email us and we&rsquo;ll ask for them to be deleted.
+          <strong>Delete your data on the phone:</strong> Settings &rsaquo; Delete all data removes your protected
+          apps, usage history, breaks, summaries and streaks. Your settings, PIN and focus modes stay until you
+          uninstall the app or clear its storage in Android settings. We don&rsquo;t hold your usage data, so there is
+          nothing of it to delete on our side.
+        </li>
+        <li>
+          <strong>Ask us to delete purchase records:</strong> email {mail} with the Google Play order number of your
+          MindfulScroll subscription, and we will delete the records RevenueCat holds for us. We may keep what tax or
+          accounting rules require for as long as they require it. Google keeps its own record of your purchases.
         </li>
         <li>
           <strong>Turn permissions off</strong> at any time in Android settings. Some features stop working without
