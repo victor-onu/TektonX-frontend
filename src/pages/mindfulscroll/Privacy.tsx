@@ -103,7 +103,8 @@ export default function MindfulScrollPrivacy() {
           <strong>See your data:</strong> Settings &rsaquo; Export data saves a copy of everything the app stores.
         </li>
         <li>
-          <strong>Delete your data:</strong> uninstall the app, or clear its storage in Android settings. Because we
+          <strong>Delete your data:</strong> use Settings &rsaquo; Delete all data in the app, uninstall it, or clear
+          its storage in Android settings. Because we
           don&rsquo;t hold your usage data, there is nothing more to delete on our side. For purchase records held by
           RevenueCat, email us and we&rsquo;ll ask for them to be deleted.
         </li>
