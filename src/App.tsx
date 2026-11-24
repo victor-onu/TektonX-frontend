@@ -21,6 +21,9 @@ import VerifyCertificate from '@/pages/VerifyCertificate'
 import Partnerships from '@/pages/Partnerships'
 import JoinCommunity from '@/pages/JoinCommunity'
 import NotFound from '@/pages/NotFound'
+import MindfulScroll from '@/pages/mindfulscroll/MindfulScroll'
+import MindfulScrollPrivacy from '@/pages/mindfulscroll/Privacy'
+import MindfulScrollTerms from '@/pages/mindfulscroll/Terms'
 
 // Standalone event microsites (no Nav/Footer chrome)
 import TechAiFutureUyo from '@/pages/events/TechAiFutureUyo'
@@ -70,6 +73,10 @@ export default function App() {
               <Route path="/about" element={<About />} />
               <Route path="/mentors" element={<Mentors />} />
               <Route path="/join" element={<JoinCommunity />} />
+              {/* MindfulScroll app pages; Google Play links to the privacy URL */}
+              <Route path="/mindfulscroll" element={<MindfulScroll />} />
+              <Route path="/mindfulscroll/privacy" element={<MindfulScrollPrivacy />} />
+              <Route path="/mindfulscroll/terms" element={<MindfulScrollTerms />} />
             </Route>
 
             {/* ── Public layout (Nav + Footer) ── */}
