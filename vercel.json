@@ -1,6 +1,20 @@
 {
   "rewrites": [
-    { "source": "/events/tech-ai-future-uyo", "destination": "/events/tech-ai-future-uyo/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/events/tech-ai-future-uyo",
+      "destination": "/events/tech-ai-future-uyo/index.html"
+    },
+    {
+      "source": "/mindfulscroll",
+      "destination": "/mindfulscroll/index.html"
+    },
+    {
+      "source": "/mindfulscroll/(privacy|terms)",
+      "destination": "/mindfulscroll/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }

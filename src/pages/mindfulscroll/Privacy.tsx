@@ -2,17 +2,32 @@ import LegalPage, { MINDFULSCROLL_CONTACT } from './LegalPage'
 
 const mail = <a href={`mailto:${MINDFULSCROLL_CONTACT}`}>{MINDFULSCROLL_CONTACT}</a>
 
+const TOC = [
+  { id: 'what-we-store', label: 'What we store' },
+  { id: 'permissions', label: 'Permissions' },
+  { id: 'purchases', label: 'Purchases' },
+  { id: 'what-we-dont-do', label: 'What we don’t do' },
+  { id: 'backups', label: 'Backups' },
+  { id: 'your-choices', label: 'Your choices' },
+  { id: 'children', label: 'Children' },
+  { id: 'changes', label: 'Changes' },
+  { id: 'contact', label: 'Contact' },
+]
+
 export default function MindfulScrollPrivacy() {
   return (
-    <LegalPage eyebrow="MindfulScroll" title="Privacy Policy" updated="November 24, 2026">
+    <LegalPage
+      title="Privacy Policy"
+      updated="November 24, 2026"
+      toc={TOC}
+      summary="The short version: your usage data stays on your phone, we never see it, and we don't sell anything about you."
+    >
       <p>
         MindfulScroll is an Android app that helps you notice and interrupt doomscrolling. It is made by TektonX
-        (&ldquo;we&rdquo;, &ldquo;us&rdquo;). This policy explains what the app does with your information. The short
-        version: <strong>your usage data stays on your phone, we never see it, and we don&rsquo;t sell anything about
-        you.</strong>
+        (&ldquo;we&rdquo;, &ldquo;us&rdquo;). This policy explains what the app does with your information.
       </p>
 
-      <h2>What MindfulScroll stores on your phone</h2>
+      <h2 id="what-we-store">What MindfulScroll stores on your phone</h2>
       <p>To set limits, show breaks and track your progress, the app keeps the following in a database on your device:</p>
       <ul>
         <li>The apps you choose to protect (their names and package names) and the limits you set for them.</li>
@@ -26,7 +41,7 @@ export default function MindfulScrollPrivacy() {
         this is sent to us or to anyone else, and there is no MindfulScroll account.
       </p>
 
-      <h2>Permissions and why we ask for them</h2>
+      <h2 id="permissions">Permissions and why we ask for them</h2>
       <ul>
         <li>
           <strong>Usage access</strong> lets the app see how long you spend in the apps you chose to protect.
@@ -51,7 +66,7 @@ export default function MindfulScrollPrivacy() {
         </li>
       </ul>
 
-      <h2>Purchases</h2>
+      <h2 id="purchases">Purchases</h2>
       <p>
         If you subscribe to MindfulScroll Premium, Google Play handles the payment. We never see your card or payment
         details. To confirm your subscription, the app uses RevenueCat, a subscription service. RevenueCat receives a
@@ -68,21 +83,21 @@ export default function MindfulScrollPrivacy() {
         .
       </p>
 
-      <h2>What we don&rsquo;t do</h2>
+      <h2 id="what-we-dont-do">What we don&rsquo;t do</h2>
       <ul>
         <li>We don&rsquo;t show ads, and we don&rsquo;t use advertising or analytics SDKs.</li>
         <li>We don&rsquo;t sell, rent or share your information for advertising.</li>
         <li>We don&rsquo;t read the content of other apps.</li>
       </ul>
 
-      <h2>Backups</h2>
+      <h2 id="backups">Backups</h2>
       <p>
         If Android backup is turned on, Android may include MindfulScroll&rsquo;s data in your own Google account
         backup, so it can be restored on a new phone. That backup belongs to you and is managed by Google; we
         can&rsquo;t access it. You can turn backup off in your phone&rsquo;s settings.
       </p>
 
-      <h2>Your choices</h2>
+      <h2 id="your-choices">Your choices</h2>
       <ul>
         <li>
           <strong>See your data:</strong> Settings &rsaquo; Export data saves a copy of everything the app stores.
@@ -102,20 +117,20 @@ export default function MindfulScrollPrivacy() {
         access, correct or delete personal data and to object to its use. Email {mail} to use them.
       </p>
 
-      <h2>Children</h2>
+      <h2 id="children">Children</h2>
       <p>
         MindfulScroll is not directed at children under 13, and we don&rsquo;t knowingly collect personal information
         from them.
       </p>
 
-      <h2>Changes</h2>
+      <h2 id="changes">Changes</h2>
       <p>
         If we change how the app handles information, we will update this page and the date above. If a change is
         significant, such as starting to collect new information, we&rsquo;ll also tell you in the app before it takes
         effect.
       </p>
 
-      <h2>Contact</h2>
+      <h2 id="contact">Contact</h2>
       <p>Questions about privacy or this policy: {mail}.</p>
     </LegalPage>
   )

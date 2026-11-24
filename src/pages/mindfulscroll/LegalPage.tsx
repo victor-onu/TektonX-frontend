@@ -1,64 +1,45 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
-import { eyebrowStyle } from '@/components/marketing/tokens'
+import Layout from './Layout'
 
-export const MINDFULSCROLL_CONTACT = 'admin@tektonxlabs.com'
+export { MINDFULSCROLL_CONTACT } from './Layout'
 
-// Shared shell for the MindfulScroll app's public pages (product, privacy,
-// terms). Google Play links to the privacy page, so it must stay a plain,
-// readable document at a stable URL.
+/** A section of a legal page: its anchor id and its "On this page" label. */
+export type TocEntry = { id: string; label: string }
+
+// Privacy policy and terms share this page: title, date, an optional
+// plain-English summary, and an "On this page" list on wide screens. Google
+// Play links to the privacy page, so its URL must stay stable.
 export default function LegalPage({
-  eyebrow,
   title,
   updated,
+  summary,
+  toc,
   children,
 }: {
-  eyebrow: string
   title: string
-  updated?: string
+  updated: string
+  summary?: ReactNode
+  toc: TocEntry[]
   children: ReactNode
 }) {
   return (
-    <div className="tx-marketing">
-      <section
-        style={{
-          background:
-            'radial-gradient(64% 58% at 72% 34%, rgba(168,85,247,0.10) 0%, rgba(250,248,246,0) 72%), #FAF8F6',
-        }}
-      >
-        <div
-          className="tx-marketing-rise"
-          style={{ maxWidth: 820, margin: '0 auto', padding: '72px 24px 32px' }}
-        >
-          <span style={eyebrowStyle}>{eyebrow}</span>
-          <h1 style={{ fontSize: 'clamp(44px,6vw,76px)', lineHeight: 0.95, color: '#0E0B12', marginTop: 14 }}>
-            {title}
-          </h1>
-          {updated && (
-            <p style={{ marginTop: 16, fontSize: 15, color: '#5B5563' }}>Last updated {updated}</p>
-          )}
-        </div>
-      </section>
-      <article className="tx-legal" style={{ maxWidth: 820, margin: '0 auto', padding: '16px 24px 96px' }}>
-        {children}
-        <nav
-          aria-label="MindfulScroll pages"
-          style={{
-            marginTop: 56,
-            paddingTop: 24,
-            borderTop: '1px solid rgba(20,17,24,0.10)',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 20,
-            fontSize: 15,
-          }}
-        >
-          <Link to="/mindfulscroll">MindfulScroll</Link>
-          <Link to="/mindfulscroll/privacy">Privacy Policy</Link>
-          <Link to="/mindfulscroll/terms">Terms of Use</Link>
-          <a href={`mailto:${MINDFULSCROLL_CONTACT}`}>{MINDFULSCROLL_CONTACT}</a>
+    <Layout title={`${title} · MindfulScroll`}>
+      <div className="ms-wrap ms-doc">
+        <nav className="ms-toc" aria-label="On this page">
+          <p>On this page</p>
+          {toc.map((entry) => (
+            <a key={entry.id} href={`#${entry.id}`}>
+              {entry.label}
+            </a>
+          ))}
         </nav>
-      </article>
-    </div>
+        <article>
+          <h1>{title}</h1>
+          <p className="ms-updated">Last updated {updated}</p>
+          {summary && <div className="ms-summary">{summary}</div>}
+          <div className="ms-prose">{children}</div>
+        </article>
+      </div>
+    </Layout>
   )
 }

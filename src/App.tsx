@@ -73,10 +73,6 @@ export default function App() {
               <Route path="/about" element={<About />} />
               <Route path="/mentors" element={<Mentors />} />
               <Route path="/join" element={<JoinCommunity />} />
-              {/* MindfulScroll app pages; Google Play links to the privacy URL */}
-              <Route path="/mindfulscroll" element={<MindfulScroll />} />
-              <Route path="/mindfulscroll/privacy" element={<MindfulScrollPrivacy />} />
-              <Route path="/mindfulscroll/terms" element={<MindfulScrollTerms />} />
             </Route>
 
             {/* ── Public layout (Nav + Footer) ── */}
@@ -196,6 +192,12 @@ export default function App() {
 
             {/* ── Standalone event microsites (own header/footer, no site chrome) ── */}
             <Route path="/events/tech-ai-future-uyo" element={<TechAiFutureUyo />} />
+
+            {/* MindfulScroll app pages: their own brand, no TektonX Nav/Footer.
+                Google Play links to the privacy URL, so keep these paths. */}
+            <Route path="/mindfulscroll" element={<MindfulScroll />} />
+            <Route path="/mindfulscroll/privacy" element={<MindfulScrollPrivacy />} />
+            <Route path="/mindfulscroll/terms" element={<MindfulScrollTerms />} />
 
             {/* ── Catch-all ── */}
             <Route path="*" element={<NotFound />} />

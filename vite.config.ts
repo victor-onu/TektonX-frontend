@@ -63,6 +63,9 @@ export default defineConfig({
         // instead of the site-wide ones — the actual page content still
         // comes from the same React app (same /src/main.tsx bootstrap).
         uyoEvent: path.resolve(__dirname, 'events/tech-ai-future-uyo/index.html'),
+        // Same idea for the MindfulScroll app's pages (/mindfulscroll,
+        // /mindfulscroll/privacy, /mindfulscroll/terms).
+        mindfulscroll: path.resolve(__dirname, 'mindfulscroll/index.html'),
       },
     },
   },
