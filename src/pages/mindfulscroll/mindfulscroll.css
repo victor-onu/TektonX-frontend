@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+
+/*
+ * Standalone look for the MindfulScroll app's pages, matching the app's own
+ * palette and type (lib/app/theme.dart in the mindfulscroll repo): Fraunces
+ * for headings, Plus Jakarta Sans for text. Scoped under `.ms-site` so it
+ * never touches the TektonX site.
+ */
+.ms-site {
+  --ms-paper: #f6f1e7;
+  --ms-card: #fbf8f2;
+  --ms-ink: #1c2427;
+  --ms-ink-soft: #4a5451;
+  --ms-blue: #35608a;
+  --ms-mint-dark: #2e7257;
+  --ms-mint-light: #dff0e9;
+  --ms-rest: #e9eff3;
+  --ms-line: #e6dfd2;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ms-paper);
+  color: var(--ms-ink);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+.ms-site h1,
+.ms-site h2,
+.ms-site h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.ms-site a {
+  color: var(--ms-blue);
+}
+
+.ms-site *:focus-visible {
+  outline: 2px solid var(--ms-blue);
+  outline-offset: 3px;
+}
+
+.ms-wrap {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.ms-header {
+  border-bottom: 1px solid var(--ms-line);
+}
+
+.ms-header .ms-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.ms-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ms-ink) !important;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.ms-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+}
+
+.ms-nav a {
+  color: var(--ms-ink-soft);
+  text-decoration: none;
+}
+
+.ms-nav a[aria-current='page'] {
+  color: var(--ms-blue);
+  font-weight: 600;
+}
+
+.ms-pill {
+  background: var(--ms-blue);
+  color: var(--ms-paper) !important;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ms-main {
+  flex: 1;
+}
+
+.ms-footer {
+  border-top: 1px solid var(--ms-line);
+  font-size: 13px;
+  color: var(--ms-ink-soft);
+}
+
+.ms-footer .ms-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px 24px;
+  padding-top: 20px;
+  padding-bottom: 28px;
+}
+
+.ms-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.ms-footer-links a {
+  color: var(--ms-ink-soft);
+}
+
+.ms-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ms-credit a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ms-ink) !important;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Product page */
+.ms-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+  padding-top: 64px;
+  padding-bottom: 48px;
+}
+
+.ms-badge {
+  display: inline-block;
+  background: var(--ms-mint-light);
+  color: var(--ms-mint-dark);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.ms-hero h1 {
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1.05;
+  margin: 18px 0 16px;
+}
+
+.ms-hero h1 span {
+  color: var(--ms-mint-dark);
+}
+
+.ms-lede {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ms-ink-soft);
+  max-width: 42ch;
+  margin: 0;
+}
+
+.ms-phone {
+  justify-self: center;
+  width: 220px;
+  height: 400px;
+  border-radius: 38px;
+  background: var(--ms-ink);
+  padding: 10px;
+}
+
+.ms-phone-screen {
+  height: 100%;
+  border-radius: 30px;
+  background: var(--ms-rest);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.ms-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  padding-bottom: 64px;
+}
+
+.ms-card {
+  background: var(--ms-card);
+  border: 1px solid var(--ms-line);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.ms-card h3 {
+  font-size: 19px;
+  margin-bottom: 6px;
+}
+
+.ms-card p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ms-ink-soft);
+}
+
+/* Privacy and terms */
+.ms-doc {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 40px;
+  padding-top: 48px;
+  padding-bottom: 72px;
+}
+
+.ms-toc {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  font-size: 14px;
+  line-height: 2;
+  border-right: 1px solid var(--ms-line);
+  padding-right: 16px;
+}
+
+.ms-toc p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.ms-toc a {
+  display: block;
+  color: var(--ms-ink-soft);
+  text-decoration: none;
+}
+
+.ms-doc h1 {
+  font-size: clamp(36px, 5vw, 48px);
+  line-height: 1.1;
+}
+
+.ms-updated {
+  margin: 6px 0 24px;
+  font-size: 14px;
+  color: var(--ms-ink-soft);
+}
+
+.ms-summary {
+  background: var(--ms-mint-light);
+  color: var(--ms-mint-dark);
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.ms-prose {
+  font-size: 17px;
+  line-height: 1.75;
+  max-width: 68ch;
+}
+
+.ms-prose h2 {
+  font-size: 26px;
+  line-height: 1.2;
+  margin: 40px 0 10px;
+  scroll-margin-top: 24px;
+}
+
+.ms-prose p,
+.ms-prose ul {
+  margin: 0 0 16px;
+}
+
+.ms-prose ul {
+  padding-left: 22px;
+  list-style: disc;
+}
+
+.ms-prose li {
+  margin-bottom: 10px;
+}
+
+.ms-prose a {
+  text-underline-offset: 3px;
+}
+
+.ms-prose strong {
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .ms-nav .ms-nav-text {
+    display: none;
+  }
+
+  .ms-hero {
+    grid-template-columns: 1fr;
+    padding-top: 40px;
+  }
+
+  .ms-phone {
+    width: 190px;
+    height: 340px;
+  }
+
+  .ms-doc {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-top: 32px;
+  }
+
+  .ms-toc {
+    display: none;
+  }
+}

@@ -21,6 +21,9 @@ import VerifyCertificate from '@/pages/VerifyCertificate'
 import Partnerships from '@/pages/Partnerships'
 import JoinCommunity from '@/pages/JoinCommunity'
 import NotFound from '@/pages/NotFound'
+import MindfulScroll from '@/pages/mindfulscroll/MindfulScroll'
+import MindfulScrollPrivacy from '@/pages/mindfulscroll/Privacy'
+import MindfulScrollTerms from '@/pages/mindfulscroll/Terms'
 
 // Standalone event microsites (no Nav/Footer chrome)
 import TechAiFutureUyo from '@/pages/events/TechAiFutureUyo'
@@ -189,6 +192,12 @@ export default function App() {
 
             {/* ── Standalone event microsites (own header/footer, no site chrome) ── */}
             <Route path="/events/tech-ai-future-uyo" element={<TechAiFutureUyo />} />
+
+            {/* MindfulScroll app pages: their own brand, no TektonX Nav/Footer.
+                Google Play links to the privacy URL, so keep these paths. */}
+            <Route path="/mindfulscroll" element={<MindfulScroll />} />
+            <Route path="/mindfulscroll/privacy" element={<MindfulScrollPrivacy />} />
+            <Route path="/mindfulscroll/terms" element={<MindfulScrollTerms />} />
 
             {/* ── Catch-all ── */}
             <Route path="*" element={<NotFound />} />
