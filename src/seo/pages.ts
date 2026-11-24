@@ -74,7 +74,7 @@ export const PUBLIC_PAGES: PublicPage[] = [
     path: '/events/tech-ai-future-uyo',
     shell: 'events/tech-ai-future-uyo/index.html',
     title: 'Tech, AI and the Future: Uyo | TektonX',
-    description: 'Tech, AI and the Future: a free half-day TektonX event in Uyo on Saturday 17 October 2026.',
+    description: 'Recap of Tech, AI and the Future, a free TektonX event in Uyo on Saturday 17 October 2026: the sessions, the speakers and photos.',
     keepShellTags: true,
   },
   {
