@@ -5,6 +5,7 @@ import { Toaster } from 'sonner'
 import queryClient from '@/lib/queryClient'
 import { AuthProvider } from '@/context/AuthContext'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
+import PageTitle from '@/seo/PageTitle'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import PublicLayout from '@/components/layouts/PublicLayout'
 import AuthLayout from '@/components/layouts/AuthLayout'
@@ -51,157 +52,165 @@ function ScrollToTop() {
   return null
 }
 
+/** The route table, shared with the build-time renderer (entry-prerender.tsx). */
+export function AppRoutes() {
+  return (
+    <Routes>
+      {/* ── Auth layout (no Nav/Footer, centered) ── */}
+      <Route element={<AuthLayout />}>
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/register" element={<Register />} />
+        <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+        <Route path="/auth/reset-password" element={<ResetPassword />} />
+        <Route path="/auth/activate" element={<Activate />} />
+      </Route>
+
+      {/* ── Marketing layout (community-led Home + About redesign) ── */}
+      <Route element={<MarketingLayout />}>
+        <Route path="/" element={<Index />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/mentors" element={<Mentors />} />
+        <Route path="/join" element={<JoinCommunity />} />
+      </Route>
+
+      {/* ── Public layout (Nav + Footer) ── */}
+      <Route element={<PublicLayout />}>
+        {/* Public */}
+        <Route path="/programs" element={<Programs />} />
+        <Route path="/mentorship" element={<Mentorship />} />
+        <Route path="/verify/:code" element={<VerifyCertificate />} />
+        <Route path="/partnerships" element={<Partnerships />} />
+
+        {/* Protected — mentee only */}
+        <Route
+          path="/dashboard/mentee"
+          element={
+            <ProtectedRoute allowedRoles={['mentee']}>
+              <MenteeDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected — mentor (approved) */}
+        <Route
+          path="/dashboard/mentor"
+          element={
+            <ProtectedRoute allowedRoles={['mentor']} requireApproval>
+              <MentorDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected — mentor (pending, no approval required) */}
+        <Route
+          path="/dashboard/mentor/pending"
+          element={
+            <ProtectedRoute allowedRoles={['mentor']}>
+              <MentorPending />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected — admin only */}
+        <Route
+          path="/dashboard/admin"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected — mentee & mentor */}
+        <Route
+          path="/roadmap"
+          element={
+            <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
+              <Roadmap />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/roadmap/:milestoneId"
+          element={
+            <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
+              <Roadmap />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected — any authenticated user */}
+        <Route
+          path="/communication"
+          element={
+            <ProtectedRoute>
+              <Communication />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected — mentee & mentor */}
+        <Route
+          path="/messages"
+          element={
+            <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
+              <Messages />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/messages/:userId"
+          element={
+            <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
+              <Messages />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
+
+      {/* ── Community manager layout (light Nav/Footer, scoped to this one route) ── */}
+      <Route element={<CommunityManagerLayout />}>
+        <Route
+          path="/dashboard/community-manager"
+          element={
+            <ProtectedRoute allowedRoles={['community_manager', 'admin']}>
+              <CommunityManagerDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
+
+      {/* ── Standalone event microsites (own header/footer, no site chrome) ── */}
+      <Route path="/events/tech-ai-future-uyo" element={<TechAiFutureUyo />} />
+
+      {/* MindfulScroll app pages: their own brand, no TektonX Nav/Footer.
+          Google Play links to the privacy URL, so keep these paths. */}
+      <Route path="/mindfulscroll" element={<MindfulScroll />} />
+      <Route path="/mindfulscroll/privacy" element={<MindfulScrollPrivacy />} />
+      <Route path="/mindfulscroll/terms" element={<MindfulScrollTerms />} />
+
+      {/* ── Catch-all ── */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  )
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
           <ScrollToTop />
-          <Routes>
-            {/* ── Auth layout (no Nav/Footer, centered) ── */}
-            <Route element={<AuthLayout />}>
-              <Route path="/auth/login" element={<Login />} />
-              <Route path="/auth/register" element={<Register />} />
-              <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-              <Route path="/auth/reset-password" element={<ResetPassword />} />
-              <Route path="/auth/activate" element={<Activate />} />
-            </Route>
-
-            {/* ── Marketing layout (community-led Home + About redesign) ── */}
-            <Route element={<MarketingLayout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/mentors" element={<Mentors />} />
-              <Route path="/join" element={<JoinCommunity />} />
-            </Route>
-
-            {/* ── Public layout (Nav + Footer) ── */}
-            <Route element={<PublicLayout />}>
-              {/* Public */}
-              <Route path="/programs" element={<Programs />} />
-              <Route path="/mentorship" element={<Mentorship />} />
-              <Route path="/verify/:code" element={<VerifyCertificate />} />
-              <Route path="/partnerships" element={<Partnerships />} />
-
-              {/* Protected — mentee only */}
-              <Route
-                path="/dashboard/mentee"
-                element={
-                  <ProtectedRoute allowedRoles={['mentee']}>
-                    <MenteeDashboard />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Protected — mentor (approved) */}
-              <Route
-                path="/dashboard/mentor"
-                element={
-                  <ProtectedRoute allowedRoles={['mentor']} requireApproval>
-                    <MentorDashboard />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Protected — mentor (pending, no approval required) */}
-              <Route
-                path="/dashboard/mentor/pending"
-                element={
-                  <ProtectedRoute allowedRoles={['mentor']}>
-                    <MentorPending />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Protected — admin only */}
-              <Route
-                path="/dashboard/admin"
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Protected — mentee & mentor */}
-              <Route
-                path="/roadmap"
-                element={
-                  <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
-                    <Roadmap />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/roadmap/:milestoneId"
-                element={
-                  <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
-                    <Roadmap />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Protected — any authenticated user */}
-              <Route
-                path="/communication"
-                element={
-                  <ProtectedRoute>
-                    <Communication />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Protected — mentee & mentor */}
-              <Route
-                path="/messages"
-                element={
-                  <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
-                    <Messages />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/messages/:userId"
-                element={
-                  <ProtectedRoute allowedRoles={['mentee', 'mentor']}>
-                    <Messages />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-
-            {/* ── Community manager layout (light Nav/Footer, scoped to this one route) ── */}
-            <Route element={<CommunityManagerLayout />}>
-              <Route
-                path="/dashboard/community-manager"
-                element={
-                  <ProtectedRoute allowedRoles={['community_manager', 'admin']}>
-                    <CommunityManagerDashboard />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-
-            {/* ── Standalone event microsites (own header/footer, no site chrome) ── */}
-            <Route path="/events/tech-ai-future-uyo" element={<TechAiFutureUyo />} />
-
-            {/* MindfulScroll app pages: their own brand, no TektonX Nav/Footer.
-                Google Play links to the privacy URL, so keep these paths. */}
-            <Route path="/mindfulscroll" element={<MindfulScroll />} />
-            <Route path="/mindfulscroll/privacy" element={<MindfulScrollPrivacy />} />
-            <Route path="/mindfulscroll/terms" element={<MindfulScrollTerms />} />
-
-            {/* ── Catch-all ── */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <PageTitle />
+          <AppRoutes />
 
           <Toaster richColors position="top-right" />
         </BrowserRouter>
