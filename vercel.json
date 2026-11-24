@@ -1,5 +1,30 @@
 {
+  "buildCommand": "pnpm run build:site",
   "rewrites": [
+    {
+      "source": "/about",
+      "destination": "/about/index.html"
+    },
+    {
+      "source": "/programs",
+      "destination": "/programs/index.html"
+    },
+    {
+      "source": "/mentorship",
+      "destination": "/mentorship/index.html"
+    },
+    {
+      "source": "/mentors",
+      "destination": "/mentors/index.html"
+    },
+    {
+      "source": "/partnerships",
+      "destination": "/partnerships/index.html"
+    },
+    {
+      "source": "/join",
+      "destination": "/join/index.html"
+    },
     {
       "source": "/events/tech-ai-future-uyo",
       "destination": "/events/tech-ai-future-uyo/index.html"
@@ -9,12 +34,48 @@
       "destination": "/mindfulscroll/index.html"
     },
     {
-      "source": "/mindfulscroll/(privacy|terms)",
-      "destination": "/mindfulscroll/index.html"
+      "source": "/mindfulscroll/privacy",
+      "destination": "/mindfulscroll/privacy/index.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/mindfulscroll/terms",
+      "destination": "/mindfulscroll/terms/index.html"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "/app-shell/index.html"
+    },
+    {
+      "source": "/dashboard/(.*)",
+      "destination": "/app-shell/index.html"
+    },
+    {
+      "source": "/verify/(.*)",
+      "destination": "/app-shell/index.html"
+    },
+    {
+      "source": "/roadmap",
+      "destination": "/app-shell/index.html"
+    },
+    {
+      "source": "/roadmap/(.*)",
+      "destination": "/app-shell/index.html"
+    },
+    {
+      "source": "/messages",
+      "destination": "/app-shell/index.html"
+    },
+    {
+      "source": "/messages/(.*)",
+      "destination": "/app-shell/index.html"
+    },
+    {
+      "source": "/communication",
+      "destination": "/app-shell/index.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/app-shell/index.html"
     }
   ]
 }
