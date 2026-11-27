@@ -18,7 +18,7 @@ export default function MindfulScrollPrivacy() {
   return (
     <LegalPage
       title="Privacy Policy"
-      updated="November 24, 2026"
+      updated="November 27, 2026"
       toc={TOC}
       summary="The short version: your usage data stays on your phone, we never see it, and we don't sell anything about you."
     >
@@ -34,6 +34,10 @@ export default function MindfulScrollPrivacy() {
         <li>When you open and leave those apps and how long each visit lasts.</li>
         <li>Breaks the app shows, whether you completed them, and any extra time you asked for, including an optional reason you type.</li>
         <li>Your focus modes and their schedules, daily summaries, and your focus streaks.</li>
+        <li>
+          If you turn on Verse first: the apps you chose for it, how often verses appear, and which readings you finished
+          and when.
+        </li>
         <li>Your settings, and your PIN as a salted one-way hash. The PIN itself is never stored.</li>
       </ul>
       <p>
@@ -48,9 +52,18 @@ export default function MindfulScrollPrivacy() {
         </li>
         <li>
           <strong>Accessibility service (&ldquo;App Intervention&rdquo;)</strong> tells the app which app is in front,
-          so it can show a break the moment a limit is reached. It only receives the name of the app that comes to the
-          front. It cannot read what is on your screen, what you type, your messages or your passwords. It is optional;
+          so it can show a break the moment a limit is reached, or verses first if you turn on Verse first. It only
+          receives the name of the app and screen that come to the front. It cannot read what is on your screen, what you type, your messages or your passwords. It is optional;
           without it the app runs in a lighter mode.
+        </li>
+        <li>
+          <strong>Display over other apps</strong> is optional and only used without App Intervention. It lets the app
+          open your break screen or verses while you are in another app. It does not let the app see other apps or put anything on
+          top of them.
+        </li>
+        <li>
+          <strong>Calls:</strong> so that verses never cover a call, the app checks whether your phone is ringing or in a
+          call. It cannot hear calls or see who is calling, and it needs no extra permission for this.
         </li>
         <li>
           <strong>Notifications</strong> are used for warnings before a limit is reached, break reminders, and the
@@ -104,9 +117,9 @@ export default function MindfulScrollPrivacy() {
           stores, except your PIN.
         </li>
         <li>
-          <strong>Delete your data on the phone:</strong> Settings &rsaquo; Delete all data removes your protected
-          apps, usage history, breaks, summaries and streaks. Your settings, PIN and focus modes stay until you
-          uninstall the app or clear its storage in Android settings. We don&rsquo;t hold your usage data, so there is
+          <strong>Delete your data on the phone:</strong> Settings &rsaquo; Delete all data removes everything the
+          app stores on your phone, including your protected apps, usage history, breaks, summaries, streaks, settings,
+          PIN, focus modes and Verse first readings. It does not cancel a subscription. We don&rsquo;t hold your usage data, so there is
           nothing of it to delete on our side.
         </li>
         <li>
