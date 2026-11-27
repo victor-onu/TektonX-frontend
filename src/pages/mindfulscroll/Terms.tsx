@@ -18,7 +18,7 @@ export default function MindfulScrollTerms() {
   return (
     <LegalPage
       title="Terms of Use"
-      updated="November 24, 2026"
+      updated="November 27, 2026"
       toc={TOC}
     >
       <p>
@@ -41,10 +41,10 @@ export default function MindfulScrollTerms() {
 
       <h2 id="free-and-premium">Free plan and Premium</h2>
       <ul>
-        <li>The free plan includes up to 3 protected apps and the Work and Sleep focus modes.</li>
+        <li>The free plan includes 1 protected app, the Work and Sleep focus modes, and Verse first before 1 app once a day.</li>
         <li>
           MindfulScroll Premium is an auto-renewing subscription, billed monthly or yearly through Google Play. It
-          removes the app limit and adds the Study, Deep Focus and Custom focus modes.
+          removes the app limits, adds the Study, Deep Focus and Custom focus modes, and lets verses appear more often.
         </li>
         <li>
           Prices are shown in the app and on Google Play before you buy, in your local currency, and include any taxes
